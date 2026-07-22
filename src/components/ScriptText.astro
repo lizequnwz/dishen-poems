@@ -15,6 +15,5 @@ const {
 const variants = deriveTextVariants(text, originalScript, overrides);
 ---
 
-<span data-script-inline="original" lang={originalScript === 'traditional' ? 'zh-Hant' : 'zh-Hans'}>{variants.original}</span>
 <span data-script-inline="simplified" lang="zh-Hans">{variants.simplified}</span>
 <span data-script-inline="traditional" lang="zh-Hant">{variants.traditional}</span>

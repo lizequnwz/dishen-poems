@@ -32,8 +32,8 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
         </h1>
         <p>
           <Bilingual
-            zh="五首诗，沿一条从春憩到风雪的长卷徐徐展开。无需先理解——请先停留，呼吸，然后向下一境。"
-            en="Five poems unfold from spring stillness into wind and snow. No explanation is required—pause, breathe, then enter the next scene."
+            zh="本卷收录五首诗作，自春憩至风雪，依次展开。"
+            en="This scroll presents five poems, unfolding from spring stillness to wind and snow."
           />
         </p>
         <div class="home-hero__actions">
@@ -41,11 +41,10 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
             <Bilingual zh="入卷" en="Enter the scroll" />
             <Icon name="arrow" />
           </a>
-          <span class="home-hero__hint"><Bilingual zh="静观模式 · 无自动播放" en="Silent by design · No autoplay" /></span>
         </div>
       </div>
       <div class="home-hero__seal" aria-hidden="true">
-        <span>诗</span><span>境</span>
+        <span><ScriptText text="诗" /></span><span><ScriptText text="境" /></span>
         <small>{currentExhibition.data.id === 'inaugural-five' ? '壹' : '展'}</small>
       </div>
     </div>
@@ -58,7 +57,7 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
   <section class="exhibition-intro shell">
     <div>
       <span class="eyebrow"><Bilingual zh="当前诗境" en="Current exhibition" /></span>
-      <h2>{currentExhibition.data.title.zh}</h2>
+      <h2><ScriptText text={currentExhibition.data.title.zh} /></h2>
     </div>
     <p><Bilingual zh="入静 · 舒展 · 生奇 · 骤变 · 化境" en="Stillness · Opening · Wonder · Turning · Transformation" /></p>
   </section>
@@ -86,13 +85,13 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
           <span class="journey-card__index">02</span>
           <Icon name="archive" size={24} />
           <strong><Bilingual zh="进入时间档案" en="Enter the archive" /></strong>
-          <p><Bilingual zh="依创作日期查看所有已校勘作品。" en="Browse every verified poem by written date." /></p>
+          <p><Bilingual zh="依创作日期查看所有诗作。" en="Browse every poem by written date." /></p>
         </a>
         <a class="journey-card" href="/about/">
           <span class="journey-card__index">03</span>
-          <span class="journey-card__monogram" aria-hidden="true">谛</span>
+          <span class="journey-card__monogram" aria-hidden="true"><ScriptText text="谛" /></span>
           <strong><Bilingual zh="关于谛深" en="Meet Dishen" /></strong>
-          <p><Bilingual zh="从诗境之后，缓缓走近作者。" en="Meet the poet after experiencing the poems." /></p>
+          <p><Bilingual zh="了解谛深大师生平与法号由来。" en="Learn about Master Dishen's life and Dharma name." /></p>
         </a>
       </div>
     </div>

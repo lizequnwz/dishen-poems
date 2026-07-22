@@ -2,11 +2,8 @@
 import Bilingual from './Bilingual.astro';
 ---
 
-<div class="script-switcher" role="group" aria-label="诗文文字体系 / Poem script">
-  <button class="script-switcher__button" type="button" data-script-target="original" aria-pressed="true">
-    <Bilingual zh="原文" en="Original" />
-  </button>
-  <button class="script-switcher__button" type="button" data-script-target="simplified" aria-pressed="false">
+<div class="script-switcher" role="group" aria-label="中文文字体系 / Chinese script">
+  <button class="script-switcher__button" type="button" data-script-target="simplified" aria-pressed="true">
     <Bilingual zh="简" en="简" />
   </button>
   <button class="script-switcher__button" type="button" data-script-target="traditional" aria-pressed="false">

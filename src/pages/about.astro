@@ -1,40 +1,51 @@
 ---
 import Bilingual from '@/components/Bilingual.astro';
 import Icon from '@/components/Icon.astro';
+import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="关于谛深" description="关于谛深师父与本数字诗集。">
+<BaseLayout title="关于谛深" description="谛深大师简介与官方资料。">
   <section class="about-page">
-    <div class="shell about-page__grid">
-      <div class="about-portrait" aria-label="师父照片待补充 / Portrait pending">
-        <div class="about-portrait__mist" aria-hidden="true"></div>
-        <span aria-hidden="true">谛</span>
-        <p><Bilingual zh="师父照片 · 待补充" en="Portrait · To be added" /></p>
+    <div class="shell about-page__inner">
+      <figure class="about-banner" data-reveal>
+        <img
+          src="/images/shifu-banner.jpg"
+          width="1920"
+          height="650"
+          alt="谛深大师身着黄色僧袍的横幅照片"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </figure>
+      <div class="about-page__content">
+        <article class="about-copy">
+          <span class="eyebrow"><Bilingual zh="关于谛深" en="About Dishen" /></span>
+          <h1><Bilingual zh="谛深大师" en="Master Dishen" /></h1>
+          <p class="about-copy__intro">
+            <ScriptText text="谛深大师俗姓吕，净土获证，禅宗传承。上乘清净愿力为谛，下令众生世界业障破灭称深。谛深法号为佛光普照神僧呼唤所得。落发戒名释迦妙生，祖籍山东即墨。佛历2506年11月18日（农历壬寅年11月18日）生于辽宁省瓦房店，生后至3岁不会说话，会讲话后秉性甚憨，家人以为有疾。后因文革风暴，随父母回迁祖籍。" />
+          </p>
+          <a
+            class="button-link"
+            href="https://www.dishenbuddha.org/%E8%B0%9B%E6%B7%B1%E5%A4%A7%E5%B8%88%E7%AE%80%E4%BB%8B"
+            target="_blank"
+            rel="external noopener"
+          >
+            <Bilingual zh="查看完整简介" en="View the full biography" />
+            <Icon name="external" />
+          </a>
+        </article>
+        <blockquote class="about-verse">
+          <span class="eyebrow"><Bilingual zh="偈" en="Verse" /></span>
+          <p><ScriptText text="独行僧　坐十方界外　钵盛众生诸大苦海　化无尽甘露" /></p>
+          <p><ScriptText text="清净尊　立小土尘中　盂布如来许丝香云　成有生宝刹" /></p>
+        </blockquote>
       </div>
-      <article class="about-copy">
-        <span class="eyebrow"><Bilingual zh="关于谛深" en="About Dishen" /></span>
-        <h1><Bilingual zh="先读诗，再识人" en="The poems come first" /></h1>
-        <div class="about-placeholder">
-          <span class="about-placeholder__line"></span>
-          <span class="about-placeholder__line"></span>
-          <span class="about-placeholder__line about-placeholder__line--short"></span>
-        </div>
-        <p class="about-copy__status">
-          <Bilingual
-            zh="经确认的师父简介资料仍在整理中。此处保留内容位置，不以生成文字或 AI 肖像代替真实资料。"
-            en="Verified biographical material is still being prepared. This space is reserved for real information and will not be filled with generated copy or an AI portrait."
-          />
-        </p>
-        <a class="button-link" href="https://www.dishenbuddha.org/" target="_blank" rel="external noopener">
-          <Bilingual zh="访问师父官方网站" en="Visit the official website" />
-          <Icon name="external" />
-        </a>
-      </article>
     </div>
     <div class="shell about-project">
       <span class="eyebrow"><Bilingual zh="关于此数字诗集" en="About this collection" /></span>
-      <p><Bilingual zh="这里以权威诗文为核心，通过克制的光、墨、留白与声音策展，提供可静观、可品读、可继续探索的公开空间。AI 只辅助私有制作，不公开解释诗中禅意。" en="This public collection centers the authoritative poems, using restrained light, ink, space, and—once approved—sound. AI may assist private production, but it does not publish interpretations of the poems." /></p>
+      <p><Bilingual zh="本网站收录谛深大师诗作，并按创作日期呈现。" en="This collection presents Master Dishen's poems by the dates they were written." /></p>
     </div>
   </section>
 </BaseLayout>

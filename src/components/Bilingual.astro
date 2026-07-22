@@ -1,4 +1,6 @@
 ---
+import ScriptText from './ScriptText.astro';
+
 interface Props {
   zh: string;
   en: string;
@@ -7,4 +9,4 @@ interface Props {
 const { zh, en } = Astro.props;
 ---
 
-<span data-copy-zh>{zh}</span><span data-copy-en>{en}</span>
+<span data-copy-zh><ScriptText text={zh} /></span><span data-copy-en>{en}</span>

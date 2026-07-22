@@ -1,6 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { validateSiteRecords } from './content-rules';
-import { deriveTextVariants, type ScriptMode } from './script-conversion';
+import { deriveTextVariants, type TextVariant } from './script-conversion';
 
 export type PoemEntry = CollectionEntry<'poems'>;
 export type ExhibitionEntry = CollectionEntry<'exhibitions'>;
@@ -8,7 +8,7 @@ function normalizeBody(body?: string) {
   return (body ?? '').replace(/\r\n/g, '\n').trim();
 }
 
-export function getPoemVariants(poem: PoemEntry): Record<ScriptMode, string> {
+export function getPoemVariants(poem: PoemEntry): Record<TextVariant, string> {
   return deriveTextVariants(normalizeBody(poem.body), poem.data.originalScript, poem.data.scriptOverrides);
 }
 

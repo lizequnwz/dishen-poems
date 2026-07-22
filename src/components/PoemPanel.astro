@@ -6,7 +6,6 @@ import Icon from './Icon.astro';
 import InkScene from './InkScene.astro';
 import PoemText from './PoemText.astro';
 import ScriptText from './ScriptText.astro';
-import StatusBadge from './StatusBadge.astro';
 
 interface Props {
   poem: PoemEntry;
@@ -38,7 +37,6 @@ const stage = stages[index] ?? stages[stages.length - 1];
       <span class="poem-panel__number">{String(index + 1).padStart(2, '0')}</span>
     </div>
     <article class="poem-panel__content">
-      <StatusBadge />
       <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
       <PoemText poem={poem} compact={poem.data.visualKey === 'mountain-spring'} />
       <div class="poem-panel__meta">

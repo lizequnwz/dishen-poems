@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '@/components/SiteFooter.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
+import Bilingual from '@/components/Bilingual.astro';
 import '@/styles/global.css';
 import sansLatinUrl from '@fontsource-variable/noto-sans-sc/files/noto-sans-sc-latin-wght-normal.woff2?url';
 import serifLatinUrl from '@fontsource-variable/noto-serif-sc/files/noto-serif-sc-latin-wght-normal.woff2?url';
@@ -13,7 +14,7 @@ interface Props {
 
 const {
   title = '谛深 · 禅诗',
-  description = '谛深师父禅诗的公开数字策展空间。先感受，后理解，再认识作者。',
+  description = '谛深大师禅诗的公开数字诗集。',
   hideChrome = false,
 } = Astro.props;
 const pageTitle = title === '谛深 · 禅诗' ? title : `${title} · 谛深禅诗`;
@@ -36,7 +37,7 @@ const localFontFaces = `
 ---
 
 <!doctype html>
-<html lang="zh-Hans" data-theme="light" data-language="zh" data-script="original">
+<html lang="zh-Hans" data-theme="light" data-language="zh" data-script="simplified">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,15 +57,15 @@ const localFontFaces = `
           document.documentElement.dataset.theme = dark ? 'dark' : 'light';
           const language = localStorage.getItem('dishen-language') === 'en' ? 'en' : 'zh';
           document.documentElement.dataset.language = language;
-          document.documentElement.lang = language === 'en' ? 'en' : 'zh-Hans';
-          const script = localStorage.getItem('dishen-script');
-          if (script === 'simplified' || script === 'traditional') document.documentElement.dataset.script = script;
+          const script = localStorage.getItem('dishen-script') === 'traditional' ? 'traditional' : 'simplified';
+          document.documentElement.dataset.script = script;
+          document.documentElement.lang = language === 'en' ? 'en' : script === 'traditional' ? 'zh-Hant' : 'zh-Hans';
         } catch {}
       })();
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content"><span data-copy-zh>跳至诗文</span><span data-copy-en>Skip to poem</span></a>
+    <a class="skip-link" href="#main-content"><Bilingual zh="跳至诗文" en="Skip to poem" /></a>
     {!hideChrome && <SiteHeader />}
     <main id="main-content">
       <slot />

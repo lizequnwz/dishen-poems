@@ -9,7 +9,7 @@ const { publicPoems, years } = await loadSiteData();
 const randomPaths = JSON.stringify(publicPoems.map(poemPath));
 ---
 
-<BaseLayout title="作品档案" description="按谛深师父创作日期浏览全部已校勘诗作。">
+<BaseLayout title="作品档案" description="按谛深大师创作日期浏览诗作。">
   <header class="page-hero archive-hero">
     <div class="shell page-hero__inner">
       <div>
@@ -19,7 +19,7 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
       </div>
       <div class="archive-hero__count">
         <strong>{String(publicPoems.length).padStart(2, '0')}</strong>
-        <span><Bilingual zh="首已校勘作品" en="verified poems" /></span>
+        <span><Bilingual zh="首诗作" en="poems" /></span>
       </div>
     </div>
   </header>

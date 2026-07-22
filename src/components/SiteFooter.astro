@@ -1,17 +1,17 @@
 ---
 import Bilingual from './Bilingual.astro';
+import ScriptText from './ScriptText.astro';
 ---
 
 <footer class="site-footer">
   <div class="shell site-footer__inner">
     <div>
-      <strong>谛深 · 禅诗</strong>
-      <p><Bilingual zh="先感受，后理解，再认识作者。" en="Feel first. Understand later. Then meet the poet." /></p>
+      <strong><ScriptText text="谛深" /> · <ScriptText text="禅诗" /></strong>
     </div>
     <nav aria-label="页脚导航 / Footer">
       <a href="/archive/"><Bilingual zh="作品档案" en="Archive" /></a>
       <a href="/credits/"><Bilingual zh="素材署名" en="Credits" /></a>
-      <a href="https://www.dishenbuddha.org/" rel="external"><Bilingual zh="官方网站" en="Official site" /></a>
+      <a href="https://www.dishenbuddha.org/" target="_blank" rel="external noopener"><Bilingual zh="官方网站" en="Official site" /></a>
     </nav>
   </div>
 </footer>

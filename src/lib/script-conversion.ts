@@ -1,7 +1,8 @@
 import OpenCC from 'opencc-js';
+import type { DisplayScript } from './preferences';
 
-export type ScriptMode = 'original' | 'simplified' | 'traditional';
 export type OriginalScript = 'simplified' | 'traditional';
+export type TextVariant = 'original' | DisplayScript;
 export type ScriptOverrides = {
   simplified: Record<string, string>;
   traditional: Record<string, string>;
@@ -20,7 +21,7 @@ export function deriveTextVariants(
   source: string,
   originalScript: OriginalScript,
   overrides: ScriptOverrides = { simplified: {}, traditional: {} },
-): Record<ScriptMode, string> {
+): Record<TextVariant, string> {
   const original = source.replace(/\r\n/g, '\n').trim();
   const simplified = originalScript === 'simplified' ? original : traditionalToSimplified(original);
   const traditional = originalScript === 'traditional' ? original : simplifiedToTraditional(original);

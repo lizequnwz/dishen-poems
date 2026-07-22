@@ -4,7 +4,6 @@ import Icon from '@/components/Icon.astro';
 import InkScene from '@/components/InkScene.astro';
 import PoemText from '@/components/PoemText.astro';
 import ScriptText from '@/components/ScriptText.astro';
-import StatusBadge from '@/components/StatusBadge.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { formatWrittenDate, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
 
@@ -35,7 +34,6 @@ const next = journey[(index + 1) % journey.length];
         <small>{String(journey.length).padStart(2, '0')}</small>
       </div>
       <div class="poem-page__card" data-reveal>
-        <StatusBadge />
         <header>
           <p class="eyebrow"><Bilingual zh="一诗一境" en="One poem · One world" /></p>
           <h1><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h1>
@@ -56,11 +54,10 @@ const next = journey[(index + 1) % journey.length];
         </footer>
       </div>
       <aside class="poem-page__note">
-        <span class="eyebrow"><Bilingual zh="显性意象" en="Visible imagery" /></span>
+        <span class="eyebrow"><Bilingual zh="诗中意象" en="Imagery" /></span>
         <ul>
           {poem.data.descriptiveTags.map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
         </ul>
-        <p><Bilingual zh="标签只描述诗中可见内容，不解释禅意。" en="Tags describe visible imagery; they do not interpret the poem." /></p>
       </aside>
     </div>
   </article>

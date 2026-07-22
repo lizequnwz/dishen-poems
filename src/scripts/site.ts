@@ -1,5 +1,4 @@
-type UiLanguage = 'zh' | 'en';
-type ScriptMode = 'original' | 'simplified' | 'traditional';
+import { normalizeDisplayScript, type DisplayScript, type UiLanguage } from '@/lib/preferences';
 
 const storage = {
   get(key: string) {
@@ -20,14 +19,18 @@ const storage = {
 
 function applyLanguage(language: UiLanguage) {
   document.documentElement.dataset.language = language;
-  document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
+  const script = normalizeDisplayScript(document.documentElement.dataset.script);
+  document.documentElement.lang = language === 'zh' ? (script === 'traditional' ? 'zh-Hant' : 'zh-Hans') : 'en';
   document.querySelectorAll<HTMLElement>('[data-language-toggle]').forEach((button) => {
     button.setAttribute('aria-label', language === 'zh' ? 'Switch interface to English' : '将界面切换为中文');
   });
 }
 
-function applyScript(mode: ScriptMode) {
+function applyScript(mode: DisplayScript) {
   document.documentElement.dataset.script = mode;
+  if (document.documentElement.dataset.language !== 'en') {
+    document.documentElement.lang = mode === 'traditional' ? 'zh-Hant' : 'zh-Hans';
+  }
   document.querySelectorAll<HTMLButtonElement>('[data-script-target]').forEach((button) => {
     const active = button.dataset.scriptTarget === mode;
     button.setAttribute('aria-pressed', String(active));
@@ -61,7 +64,7 @@ function setupPreferences() {
     if (button.dataset.bound) return;
     button.dataset.bound = 'true';
     button.addEventListener('click', () => {
-      const mode = button.dataset.scriptTarget as ScriptMode;
+      const mode = normalizeDisplayScript(button.dataset.scriptTarget);
       applyScript(mode);
       storage.set('dishen-script', mode);
     });
@@ -131,10 +134,7 @@ function setupReveals() {
 
 function setup() {
   applyLanguage((storage.get('dishen-language') === 'en' ? 'en' : 'zh') as UiLanguage);
-  const savedScript = storage.get('dishen-script');
-  applyScript(
-    (savedScript === 'simplified' || savedScript === 'traditional' ? savedScript : 'original') as ScriptMode,
-  );
+  applyScript(normalizeDisplayScript(storage.get('dishen-script')));
   setupPreferences();
   setupShare();
   setupRandomJourney();

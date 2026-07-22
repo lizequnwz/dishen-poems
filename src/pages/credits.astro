@@ -3,38 +3,36 @@ import Bilingual from '@/components/Bilingual.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="素材与署名" description="谛深禅诗网站的图片、音乐与环境声署名信息。">
+<BaseLayout title="素材与署名" description="谛深禅诗网站所用图片、字体与开源软件的来源和许可信息。">
   <header class="page-hero credits-hero">
     <div class="shell page-hero__inner">
       <div>
-        <span class="eyebrow"><Bilingual zh="透明策展" en="Transparent curation" /></span>
+        <span class="eyebrow"><Bilingual zh="来源与许可" en="Sources & licenses" /></span>
         <h1><Bilingual zh="素材与署名" en="Media & credits" /></h1>
-        <p><Bilingual zh="每一幅图、每一段声音，都应知道从何而来。" en="Every image and sound should carry a clear provenance." /></p>
+        <p><Bilingual zh="本网站当前使用的图片、字体与开源软件。" en="Images, typefaces, and open-source software used by this website." /></p>
       </div>
     </div>
   </header>
 
   <section class="credits-content shell">
-    <article class="credits-status">
-      <span class="status-badge"><i class="status-badge__dot"></i><Bilingual zh="当前状态" en="Current status" /></span>
-      <h2><Bilingual zh="暂未使用外部策展媒体" en="No external curated media yet" /></h2>
-      <p><Bilingual zh="MVP 中的山、水、雾、雨与光均由网页内的程序化 SVG 和 CSS 构成，只用于验证空间、阅读与动效。它们不是最终策展图片；当前也没有音乐或环境声。" en="The MVP landscape is composed from in-page SVG and CSS to validate space, reading, and motion. These scenes are not final curated images, and no music or ambient sound is currently used." /></p>
-    </article>
     <div class="credits-grid">
       <article>
         <span>01</span>
-        <h3><Bilingual zh="图片" en="Images" /></h3>
-        <p><Bilingual zh="未来记录作者、来源、许可、获取日期、校验值、派生尺寸与所用诗歌。" en="Future records will include creator, source, license, retrieval date, checksum, derivatives, and every poem using the asset." /></p>
+        <h3><Bilingual zh="正式照片" en="Official photograph" /></h3>
+        <p>
+          <Bilingual zh="谛深大师横幅照片 · 官方资料。" en="Master Dishen banner photograph · Official material." />
+          {' '}<a href="https://www.dishenbuddha.org/" target="_blank" rel="external noopener"><Bilingual zh="来源网站" en="Source website" /></a>
+        </p>
       </article>
       <article>
         <span>02</span>
-        <h3><Bilingual zh="音乐与自然声" en="Music & field sound" /></h3>
-        <p><Bilingual zh="只在来源和授权审核完成后出现播放入口；不使用占位音频。" en="Playback appears only after source and license review. Placeholder audio is never used." /></p>
+        <h3><Bilingual zh="字体" en="Typefaces" /></h3>
+        <p>Noto Serif SC / Noto Sans SC · SIL Open Font License.</p>
       </article>
       <article>
         <span>03</span>
-        <h3><Bilingual zh="字体与软件" en="Type & software" /></h3>
-        <p>Noto Serif SC / Noto Sans SC（Latin subset；中文使用系统 CJK 字体回退）· SIL Open Font License. Astro · MIT License. OpenCC / opencc-js · Apache-2.0 / MIT.</p>
+        <h3><Bilingual zh="开源软件" en="Open-source software" /></h3>
+        <p>Astro · MIT License.<br />OpenCC / opencc-js · Apache-2.0 / MIT.</p>
       </article>
     </div>
   </section>
