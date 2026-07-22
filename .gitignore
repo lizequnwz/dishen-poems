@@ -1,3 +1,8 @@
 .DS_Store
 .superpowers/
 tmp/
+node_modules/
+.astro/
+dist/
+playwright-report/
+test-results/

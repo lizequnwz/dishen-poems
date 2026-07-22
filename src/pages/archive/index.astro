@@ -1,0 +1,57 @@
+---
+import Bilingual from '@/components/Bilingual.astro';
+import Icon from '@/components/Icon.astro';
+import ScriptText from '@/components/ScriptText.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatWrittenDate, getPoemVariants, loadSiteData, poemPath } from '@/lib/site-data';
+
+const { publicPoems, years } = await loadSiteData();
+const randomPaths = JSON.stringify(publicPoems.map(poemPath));
+---
+
+<BaseLayout title="作品档案" description="按谛深师父创作日期浏览全部已校勘诗作。">
+  <header class="page-hero archive-hero">
+    <div class="shell page-hero__inner">
+      <div>
+        <span class="eyebrow"><Bilingual zh="作品档案" en="Poetry archive" /></span>
+        <h1><Bilingual zh="循时间，见诗境" en="Poems across time" /></h1>
+        <p><Bilingual zh="按师父创作日期，从最近一页回望。" en="Browse verified poems by the date they were written." /></p>
+      </div>
+      <div class="archive-hero__count">
+        <strong>{String(publicPoems.length).padStart(2, '0')}</strong>
+        <span><Bilingual zh="首已校勘作品" en="verified poems" /></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="archive-toolbar shell">
+    <nav aria-label="按年份浏览 / Browse by year">
+      <a aria-current="page" href="/archive/"><Bilingual zh="全部" en="All" /></a>
+      {years.map((year) => <a href={`/archive/${year}/`}>{year}</a>)}
+    </nav>
+    <button class="outline-button" type="button" data-random-paths={randomPaths}>
+      <Icon name="random" />
+      <Bilingual zh="随机漫游" en="Random poem" />
+    </button>
+  </div>
+
+  <section class="archive-list shell" aria-label="诗歌列表 / Poems">
+    {publicPoems.map((poem, index) => (
+      <a class="archive-row" href={poemPath(poem)} data-reveal>
+        <span class="archive-row__index">{String(index + 1).padStart(2, '0')}</span>
+        <time datetime={poem.data.writtenDate}>
+          <span data-copy-zh>{formatWrittenDate(poem.data.writtenDate, 'zh')}</span>
+          <span data-copy-en>{formatWrittenDate(poem.data.writtenDate, 'en')}</span>
+        </time>
+        <div class="archive-row__title">
+          <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
+          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+        </div>
+        <ul aria-label="描述性标签">
+          {poem.data.descriptiveTags.slice(0, 3).map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
+        </ul>
+        <span class="archive-row__arrow"><Icon name="arrow" /></span>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

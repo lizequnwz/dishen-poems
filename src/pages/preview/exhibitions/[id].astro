@@ -1,0 +1,36 @@
+---
+import PoemPanel from '@/components/PoemPanel.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { loadSiteData, type ExhibitionEntry, type PoemEntry } from '@/lib/site-data';
+
+export async function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  const { exhibitions, poemById } = await loadSiteData();
+  return exhibitions
+    .filter((entry) => entry.data.status === 'draft')
+    .map((exhibition) => ({
+      params: { id: exhibition.data.id },
+      props: {
+        exhibition,
+        poems: exhibition.data.poemIds.map((poemId) => poemById.get(poemId)!),
+      },
+    }));
+}
+
+interface Props {
+  exhibition: ExhibitionEntry;
+  poems: PoemEntry[];
+}
+
+const { exhibition, poems } = Astro.props;
+---
+
+<BaseLayout title={`草稿预览 · ${exhibition.data.title.zh}`} hideChrome>
+  <div class="draft-banner">仅限本地草稿预览 · DRAFT PREVIEW · 不进入正式构建</div>
+  <header class="draft-heading shell">
+    <span>展览草稿</span>
+    <h1>{exhibition.data.title.zh}</h1>
+    <p>{poems.length} 首 · 请整体审核成员与顺序</p>
+  </header>
+  {poems.map((poem, index) => <PoemPanel poem={poem} index={index} total={poems.length} />)}
+</BaseLayout>

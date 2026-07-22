@@ -1,0 +1,20 @@
+---
+import type { PoemEntry } from '@/lib/site-data';
+import { getPoemVariants } from '@/lib/site-data';
+
+interface Props {
+  poem: PoemEntry;
+  compact?: boolean;
+}
+
+const { poem, compact = false } = Astro.props;
+const variants = getPoemVariants(poem);
+---
+
+<div class:list={['poem-text', { 'poem-text--compact': compact }]} lang="zh-Hans">
+  {Object.entries(variants).map(([mode, text]) => (
+    <div data-script-copy={mode} lang={mode === 'traditional' ? 'zh-Hant' : mode === 'simplified' ? 'zh-Hans' : poem.data.originalScript === 'traditional' ? 'zh-Hant' : 'zh-Hans'}>
+      {text.split('\n').map((line) => <span class="poem-text__line">{line || '\u00A0'}</span>)}
+    </div>
+  ))}
+</div>

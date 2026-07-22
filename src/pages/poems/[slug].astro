@@ -1,0 +1,82 @@
+---
+import Bilingual from '@/components/Bilingual.astro';
+import Icon from '@/components/Icon.astro';
+import InkScene from '@/components/InkScene.astro';
+import PoemText from '@/components/PoemText.astro';
+import ScriptText from '@/components/ScriptText.astro';
+import StatusBadge from '@/components/StatusBadge.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatWrittenDate, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
+
+export async function getStaticPaths() {
+  const { publicPoems } = await loadSiteData();
+  return publicPoems.map((poem) => ({ params: { slug: poem.data.slug }, props: { poem } }));
+}
+
+interface Props {
+  poem: PoemEntry;
+}
+
+const { poem } = Astro.props;
+const { currentPoems, publicPoems } = await loadSiteData();
+const journey = currentPoems.some((entry) => entry.data.id === poem.data.id) ? currentPoems : publicPoems;
+const index = journey.findIndex((entry) => entry.data.id === poem.data.id);
+const previous = journey[(index - 1 + journey.length) % journey.length];
+const next = journey[(index + 1) % journey.length];
+---
+
+<BaseLayout title={poem.data.title} description={`${poem.data.title}，谛深作于 ${formatWrittenDate(poem.data.writtenDate)}。`}>
+  <article class="poem-page">
+    <InkScene visualKey={poem.data.visualKey} title={poem.data.title} index={index} />
+    <div class="shell poem-page__inner">
+      <div class="poem-page__index" aria-hidden="true">
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <i></i>
+        <small>{String(journey.length).padStart(2, '0')}</small>
+      </div>
+      <div class="poem-page__card" data-reveal>
+        <StatusBadge />
+        <header>
+          <p class="eyebrow"><Bilingual zh="一诗一境" en="One poem · One world" /></p>
+          <h1><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h1>
+        </header>
+        <PoemText poem={poem} compact={poem.data.visualKey === 'mountain-spring'} />
+        <footer class="poem-page__meta">
+          <div>
+            <span><ScriptText text="谛深" /></span>
+            <time datetime={poem.data.writtenDate}>
+              <span data-copy-zh>{formatWrittenDate(poem.data.writtenDate, 'zh')}</span>
+              <span data-copy-en>{formatWrittenDate(poem.data.writtenDate, 'en')}</span>
+            </time>
+          </div>
+          <button class="outline-button" type="button" data-share data-share-title={`${poem.data.title} · 谛深`} data-share-url={poemPath(poem)}>
+            <Icon name="share" />
+            <Bilingual zh="分享此诗" en="Share" />
+          </button>
+        </footer>
+      </div>
+      <aside class="poem-page__note">
+        <span class="eyebrow"><Bilingual zh="显性意象" en="Visible imagery" /></span>
+        <ul>
+          {poem.data.descriptiveTags.map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
+        </ul>
+        <p><Bilingual zh="标签只描述诗中可见内容，不解释禅意。" en="Tags describe visible imagery; they do not interpret the poem." /></p>
+      </aside>
+    </div>
+  </article>
+
+  <nav class="poem-navigation shell" aria-label="诗歌前后导航 / Adjacent poems">
+    <a href={poemPath(previous)}>
+      <span class="eyebrow"><Bilingual zh="上一境" en="Previous" /></span>
+      <strong><ScriptText text={previous.data.title} originalScript={previous.data.originalScript} /></strong>
+    </a>
+    <a class="poem-navigation__archive" href="/archive/">
+      <Icon name="archive" />
+      <Bilingual zh="时间档案" en="Archive" />
+    </a>
+    <a class="poem-navigation__next" href={poemPath(next)}>
+      <span class="eyebrow"><Bilingual zh="下一境" en="Next" /></span>
+      <strong><ScriptText text={next.data.title} originalScript={next.data.originalScript} /></strong>
+    </a>
+  </nav>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import Bilingual from './Bilingual.astro';
+import Icon from './Icon.astro';
+import ScriptSwitcher from './ScriptSwitcher.astro';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: '/', zh: '当前诗境', en: 'Exhibition', active: path === '/' },
+  { href: '/archive/', zh: '作品档案', en: 'Archive', active: path.startsWith('/archive') },
+  { href: '/about/', zh: '关于谛深', en: 'About', active: path.startsWith('/about') },
+];
+---
+
+<header class="site-header">
+  <div class="site-header__bar shell">
+    <a class="brand" href="/" aria-label="谛深禅诗首页 / Dishen poetry home">
+      <span class="brand__mark" aria-hidden="true">谛</span>
+      <span class="brand__name">谛深<span class="brand__dot">·</span><small>禅诗</small></span>
+    </a>
+
+    <nav class="site-nav" aria-label="主导航 / Primary">
+      {links.map((link) => (
+        <a href={link.href} aria-current={link.active ? 'page' : undefined}>
+          <Bilingual zh={link.zh} en={link.en} />
+        </a>
+      ))}
+    </nav>
+
+    <div class="site-tools">
+      <ScriptSwitcher />
+      <button class="icon-button" type="button" data-language-toggle aria-label="Switch interface to English">
+        <Icon name="language" />
+        <span class="icon-button__label"><Bilingual zh="EN" en="中" /></span>
+      </button>
+      <button class="icon-button" type="button" data-theme-toggle aria-label="切换明暗主题 / Toggle theme">
+        <Icon name="sun" />
+      </button>
+    </div>
+  </div>
+</header>

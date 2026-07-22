@@ -1,0 +1,43 @@
+---
+interface Props {
+  name: 'sun' | 'language' | 'arrow' | 'share' | 'archive' | 'external' | 'random';
+  size?: number;
+}
+
+const { name, size = 18 } = Astro.props;
+---
+
+<svg class="icon" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  {name === 'sun' && (
+    <>
+      <circle cx="12" cy="12" r="3.5"></circle>
+      <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+    </>
+  )}
+  {name === 'language' && (
+    <>
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M3.5 12h17M12 3c2.2 2.45 3.3 5.45 3.3 9S14.2 18.55 12 21M12 3C9.8 5.45 8.7 8.45 8.7 12s1.1 6.55 3.3 9"></path>
+    </>
+  )}
+  {name === 'arrow' && <path d="M5 12h13M13 6l6 6-6 6"></path>}
+  {name === 'share' && (
+    <>
+      <circle cx="18" cy="5" r="2.5"></circle>
+      <circle cx="6" cy="12" r="2.5"></circle>
+      <circle cx="18" cy="19" r="2.5"></circle>
+      <path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"></path>
+    </>
+  )}
+  {name === 'archive' && (
+    <>
+      <path d="M4 7.5h16v12H4zM3 4h18v3.5H3zM9 11h6"></path>
+    </>
+  )}
+  {name === 'external' && <path d="M14 4h6v6M20 4l-9 9M18 13v6H5V6h6"></path>}
+  {name === 'random' && (
+    <>
+      <path d="M4 7h3.5c4 0 5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.2 0 2.2-.9 3.1-2.2M14.1 8.6c.8-1 1.6-1.6 2.4-1.6H20M17 4l3 3-3 3"></path>
+    </>
+  )}
+</svg>

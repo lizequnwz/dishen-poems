@@ -1,0 +1,54 @@
+---
+import type { PoemEntry } from '@/lib/site-data';
+import { formatWrittenDate, poemPath } from '@/lib/site-data';
+import Bilingual from './Bilingual.astro';
+import Icon from './Icon.astro';
+import InkScene from './InkScene.astro';
+import PoemText from './PoemText.astro';
+import ScriptText from './ScriptText.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  poem: PoemEntry;
+  index: number;
+  total: number;
+}
+
+const { poem, index, total } = Astro.props;
+const stages = [
+  { zh: '入静', en: 'Stillness' },
+  { zh: '舒展', en: 'Opening' },
+  { zh: '生奇', en: 'Wonder' },
+  { zh: '骤变', en: 'Turning' },
+  { zh: '化境', en: 'Transformation' },
+];
+const stage = stages[index] ?? stages[stages.length - 1];
+---
+
+<section class="poem-panel" id={`poem-${index + 1}`} data-reveal>
+  <InkScene visualKey={poem.data.visualKey} title={poem.data.title} index={index} />
+  <div class="poem-panel__rail" aria-hidden="true">
+    <span>{String(index + 1).padStart(2, '0')}</span>
+    <i></i>
+    <span>{String(total).padStart(2, '0')}</span>
+  </div>
+  <div class="shell poem-panel__inner">
+    <div class="poem-panel__stage">
+      <span class="eyebrow"><Bilingual zh={stage.zh} en={stage.en} /></span>
+      <span class="poem-panel__number">{String(index + 1).padStart(2, '0')}</span>
+    </div>
+    <article class="poem-panel__content">
+      <StatusBadge />
+      <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
+      <PoemText poem={poem} compact={poem.data.visualKey === 'mountain-spring'} />
+      <div class="poem-panel__meta">
+        <span><ScriptText text="谛深" /></span>
+        <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
+      </div>
+      <a class="text-link" href={poemPath(poem)}>
+        <Bilingual zh="静观此诗" en="Read this poem" />
+        <Icon name="arrow" />
+      </a>
+    </article>
+  </div>
+</section>

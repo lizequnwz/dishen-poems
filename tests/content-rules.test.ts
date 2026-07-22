@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import { validateSiteRecords, type RuleExhibition, type RulePoem } from '../src/lib/content-rules';
+
+const poems: RulePoem[] = [
+  { id: 'poem-one', slug: '2026-01-01-one', status: 'verified' },
+  { id: 'poem-two', slug: '2026-01-02-two', status: 'curated' },
+];
+
+const exhibition: RuleExhibition = {
+  id: 'current',
+  status: 'published',
+  poemIds: ['poem-one', 'poem-two'],
+};
+
+describe('validateSiteRecords', () => {
+  it('accepts one published exhibition of verified poems', () => {
+    expect(() => validateSiteRecords(poems, [exhibition])).not.toThrow();
+  });
+
+  it('rejects multiple current exhibitions', () => {
+    expect(() => validateSiteRecords(poems, [exhibition, { ...exhibition, id: 'other' }])).toThrow(
+      'Exactly one exhibition must be published',
+    );
+  });
+
+  it('rejects ingested poems in any exhibition', () => {
+    expect(() =>
+      validateSiteRecords([{ ...poems[0], status: 'ingested' }, poems[1]], [exhibition]),
+    ).toThrow('cannot include unverified poem');
+  });
+
+  it('rejects duplicate or missing poem references', () => {
+    expect(() =>
+      validateSiteRecords(poems, [{ ...exhibition, poemIds: ['poem-one', 'poem-one'] }]),
+    ).toThrow('duplicate poem ids');
+    expect(() =>
+      validateSiteRecords(poems, [{ ...exhibition, poemIds: ['poem-one', 'missing'] }]),
+    ).toThrow('references missing poem');
+  });
+});

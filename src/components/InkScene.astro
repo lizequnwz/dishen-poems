@@ -1,0 +1,105 @@
+---
+type VisualKey = 'spring-rest' | 'mountain-spring' | 'strange-rain' | 'four-seasons' | 'snow-brush';
+interface Props {
+  visualKey: VisualKey;
+  title: string;
+  index?: number;
+}
+
+const { visualKey, title, index = 0 } = Astro.props;
+const palettes: Record<VisualKey, { accent: string; glow: string; ink: string }> = {
+  'spring-rest': { accent: '#a96f72', glow: '#d9bc8d', ink: '#55736a' },
+  'mountain-spring': { accent: '#7d9b62', glow: '#d7bd6d', ink: '#47645a' },
+  'strange-rain': { accent: '#b27777', glow: '#dba95b', ink: '#426875' },
+  'four-seasons': { accent: '#8a647d', glow: '#d19b55', ink: '#526a73' },
+  'snow-brush': { accent: '#a0574d', glow: '#c7d1cc', ink: '#4c5d5d' },
+};
+const palette = palettes[visualKey];
+const filterId = `mist-${visualKey}-${index}`;
+---
+
+<div
+  class:list={['ink-scene', `ink-scene--${visualKey}`]}
+  style={`--scene-accent:${palette.accent};--scene-glow:${palette.glow};--scene-ink:${palette.ink};`}
+  aria-hidden="true"
+>
+  <div class="ink-scene__sun"></div>
+  <div class="ink-scene__wash ink-scene__wash--one"></div>
+  <div class="ink-scene__wash ink-scene__wash--two"></div>
+  <svg class="ink-scene__drawing" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2.2"></feGaussianBlur>
+      </filter>
+      <linearGradient id={`fade-${filterId}`} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0"></stop>
+        <stop offset=".45" stop-color="currentColor" stop-opacity=".8"></stop>
+        <stop offset="1" stop-color="currentColor" stop-opacity=".15"></stop>
+      </linearGradient>
+    </defs>
+
+    {visualKey === 'spring-rest' && (
+      <g>
+        <path class="scene-line scene-line--soft" d="M-30 530 Q160 400 305 505 T610 472 T1030 515"></path>
+        <path class="scene-line" d="M35 577 Q210 456 355 544 T675 526 T980 548"></path>
+        <g class="scene-petals">
+          <circle cx="665" cy="320" r="7"></circle><circle cx="704" cy="290" r="4"></circle>
+          <circle cx="737" cy="344" r="9"></circle><circle cx="785" cy="306" r="5"></circle>
+          <circle cx="817" cy="367" r="6"></circle><circle cx="858" cy="321" r="4"></circle>
+        </g>
+        <path class="scene-flight" d="M580 255q18-20 36 0-18-8-36 0Zm45 20q14-16 28 0-14-6-28 0Z"></path>
+      </g>
+    )}
+
+    {visualKey === 'mountain-spring' && (
+      <g>
+        <path class="scene-line scene-line--soft" d="M-40 575 190 220 330 450 505 150 710 475 850 290 1050 570"></path>
+        <path class="scene-line" d="M-20 625 205 282 350 518 510 225 690 530 862 352 1035 618"></path>
+        <path class="scene-path" d="M520 720c-10-95 96-105 45-195-40-70 50-100 20-183"></path>
+        <g class="scene-stars">
+          <circle cx="690" cy="190" r="3"></circle><circle cx="744" cy="140" r="2"></circle>
+          <circle cx="805" cy="205" r="3"></circle><circle cx="860" cy="155" r="2"></circle>
+        </g>
+      </g>
+    )}
+
+    {visualKey === 'strange-rain' && (
+      <g>
+        <path class="scene-line scene-line--soft" d="M-30 560 Q175 350 360 510 T720 465 T1030 530"></path>
+        <path class="scene-line" d="M-20 610 Q195 425 380 555 T735 520 T1025 575"></path>
+        <g class="scene-rain">
+          <path d="M160 165l-65 120M245 120l-80 150M350 155l-72 133M460 104l-95 175M580 140l-84 156M705 95l-98 182"></path>
+        </g>
+        <path class="scene-rainbow" d="M565 408 Q735 190 905 397"></path>
+        <path class="scene-rainbow scene-rainbow--echo" d="M598 423 Q744 245 880 414"></path>
+      </g>
+    )}
+
+    {visualKey === 'four-seasons' && (
+      <g>
+        <path class="scene-line scene-line--soft" d="M-20 575 Q180 425 350 545 T660 500 T1020 560"></path>
+        <path class="scene-branch" d="M665 710c-5-205 65-270 23-420m8 120 92-105m-103 180-118-90"></path>
+        <path class="scene-lightning" d="m392 105-75 155h83l-105 185"></path>
+        <g class="scene-snow">
+          <circle cx="150" cy="185" r="5"></circle><circle cx="225" cy="240" r="3"></circle>
+          <circle cx="520" cy="150" r="4"></circle><circle cx="805" cy="175" r="5"></circle>
+          <circle cx="885" cy="260" r="3"></circle><circle cx="610" cy="295" r="3"></circle>
+        </g>
+      </g>
+    )}
+
+    {visualKey === 'snow-brush' && (
+      <g>
+        <path class="scene-brush" d="M85 595 C275 490 380 415 560 290 C690 200 780 185 950 108"></path>
+        <path class="scene-brush scene-brush--echo" d="M150 650 C340 565 455 475 615 375 C735 300 835 280 930 245"></path>
+        <g class="scene-snow scene-snow--dense">
+          <circle cx="165" cy="150" r="5"></circle><circle cx="245" cy="205" r="3"></circle>
+          <circle cx="350" cy="115" r="4"></circle><circle cx="468" cy="205" r="6"></circle>
+          <circle cx="565" cy="125" r="3"></circle><circle cx="700" cy="170" r="5"></circle>
+          <circle cx="820" cy="100" r="4"></circle><circle cx="890" cy="220" r="3"></circle>
+        </g>
+      </g>
+    )}
+  </svg>
+  <span class="ink-scene__title">{title}</span>
+</div>

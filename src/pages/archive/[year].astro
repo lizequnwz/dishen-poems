@@ -1,0 +1,65 @@
+---
+import Bilingual from '@/components/Bilingual.astro';
+import Icon from '@/components/Icon.astro';
+import ScriptText from '@/components/ScriptText.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatWrittenDate, getPoemVariants, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
+
+export async function getStaticPaths() {
+  const { publicPoems, years } = await loadSiteData();
+  return years.map((year) => ({
+    params: { year },
+    props: { year, poems: publicPoems.filter((poem) => poem.data.writtenDate.startsWith(year)) },
+  }));
+}
+
+interface Props {
+  year: string;
+  poems: PoemEntry[];
+}
+
+const { year, poems } = Astro.props;
+const { years } = await loadSiteData();
+const randomPaths = JSON.stringify(poems.map(poemPath));
+---
+
+<BaseLayout title={`${year} · 作品档案`}>
+  <header class="page-hero archive-hero archive-hero--year">
+    <div class="shell page-hero__inner">
+      <div>
+        <a class="back-link" href="/archive/">← <Bilingual zh="全部年份" en="All years" /></a>
+        <span class="eyebrow"><Bilingual zh="创作年份" en="Year written" /></span>
+        <h1>{year}</h1>
+      </div>
+      <div class="archive-hero__count">
+        <strong>{String(poems.length).padStart(2, '0')}</strong>
+        <span><Bilingual zh="首作品" en="poems" /></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="archive-toolbar shell">
+    <nav aria-label="按年份浏览 / Browse by year">
+      <a href="/archive/"><Bilingual zh="全部" en="All" /></a>
+      {years.map((item) => <a aria-current={item === year ? 'page' : undefined} href={`/archive/${item}/`}>{item}</a>)}
+    </nav>
+    <button class="outline-button" type="button" data-random-paths={randomPaths}>
+      <Icon name="random" /><Bilingual zh="随机漫游" en="Random poem" />
+    </button>
+  </div>
+
+  <section class="archive-list shell" aria-label={`${year} poems`}>
+    {poems.map((poem, index) => (
+      <a class="archive-row" href={poemPath(poem)} data-reveal>
+        <span class="archive-row__index">{String(index + 1).padStart(2, '0')}</span>
+        <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
+        <div class="archive-row__title">
+          <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
+          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+        </div>
+        <ul>{poem.data.descriptiveTags.slice(0, 3).map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}</ul>
+        <span class="archive-row__arrow"><Icon name="arrow" /></span>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

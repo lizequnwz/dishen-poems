@@ -1,0 +1,15 @@
+---
+import Bilingual from '@/components/Bilingual.astro';
+import Icon from '@/components/Icon.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="未见此境">
+  <section class="not-found shell">
+    <span class="not-found__number" aria-hidden="true">404</span>
+    <span class="eyebrow"><Bilingual zh="山径暂隐" en="The path fades here" /></span>
+    <h1><Bilingual zh="未见此境" en="This scene cannot be found" /></h1>
+    <p><Bilingual zh="这条路径尚无诗页，或它已迁往别处。" en="There is no poem at this path, or it has moved elsewhere." /></p>
+    <a class="button-link" href="/"><Bilingual zh="返回当前诗境" en="Return to the exhibition" /><Icon name="arrow" /></a>
+  </section>
+</BaseLayout>
