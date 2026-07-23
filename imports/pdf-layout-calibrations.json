@@ -1,4 +1,40 @@
 {
-  "version": 1,
-  "templates": {}
+  "version": 2,
+  "reviewedAt": "2026-07-22",
+  "reviewedBy": "site-owner",
+  "templates": {
+    "spread-964696f761": {
+      "status": "rejected",
+      "representative": { "pdfPage": 7, "region": "right", "title": "和尚祝全世界广众虎年吉祥！" },
+      "reason": "front_matter_before_formal_poetry_start"
+    },
+    "spread-895df3e0ab": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 24, "region": "right", "title": "那罗延窟观善境" }
+    },
+    "spread-ccfa425d52": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 25, "region": "left", "title": "王母洗脸盆" }
+    },
+    "spread-b4c9f9ead7": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 25, "region": "right", "title": "行脚东土" }
+    },
+    "spread-4bb95f21ab": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 27, "region": "right", "title": "少林寺访古" }
+    },
+    "spread-f4d759d177": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 28, "region": "left", "title": "行脚词" }
+    },
+    "spread-e6a283a8d6": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 35, "region": "left", "title": "海风山东！" }
+    },
+    "spread-07665638e6": {
+      "status": "calibrated",
+      "representative": { "pdfPage": 165, "region": "right", "title": "妙湛寺过斋" }
+    }
+  }
 }

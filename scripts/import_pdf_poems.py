@@ -19,7 +19,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
-RULES_VERSION = "pdf-coordinate-v1"
+RULES_VERSION = "pdf-coordinate-v2"
+MIN_PUBLIC_PDF_PAGE = 24
 DEFAULT_PDF = Path("poems/谛深大师诗集（简体）.pdf")
 DEFAULT_CALIBRATIONS = Path("imports/pdf-layout-calibrations.json")
 DEFAULT_REPORT = Path("tmp/pdf-import/report.json")
@@ -51,6 +52,8 @@ class Candidate:
     layout_template_status: str
     pdf_sha256: str
     content_fingerprint: str
+    region_sequence: int = 0
+    crop_bbox: list[float] = field(default_factory=list)
     extraction_rule_version: str = RULES_VERSION
     confidence: str = "low"
     candidate_type: str = "excluded"
@@ -65,6 +68,7 @@ class Candidate:
         return (
             self.candidate_type == "poetry"
             and self.written_date is not None
+            and self.pdf_page >= MIN_PUBLIC_PDF_PAGE
             and self.confidence == "high"
             and self.layout_template_status == "calibrated"
             and not self.failure_reasons
@@ -212,6 +216,14 @@ def load_calibrations(path: Path) -> dict[str, dict[str, Any]]:
     return dict(data.get("templates", {}))
 
 
+def resolve_page_range(page_count: int, page_from: int | None, page_to: int | None) -> tuple[int, int]:
+    first_page = page_from or 1
+    last_page = page_to or page_count
+    if first_page < 1 or last_page < first_page or last_page > page_count:
+        raise ValueError(f"invalid inclusive PDF page range {first_page}-{last_page}; document has {page_count} pages")
+    return first_page, last_page
+
+
 def extract_region_candidates(
     cropped_page: Any,
     pdf_page: int,
@@ -248,7 +260,8 @@ def extract_region_candidates(
             region_x0,
         )
         calibration = calibrations.get(template_id, {})
-        template_status = "calibrated" if calibration.get("status") == "calibrated" else "pending"
+        recorded_status = calibration.get("status")
+        template_status = recorded_status if recorded_status in {"calibrated", "rejected"} else "pending"
         candidate_type, failures = classify_poetry(title_line.text, body_texts)
 
         bbox = (
@@ -262,8 +275,12 @@ def extract_region_candidates(
         crop_agreement = normalize_text(crop_text) == normalize_text(coordinate_text)
         if not crop_agreement:
             failures.append("coordinate_crop_mismatch")
-        if template_status != "calibrated":
+        if template_status == "rejected":
+            failures.append("layout_template_rejected")
+        elif template_status != "calibrated":
             failures.append("layout_template_uncalibrated")
+        if pdf_page < MIN_PUBLIC_PDF_PAGE:
+            failures.append("before_public_poetry_start")
         if not written_date:
             failures.append("missing_or_ambiguous_gregorian_date")
         combined = f"{title_line.text}\n{' '.join(body_texts)}"
@@ -288,6 +305,8 @@ def extract_region_candidates(
                 layout_template_status=template_status,
                 pdf_sha256=pdf_sha256,
                 content_fingerprint=fingerprint,
+                region_sequence=len(candidates) + 1,
+                crop_bbox=[round(float(value), 2) for value in bbox],
                 confidence=confidence,
                 candidate_type=candidate_type,
                 failure_reasons=failures,
@@ -394,7 +413,12 @@ def candidate_markdown(candidate: Candidate, status: str, pdf_label: str) -> str
     )
 
 
-def scan_pdf(pdf_path: Path, calibrations_path: Path) -> tuple[str, list[Candidate]]:
+def scan_pdf(
+    pdf_path: Path,
+    calibrations_path: Path,
+    page_from: int | None = None,
+    page_to: int | None = None,
+) -> tuple[str, list[Candidate], tuple[int, int]]:
     try:
         import pdfplumber
     except ImportError as error:
@@ -403,7 +427,12 @@ def scan_pdf(pdf_path: Path, calibrations_path: Path) -> tuple[str, list[Candida
     calibrations = load_calibrations(calibrations_path)
     candidates: list[Candidate] = []
     with pdfplumber.open(pdf_path) as document:
-        for page_number, page in enumerate(document.pages, start=1):
+        try:
+            first_page, last_page = resolve_page_range(len(document.pages), page_from, page_to)
+        except ValueError as error:
+            raise RuntimeError(str(error)) from error
+        for page_number in range(first_page, last_page + 1):
+            page = document.pages[page_number - 1]
             midpoint = float(page.width) / 2
             regions = [
                 ("left", page.crop((0, 0, midpoint, float(page.height)))),
@@ -413,7 +442,7 @@ def scan_pdf(pdf_path: Path, calibrations_path: Path) -> tuple[str, list[Candida
                 candidates.extend(
                     extract_region_candidates(region_page, page_number, region_name, pdf_hash, calibrations)
                 )
-    return pdf_hash, candidates
+    return pdf_hash, candidates, (first_page, last_page)
 
 
 def deduplicate(candidates: list[Candidate], poems_dir: Path) -> set[str]:
@@ -442,6 +471,7 @@ def write_report(
     candidates: list[Candidate],
     applied: list[str],
     apply_mode: bool,
+    page_range: tuple[int, int],
 ) -> None:
     templates: dict[str, dict[str, Any]] = {}
     for candidate in candidates:
@@ -463,11 +493,13 @@ def write_report(
         "mode": "apply" if apply_mode else "dry-run",
         "pdf": str(pdf_path),
         "pdfSha256": pdf_hash,
+        "pageRange": {"from": page_range[0], "to": page_range[1], "inclusive": True},
         "summary": {
             "candidates": len(candidates),
             "poetry": sum(candidate.candidate_type == "poetry" for candidate in candidates),
             "highConfidence": sum(candidate.confidence == "high" for candidate in candidates),
-            "pendingCalibration": sum(candidate.layout_template_status != "calibrated" for candidate in candidates),
+            "pendingCalibration": sum(candidate.layout_template_status == "pending" for candidate in candidates),
+            "rejectedLayoutCandidates": sum(candidate.layout_template_status == "rejected" for candidate in candidates),
             "applied": len(applied),
         },
         "templates": templates,
@@ -484,6 +516,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--calibrations", type=Path, default=DEFAULT_CALIBRATIONS)
     parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--poems-dir", type=Path, default=Path("poems"))
+    parser.add_argument("--page-from", type=int, help="First physical PDF page to scan, inclusive.")
+    parser.add_argument("--page-to", type=int, help="Last physical PDF page to scan, inclusive.")
     parser.add_argument("--apply", action="store_true", help="Create new Markdown files; never overwrite existing files.")
     parser.add_argument(
         "--publish-year",
@@ -494,7 +528,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.pdf.is_file():
         parser.error(f"PDF not found: {args.pdf}")
-    pdf_hash, candidates = scan_pdf(args.pdf, args.calibrations)
+    pdf_hash, candidates, page_range = scan_pdf(args.pdf, args.calibrations, args.page_from, args.page_to)
     existing_slugs = deduplicate(candidates, args.poems_dir)
     applied: list[str] = []
 
@@ -527,13 +561,14 @@ def main(argv: list[str] | None = None) -> int:
             output.write_text(candidate_markdown(candidate, "verified", args.pdf.name), encoding="utf-8")
             applied.append(str(output))
 
-    write_report(args.report, args.pdf, pdf_hash, candidates, applied, args.apply)
+    write_report(args.report, args.pdf, pdf_hash, candidates, applied, args.apply, page_range)
     summary = {
         "mode": "apply" if args.apply else "dry-run",
         "report": str(args.report),
         "candidates": len(candidates),
         "poetry": sum(candidate.candidate_type == "poetry" for candidate in candidates),
         "highConfidence": sum(candidate.confidence == "high" for candidate in candidates),
+        "pageRange": {"from": page_range[0], "to": page_range[1]},
         "applied": len(applied),
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))

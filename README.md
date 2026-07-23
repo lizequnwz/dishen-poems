@@ -61,6 +61,15 @@ python3 scripts/render_pdf_calibration.py
 
 确认版式后重新 dry-run，检查标题、正文、日期、页码、左右区域、内容指纹、坐标／裁剪一致性与重复冲突。只有已校准版式的高置信诗歌才可成为 `verified`。显式写入命令如下，且不会覆盖现有文件：
 
+首批审核固定为物理 PDF 第 25–50 页；下列命令只生成报告、逐首裁图和 Markdown 审核清单，不修改 `poems/`：
+
+```sh
+python3 scripts/import_pdf_poems.py --page-from 25 --page-to 50 --report tmp/pdf-import/review-25-50.json
+python3 scripts/render_pdf_review.py --report tmp/pdf-import/review-25-50.json --output tmp/pdf-import/review-25-50
+```
+
+审核入口为 `tmp/pdf-import/review-25-50/REVIEW.md`，机器可读清单为同目录的 `review.json`。第 24 页是正式诗歌的全局起点；第 7 页版式已明确拒绝，任何第 24 页之前的候选都不能公开。第 25–50 页审核完成前不要运行 `--apply`。
+
 ```sh
 python3 scripts/import_pdf_poems.py --apply --publish-year latest
 ```

@@ -1,7 +1,7 @@
 # Three-Layer Audio and Ducking Design
 
 Date: 2026-07-22
-Status: approved design, awaiting written-spec review
+Status: implemented in `ba7a236`
 
 ## Goal
 

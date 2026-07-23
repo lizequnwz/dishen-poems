@@ -2,7 +2,7 @@
 
 ## Current objective
 
-Continue the staged poetry-site upgrade without overwriting unrelated work. Finish the approved three-layer audio work, then prepare a bounded PDF review batch. The future PDF review dashboard is recorded here but intentionally deferred.
+Continue the bounded PDF review without overwriting unrelated work. The three-layer audio work is complete in commit `ba7a236`. The future PDF review dashboard is recorded here but intentionally deferred.
 
 ## Source of truth
 
@@ -24,18 +24,17 @@ Continue the staged poetry-site upgrade without overwriting unrelated work. Fini
 
 ## Verified batch facts
 
-- Pages 25–50 currently yield 65 candidates: 64 classified as poetry and all 65 with a parsed full date. The one non-poetry candidate needs explicit review.
+- Pages 25–50 yield 65 candidates: 64 classified as poetry, 62 high confidence, and all 65 with a parsed full date.
+- “弟子求对联” on page 25 is explicitly excluded as a couplet. “出门儿” and “赠众生” remain medium confidence because small-print annotations make coordinate and crop text differ.
 - The range contains six layout templates: `spread-4bb95f21ab`, `spread-895df3e0ab`, `spread-b4c9f9ead7`, `spread-ccfa425d52`, `spread-e6a283a8d6`, and `spread-f4d759d177`.
 - Many regions yield two poems; several pages yield four candidates. The range spans 2005–2006.
-- The full initial scan yielded 244 candidates, including 240 poetry candidates.
+- The generated local review bundle is `tmp/pdf-import/review-25-50/REVIEW.md`, with machine-readable data in `review.json` and 65 images under `crops/`.
 
 ## Remaining work
 
-1. Implement the approved three-layer audio design. The seven newly named sources may be approved after technical checks; the older seven files remain candidates.
-2. Add explicit inclusive PDF page bounds, enforce the global page-24 publication floor, and record page 7's template as rejected.
-3. Mark the other seven reviewed templates calibrated, while exercising only pages 25–50 in the first batch.
-4. Generate a deterministic review report and per-candidate crops containing page, region, within-region order, printed page, title, body, date, confidence, failure reasons, fingerprint, and crop reference.
-5. Review all 65 candidates before generating Markdown. Resolve the non-poetry item and any split or merged poems, then publish eligible poems year by year.
+1. Review all 65 candidates in `tmp/pdf-import/review-25-50/REVIEW.md` before generating Markdown. Pay special attention to the two medium-confidence annotation cases.
+2. Record corrections without weakening the global page floor, layout calibration, confidence, duplicate, or overwrite gates.
+3. After explicit batch approval, generate eligible Markdown with `--apply` and continue public rollout year by year.
 
 ## Deferred development-only review desk
 
@@ -59,4 +58,4 @@ Design and build `/preview/pdf/` in a later iteration. It should display each PD
 
 ## Repository hygiene
 
-Candidate MP3 files under `audio/candidates/` are local review artifacts and are ignored by Git. Track their metadata and reproducible source information, not the binaries. Approved production MP3 files belong under the public audio directory with complete checksums and attribution.
+Candidate MP3 files under `audio/candidates/` are local review artifacts and are ignored by Git. Seven approved production MP3 files are tracked under `public/audio/` with checksums and attribution; the older seven candidates remain unapproved.

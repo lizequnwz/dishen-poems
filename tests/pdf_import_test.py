@@ -48,6 +48,39 @@ class PdfImportRulesTest(unittest.TestCase):
         self.assertFalse(candidate.can_publish)
         self.assertEqual(candidate.content_status, "ingested")
 
+    def test_rejected_or_pre_corpus_layout_cannot_publish(self):
+        candidate = MODULE.Candidate(
+            title="天山",
+            body="天山之水天上流，\n四季如是梦中求。",
+            written_date="2006-01-11",
+            pdf_page=7,
+            region="right",
+            printed_page=None,
+            printed_page_raw=None,
+            layout_template="spread-rejected",
+            layout_template_status="rejected",
+            pdf_sha256="a" * 64,
+            content_fingerprint="b" * 64,
+            confidence="high",
+            candidate_type="poetry",
+        )
+        self.assertFalse(candidate.can_publish)
+        candidate.layout_template_status = "calibrated"
+        self.assertFalse(candidate.can_publish)
+
+    def test_page_range_is_inclusive_and_validated(self):
+        self.assertEqual(MODULE.resolve_page_range(458, 25, 50), (25, 50))
+        self.assertEqual(MODULE.resolve_page_range(458, None, None), (1, 458))
+        with self.assertRaises(ValueError):
+            MODULE.resolve_page_range(458, 50, 25)
+        with self.assertRaises(ValueError):
+            MODULE.resolve_page_range(458, 1, 459)
+
+    def test_owner_layout_decisions_are_recorded(self):
+        registry = MODULE.load_calibrations(Path(__file__).parents[1] / "imports" / "pdf-layout-calibrations.json")
+        self.assertEqual(registry["spread-964696f761"]["status"], "rejected")
+        self.assertEqual(sum(item["status"] == "calibrated" for item in registry.values()), 7)
+
 
 if __name__ == "__main__":
     unittest.main()
