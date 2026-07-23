@@ -1,0 +1,13 @@
+{
+  "music": {
+    "id": "guqin-main",
+    "assetIds": ["guqin-liu-shui", "guqin-pei-lan", "guqin-pingsha-luoyan"],
+    "repeat": "all"
+  },
+  "ambient": [
+    { "id": "rain", "assetId": "ambient-rain-window" },
+    { "id": "stream", "assetId": "ambient-swale" },
+    { "id": "forest", "assetId": "ambient-forest" },
+    { "id": "birds", "assetId": "ambient-garden-birds" }
+  ]
+}

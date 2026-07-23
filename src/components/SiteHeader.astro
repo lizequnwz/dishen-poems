@@ -6,7 +6,7 @@ import ScriptSwitcher from './ScriptSwitcher.astro';
 
 const path = Astro.url.pathname;
 const links = [
-  { href: '/', zh: '当前诗境', en: 'Exhibition', active: path === '/' },
+  { href: '/', zh: '近日诗卷', en: 'Latest', active: path === '/' },
   { href: '/archive/', zh: '作品档案', en: 'Archive', active: path.startsWith('/archive') },
   { href: '/about/', zh: '关于谛深', en: 'About', active: path.startsWith('/about') },
 ];

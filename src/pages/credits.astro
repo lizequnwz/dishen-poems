@@ -1,6 +1,7 @@
 ---
 import Bilingual from '@/components/Bilingual.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { approvedAudioAssets } from '@/lib/audio-data';
 ---
 
 <BaseLayout title="素材与署名" description="谛深禅诗网站所用图片、字体与开源软件的来源和许可信息。">
@@ -34,6 +35,17 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <h3><Bilingual zh="开源软件" en="Open-source software" /></h3>
         <p>Astro · MIT License.<br />OpenCC / opencc-js · Apache-2.0 / MIT.</p>
       </article>
+      {approvedAudioAssets.map((asset, index) => (
+        <article>
+          <span>{String(index + 4).padStart(2, '0')}</span>
+          <h3><Bilingual zh={asset.title.zh} en={asset.title.en} /></h3>
+          <p>
+            {asset.creator} · <a href={asset.sourcePage} target="_blank" rel="external noopener">{asset.originalFile}</a><br />
+            <a href={asset.license.url} target="_blank" rel="license noopener">{asset.license.name}</a> · {asset.retrievedAt}<br />
+            MP3 SHA-256: <code>{asset.mp3.sha256}</code>
+          </p>
+        </article>
+      ))}
     </div>
   </section>
 </BaseLayout>

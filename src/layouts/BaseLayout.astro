@@ -2,6 +2,9 @@
 import SiteFooter from '@/components/SiteFooter.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import Bilingual from '@/components/Bilingual.astro';
+import AudioPlayer from '@/components/AudioPlayer.astro';
+import { approvedPlaybackCatalog } from '@/lib/audio-data';
+import { ClientRouter } from 'astro:transitions';
 import '@/styles/global.css';
 import sansLatinUrl from '@fontsource-variable/noto-sans-sc/files/noto-sans-sc-latin-wght-normal.woff2?url';
 import serifLatinUrl from '@fontsource-variable/noto-serif-sc/files/noto-serif-sc-latin-wght-normal.woff2?url';
@@ -18,6 +21,7 @@ const {
   hideChrome = false,
 } = Astro.props;
 const pageTitle = title === '谛深 · 禅诗' ? title : `${title} · 谛深禅诗`;
+const audioCatalog = approvedPlaybackCatalog();
 const localFontFaces = `
   @font-face {
     font-family: 'Noto Serif SC Variable';
@@ -47,6 +51,7 @@ const localFontFaces = `
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
+    <ClientRouter fallback="swap" />
     <style is:inline set:html={localFontFaces}></style>
     <script is:inline>
       (() => {
@@ -71,6 +76,7 @@ const localFontFaces = `
       <slot />
     </main>
     {!hideChrome && <SiteFooter />}
+    {!hideChrome && audioCatalog.musicIds.length > 0 && <AudioPlayer catalog={audioCatalog} />}
     <div class="sr-only" aria-live="polite" data-share-status></div>
     <script src="../scripts/site.ts"></script>
   </body>

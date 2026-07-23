@@ -1,0 +1,88 @@
+---
+import Bilingual from './Bilingual.astro';
+import Icon from './Icon.astro';
+import type { AmbientPreset, AudioAsset } from '@/lib/audio-data';
+
+interface Catalog {
+  assets: AudioAsset[];
+  musicIds: string[];
+  ambient: AmbientPreset[];
+}
+
+interface Props {
+  catalog: Catalog;
+  preview?: boolean;
+}
+
+const { catalog, preview = false } = Astro.props;
+const byId = new Map(catalog.assets.map((asset) => [asset.id, asset]));
+const firstMusic = catalog.musicIds.map((id) => byId.get(id)).find(Boolean);
+const shouldRender = Boolean(firstMusic);
+---
+
+{shouldRender && (
+  <aside
+    class:list={['audio-player', { 'audio-player--preview': preview }]}
+    data-audio-player
+    data-audio-catalog={JSON.stringify(catalog)}
+    data-preview={String(preview)}
+    transition:persist={preview ? 'audio-preview-player' : 'global-audio-player'}
+    aria-label={preview ? '候选音频试听 / Candidate audio review' : '全站声景播放器 / Site audio player'}
+  >
+    <header class="audio-player__header">
+      <span class="audio-player__mark"><Icon name="music" /></span>
+      <div>
+        <strong><Bilingual zh={preview ? '候选声景试听' : '诗境声景'} en={preview ? 'Candidate listening' : 'Poetry soundscape'} /></strong>
+        <span data-audio-track-label></span>
+      </div>
+      {preview && <span class="audio-player__candidate"><Bilingual zh="待批准" en="Unapproved" /></span>}
+    </header>
+
+    <div class="audio-player__controls">
+      <div class="audio-player__transport" role="group" aria-label="古琴播放 / Guqin playback">
+        <button type="button" data-audio-previous aria-label="上一首 / Previous track"><Icon name="previous" /></button>
+        <button type="button" class="audio-player__play" data-audio-toggle aria-label="播放古琴 / Play guqin" aria-pressed="false">
+          <span data-audio-play-icon><Icon name="play" /></span>
+          <span data-audio-pause-icon hidden><Icon name="pause" /></span>
+        </button>
+        <button type="button" data-audio-next aria-label="下一首 / Next track"><Icon name="next" /></button>
+      </div>
+
+      <div class="audio-player__volume">
+        <button type="button" data-audio-main-mute aria-label="古琴静音 / Mute guqin" aria-pressed="false"><Icon name="volume" /></button>
+        <label>
+          <span class="sr-only"><Bilingual zh="古琴音量" en="Guqin volume" /></span>
+          <input type="range" min="0" max="1" step="0.05" data-audio-main-volume />
+        </label>
+      </div>
+
+      <div class="audio-player__ambient">
+        <label>
+          <span><Bilingual zh="环境" en="Ambient" /></span>
+          <select data-audio-ambient>
+            <option value=""><Bilingual zh="关闭" en="Off" /></option>
+            {catalog.ambient.map((preset) => {
+              const asset = byId.get(preset.assetId)!;
+              return <option value={preset.id}><Bilingual zh={asset.title.zh} en={asset.title.en} /></option>;
+            })}
+          </select>
+        </label>
+        <button type="button" data-audio-ambient-mute aria-label="环境声静音 / Mute ambient sound" aria-pressed="false"><Icon name="volume" /></button>
+        <label class="audio-player__ambient-volume">
+          <span class="sr-only"><Bilingual zh="环境声音量" en="Ambient volume" /></span>
+          <input type="range" min="0" max="1" step="0.05" data-audio-ambient-volume />
+        </label>
+      </div>
+    </div>
+
+    <p class="audio-player__status" aria-live="polite" data-audio-status></p>
+    <audio preload="none" data-audio-main></audio>
+    <audio preload="none" loop data-audio-ambient-layer></audio>
+    <noscript>
+      <p><Bilingual zh="JavaScript 不可用；可使用下方原生控件播放第一首古琴。" en="JavaScript is unavailable; use the native control for the first guqin track." /></p>
+      <audio controls preload="none" src={firstMusic?.mp3.path}></audio>
+    </noscript>
+  </aside>
+)}
+
+<script src="../scripts/audio.ts"></script>

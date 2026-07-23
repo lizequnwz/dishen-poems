@@ -1,0 +1,93 @@
+[
+  {
+    "id": "guqin-liu-shui",
+    "role": "music",
+    "title": { "zh": "流水", "en": "Liu Shui (Flowing Water)" },
+    "creator": "Charlie Huang（古琴演奏）",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Liu_Shui.ogg",
+    "originalFile": "Liu Shui.ogg",
+    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/liu-shui.mp3", "localFile": "audio/candidates/liu-shui.mp3", "bytes": 7869519, "sha256": "ce822b055dea58207cb19c2f64eb2d8a3d48bef829d02f78f13b9bf48c860856", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
+  },
+  {
+    "id": "guqin-pei-lan",
+    "role": "music",
+    "title": { "zh": "佩兰", "en": "Pei Lan (Admiring the Orchid)" },
+    "creator": "Charlie Huang（古琴演奏）",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pei_Lan.ogg",
+    "originalFile": "Pei Lan.ogg",
+    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/pei-lan.mp3", "localFile": "audio/candidates/pei-lan.mp3", "bytes": 7652930, "sha256": "f520bfde91e11ad44bb7de53626c9892833764608b4c86e0170f54d0377a9bfc", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
+  },
+  {
+    "id": "guqin-pingsha-luoyan",
+    "role": "music",
+    "title": { "zh": "平沙落雁", "en": "Pingsha Luoyan (Wild Geese Descending)" },
+    "creator": "Charlie Huang（古琴演奏）",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pingsha_Luoyan.ogg",
+    "originalFile": "Pingsha Luoyan.ogg",
+    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/pingsha-luoyan.mp3", "localFile": "audio/candidates/pingsha-luoyan.mp3", "bytes": 6679880, "sha256": "7a0e90720355ccbdf80008cbfd25c83b93b804479a0d920eccb019e79b527cd2", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
+  },
+  {
+    "id": "ambient-rain-window",
+    "role": "ambient",
+    "title": { "zh": "细雨", "en": "Rain against the Window" },
+    "creator": "cori",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg",
+    "originalFile": "Rain against the window.ogg",
+    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/rain-window.mp3", "localFile": "audio/candidates/rain-window.mp3", "bytes": 1285217, "sha256": "ccabe05cccbea7a6253a4b1b469a048beec4b125cd2e2737f0086e89ed500be3", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
+  },
+  {
+    "id": "ambient-swale",
+    "role": "ambient",
+    "title": { "zh": "溪水", "en": "Swale" },
+    "creator": "Ksd5",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Swale.ogg",
+    "originalFile": "Swale.ogg",
+    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/swale.mp3", "localFile": "audio/candidates/swale.mp3", "bytes": 634633, "sha256": "1c7bfaae3f54cd9824fc11c0d11351a0905adcc9e35bd105a9e1d237cbfc4080", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
+  },
+  {
+    "id": "ambient-forest",
+    "role": "ambient",
+    "title": { "zh": "山林", "en": "Forest ambience" },
+    "creator": "nille",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:20090610_0_ambience.ogg",
+    "originalFile": "20090610 0 ambience.ogg",
+    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/forest-ambience.mp3", "localFile": "audio/candidates/forest-ambience.mp3", "bytes": 3428007, "sha256": "f438752983df422c2fecd9efd0c590b1d7bd93c9c3573465e32e39c9ad2cfb20", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "known-noisy", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
+  },
+  {
+    "id": "ambient-garden-birds",
+    "role": "ambient",
+    "title": { "zh": "鸟鸣", "en": "Birds chirping in a garden" },
+    "creator": "Akum20",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Birds_chirping_in_a_garden.ogg",
+    "originalFile": "Birds chirping in a garden.ogg",
+    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+    "retrievedAt": "2026-07-22",
+    "mp3": { "path": "/preview/audio/assets/garden-birds.mp3", "localFile": "audio/candidates/garden-birds.mp3", "bytes": 3869520, "sha256": "6fa43f550a291f1f6cfd8202890b298dd4aedfeeceb13d4638391c6116824299", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
+    "approvalStatus": "candidate",
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
+  }
+]

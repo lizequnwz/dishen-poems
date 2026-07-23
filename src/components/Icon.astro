@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: 'sun' | 'language' | 'arrow' | 'share' | 'archive' | 'external' | 'random';
+  name: 'sun' | 'language' | 'arrow' | 'share' | 'archive' | 'external' | 'random' | 'music' | 'play' | 'pause' | 'previous' | 'next' | 'volume';
   size?: number;
 }
 
@@ -38,6 +38,17 @@ const { name, size = 18 } = Astro.props;
   {name === 'random' && (
     <>
       <path d="M4 7h3.5c4 0 5 10 9 10H20M17 14l3 3-3 3M4 17h3.5c1.2 0 2.2-.9 3.1-2.2M14.1 8.6c.8-1 1.6-1.6 2.4-1.6H20M17 4l3 3-3 3"></path>
+    </>
+  )}
+  {name === 'music' && <path d="M9 18V6l10-2v12M9 10l10-2M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>}
+  {name === 'play' && <path d="m8 5 11 7-11 7V5Z"></path>}
+  {name === 'pause' && <path d="M8 5v14M16 5v14"></path>}
+  {name === 'previous' && <path d="M6 5v14M18 6l-9 6 9 6V6Z"></path>}
+  {name === 'next' && <path d="M18 5v14M6 6l9 6-9 6V6Z"></path>}
+  {name === 'volume' && (
+    <>
+      <path d="M4 10v4h4l5 4V6l-5 4H4Z"></path>
+      <path d="M16 9c1 .8 1.5 1.8 1.5 3S17 14.2 16 15M18.5 6.5A7.5 7.5 0 0 1 21 12a7.5 7.5 0 0 1-2.5 5.5"></path>
     </>
   )}
 </svg>

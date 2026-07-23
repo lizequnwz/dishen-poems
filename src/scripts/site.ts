@@ -1,4 +1,5 @@
 import { normalizeDisplayScript, type DisplayScript, type UiLanguage } from '@/lib/preferences';
+import { navigate } from 'astro:transitions/client';
 
 const storage = {
   get(key: string) {
@@ -24,6 +25,7 @@ function applyLanguage(language: UiLanguage) {
   document.querySelectorAll<HTMLElement>('[data-language-toggle]').forEach((button) => {
     button.setAttribute('aria-label', language === 'zh' ? 'Switch interface to English' : '将界面切换为中文');
   });
+  document.dispatchEvent(new CustomEvent('dishen:language-change'));
 }
 
 function applyScript(mode: DisplayScript) {
@@ -107,7 +109,7 @@ function setupRandomJourney() {
       const candidates = paths.filter((path) => path !== window.location.pathname);
       const pool = candidates.length ? candidates : paths;
       const path = pool[Math.floor(Math.random() * pool.length)];
-      window.location.assign(path);
+      void navigate(path);
     });
   });
 }
@@ -141,8 +143,4 @@ function setup() {
   setupReveals();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setup, { once: true });
-} else {
-  setup();
-}
+document.addEventListener('astro:page-load', setup);
