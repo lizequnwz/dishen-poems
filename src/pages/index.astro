@@ -4,10 +4,9 @@ import Icon from '@/components/Icon.astro';
 import PoemPanel from '@/components/PoemPanel.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { formatWrittenDate, getPoemVariants, loadSiteData, poemPath } from '@/lib/site-data';
+import { loadSiteData, poemPath } from '@/lib/site-data';
 
-const { currentExhibition, currentPoems, publicPoems } = await loadSiteData();
-const recent = publicPoems.slice(0, 3);
+const { latestPoems, publicPoems } = await loadSiteData();
 const randomPaths = JSON.stringify(publicPoems.map(poemPath));
 ---
 
@@ -24,7 +23,7 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
     </div>
     <div class="shell home-hero__inner">
       <div class="home-hero__intro" data-reveal>
-        <span class="eyebrow"><Bilingual zh="谛深禅诗 · 首展" en="Dishen Zen Poetry · First exhibition" /></span>
+        <span class="eyebrow"><Bilingual zh="谛深禅诗 · 近日诗卷" en="Dishen Zen Poetry · Latest Five" /></span>
         <h1>
           <span><Bilingual zh="静候" en="A scroll" /></span>
           <span><Bilingual zh="一卷" en="of mountain" /></span>
@@ -32,8 +31,8 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
         </h1>
         <p>
           <Bilingual
-            zh="本卷收录五首诗作，自春憩至风雪，依次展开。"
-            en="This scroll presents five poems, unfolding from spring stillness to wind and snow."
+            zh="每逢新作入藏，这里便呈上创作日期最近的五首。"
+            en="Whenever a new poem enters the archive, this scroll renews itself with the latest five."
           />
         </p>
         <div class="home-hero__actions">
@@ -45,7 +44,7 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
       </div>
       <div class="home-hero__seal" aria-hidden="true">
         <span><ScriptText text="诗" /></span><span><ScriptText text="境" /></span>
-        <small>{currentExhibition.data.id === 'inaugural-five' ? '壹' : '展'}</small>
+        <small>新</small>
       </div>
     </div>
     <a class="scroll-cue" href="#poem-1">
@@ -56,15 +55,15 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
 
   <section class="exhibition-intro shell">
     <div>
-      <span class="eyebrow"><Bilingual zh="当前诗境" en="Current exhibition" /></span>
-      <h2><ScriptText text={currentExhibition.data.title.zh} /></h2>
+      <span class="eyebrow"><Bilingual zh="按创作日期" en="By written date" /></span>
+      <h2><Bilingual zh="近日诗卷" en="Latest Five" /></h2>
     </div>
-    <p><Bilingual zh="入静 · 舒展 · 生奇 · 骤变 · 化境" en="Stillness · Opening · Wonder · Turning · Transformation" /></p>
+    <p><Bilingual zh="由新至旧 · 自动更新" en="Newest first · Always current" /></p>
   </section>
 
   <div class="poem-scroll">
-    {currentPoems.map((poem, index) => (
-      <PoemPanel poem={poem} index={index} total={currentPoems.length} />
+    {latestPoems.map((poem, index) => (
+      <PoemPanel poem={poem} index={index} total={latestPoems.length} />
     ))}
   </div>
 
@@ -94,27 +93,6 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
           <p><Bilingual zh="了解谛深大师生平与法号由来。" en="Learn about Master Dishen's life and Dharma name." /></p>
         </a>
       </div>
-    </div>
-  </section>
-
-  <section class="recent-work shell">
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow"><Bilingual zh="按创作日期" en="By written date" /></span>
-        <h2><Bilingual zh="近日新作" en="Recent poems" /></h2>
-      </div>
-      <a class="text-link" href="/archive/"><Bilingual zh="查看全部" en="View all" /><Icon name="arrow" /></a>
-    </div>
-    <div class="recent-grid">
-      {recent.map((poem, index) => (
-        <a class="recent-card" href={poemPath(poem)}>
-          <span class="recent-card__number">{String(index + 1).padStart(2, '0')}</span>
-          <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
-          <h3><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h3>
-          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
-          <span class="recent-card__arrow"><Icon name="arrow" /></span>
-        </a>
-      ))}
     </div>
   </section>
 </BaseLayout>

@@ -1,6 +1,10 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { validateSiteRecords } from './content-rules';
 import { deriveTextVariants, type TextVariant } from './script-conversion';
+import { resolveVisualProfile } from './visual-profile';
+import { comparePoemsNewestFirst } from './poem-ordering';
+
+export { comparePoemsNewestFirst } from './poem-ordering';
 
 export type PoemEntry = CollectionEntry<'poems'>;
 export type ExhibitionEntry = CollectionEntry<'exhibitions'>;
@@ -14,6 +18,16 @@ export function getPoemVariants(poem: PoemEntry): Record<TextVariant, string> {
 
 export function poemPath(poem: PoemEntry) {
   return `/poems/${poem.data.slug}/`;
+}
+
+export function getResolvedVisualProfile(poem: PoemEntry) {
+  return resolveVisualProfile({
+    id: poem.data.id,
+    writtenDate: poem.data.writtenDate,
+    title: poem.data.title,
+    body: normalizeBody(poem.body),
+    profile: poem.data.visualProfile,
+  });
 }
 
 export function formatWrittenDate(date: string, locale: 'zh' | 'en' = 'zh') {
@@ -34,7 +48,12 @@ export async function loadSiteData() {
   ]);
 
   validateSiteRecords(
-    poems.map((poem) => ({ id: poem.data.id, slug: poem.data.slug, status: poem.data.status })),
+    poems.map((poem) => ({
+      id: poem.data.id,
+      slug: poem.data.slug,
+      status: poem.data.status,
+      source: poem.data.source,
+    })),
     exhibitions.map((exhibition) => ({
       id: exhibition.data.id,
       status: exhibition.data.status,
@@ -47,7 +66,8 @@ export async function loadSiteData() {
   const currentPoems = currentExhibition.data.poemIds.map((id) => poemById.get(id)!);
   const publicPoems = poems
     .filter((poem) => poem.data.status !== 'ingested')
-    .sort((a, b) => b.data.writtenDate.localeCompare(a.data.writtenDate));
+    .sort(comparePoemsNewestFirst);
+  const latestPoems = publicPoems.slice(0, 5);
   const years = [...new Set(publicPoems.map((poem) => poem.data.writtenDate.slice(0, 4)))];
 
   return {
@@ -55,6 +75,7 @@ export async function loadSiteData() {
     exhibitions,
     poemById,
     publicPoems,
+    latestPoems,
     currentExhibition,
     currentPoems,
     years,

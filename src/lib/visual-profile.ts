@@ -1,0 +1,124 @@
+export const visualPalettes = ['spring', 'jade', 'rain', 'storm', 'winter', 'moonlit', 'paper'] as const;
+export const visualMotifs = [
+  'mountain',
+  'water',
+  'mist',
+  'rain',
+  'snow',
+  'flora',
+  'moon',
+  'sun',
+  'wind',
+  'brush',
+  'lightning',
+] as const;
+export const visualCompositions = [
+  'open-left',
+  'open-right',
+  'vertical-ridge',
+  'split-field',
+  'diagonal-flow',
+] as const;
+export const visualLights = ['dawn', 'day', 'dusk', 'night'] as const;
+export const visualIntensities = ['quiet', 'balanced', 'dramatic'] as const;
+
+export type VisualPalette = (typeof visualPalettes)[number];
+export type VisualMotif = (typeof visualMotifs)[number];
+export type VisualComposition = (typeof visualCompositions)[number];
+export type VisualLight = (typeof visualLights)[number];
+export type VisualIntensity = (typeof visualIntensities)[number];
+
+export interface VisualProfile {
+  palette?: VisualPalette;
+  motifs?: VisualMotif[];
+  composition?: VisualComposition;
+  light?: VisualLight;
+  intensity?: VisualIntensity;
+}
+
+export interface VisualSignals {
+  motifs: VisualMotif[];
+  matchedTerms: string[];
+}
+
+export interface ResolvedVisualProfile {
+  palette: VisualPalette;
+  motifs: VisualMotif[];
+  composition: VisualComposition;
+  light: VisualLight;
+  intensity: VisualIntensity;
+  signals: VisualSignals;
+}
+
+const signalTerms: Array<[VisualMotif, string[]]> = [
+  ['mountain', ['山', '峰', '岭', '崖']],
+  ['water', ['水', '溪', '河', '海', '泉', '浪']],
+  ['mist', ['雾', '云', '霭', '烟']],
+  ['rain', ['雨', '泼', '淋']],
+  ['snow', ['雪', '霜', '冰']],
+  ['flora', ['花', '叶', '松', '桂', '草', '枝']],
+  ['moon', ['月', '夜']],
+  ['sun', ['日', '太阳', '斜阳', '光']],
+  ['wind', ['风']],
+  ['brush', ['笔', '墨', '写', '文章']],
+  ['lightning', ['雷', '电']],
+];
+
+const monthDefaults: Record<number, Pick<ResolvedVisualProfile, 'palette' | 'light' | 'intensity'>> = {
+  1: { palette: 'winter', light: 'dawn', intensity: 'quiet' },
+  2: { palette: 'winter', light: 'dawn', intensity: 'quiet' },
+  3: { palette: 'spring', light: 'dawn', intensity: 'balanced' },
+  4: { palette: 'spring', light: 'day', intensity: 'balanced' },
+  5: { palette: 'jade', light: 'day', intensity: 'balanced' },
+  6: { palette: 'rain', light: 'day', intensity: 'balanced' },
+  7: { palette: 'rain', light: 'dusk', intensity: 'dramatic' },
+  8: { palette: 'storm', light: 'dusk', intensity: 'dramatic' },
+  9: { palette: 'jade', light: 'dusk', intensity: 'balanced' },
+  10: { palette: 'paper', light: 'dusk', intensity: 'quiet' },
+  11: { palette: 'moonlit', light: 'night', intensity: 'quiet' },
+  12: { palette: 'winter', light: 'night', intensity: 'quiet' },
+};
+
+function stableNumber(value: string) {
+  let hash = 2166136261;
+  for (const character of value) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+export function detectVisualSignals(text: string): VisualSignals {
+  const motifs: VisualMotif[] = [];
+  const matchedTerms: string[] = [];
+  for (const [motif, terms] of signalTerms) {
+    const matches = terms.filter((term) => text.includes(term));
+    if (!matches.length) continue;
+    motifs.push(motif);
+    matchedTerms.push(...matches);
+  }
+  return { motifs, matchedTerms };
+}
+
+export function resolveVisualProfile(input: {
+  id: string;
+  writtenDate: string;
+  title: string;
+  body: string;
+  profile?: VisualProfile;
+}): ResolvedVisualProfile {
+  const month = Number(input.writtenDate.slice(5, 7));
+  const defaults = monthDefaults[month] ?? monthDefaults[10];
+  const signals = detectVisualSignals(`${input.title}\n${input.body}`);
+  const seed = stableNumber(input.id);
+  const inferredMotifs = signals.motifs.length ? signals.motifs.slice(0, 4) : ['mist', 'brush'] as VisualMotif[];
+
+  return {
+    palette: input.profile?.palette ?? defaults.palette,
+    motifs: input.profile?.motifs?.length ? [...input.profile.motifs] : inferredMotifs,
+    composition: input.profile?.composition ?? visualCompositions[seed % visualCompositions.length],
+    light: input.profile?.light ?? defaults.light,
+    intensity: input.profile?.intensity ?? defaults.intensity,
+    signals,
+  };
+}

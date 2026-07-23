@@ -5,7 +5,7 @@ import InkScene from '@/components/InkScene.astro';
 import PoemText from '@/components/PoemText.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { formatWrittenDate, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
+import { formatWrittenDate, getResolvedVisualProfile, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
 
 export async function getStaticPaths() {
   const { publicPoems } = await loadSiteData();
@@ -17,16 +17,18 @@ interface Props {
 }
 
 const { poem } = Astro.props;
-const { currentPoems, publicPoems } = await loadSiteData();
-const journey = currentPoems.some((entry) => entry.data.id === poem.data.id) ? currentPoems : publicPoems;
+const { publicPoems } = await loadSiteData();
+const journey = publicPoems;
 const index = journey.findIndex((entry) => entry.data.id === poem.data.id);
-const previous = journey[(index - 1 + journey.length) % journey.length];
-const next = journey[(index + 1) % journey.length];
+const previous = index > 0 ? journey[index - 1] : undefined;
+const next = index < journey.length - 1 ? journey[index + 1] : undefined;
+const visualProfile = getResolvedVisualProfile(poem);
+const compact = (poem.body?.length ?? 0) > 80;
 ---
 
 <BaseLayout title={poem.data.title} description={`${poem.data.title}，谛深作于 ${formatWrittenDate(poem.data.writtenDate)}。`}>
   <article class="poem-page">
-    <InkScene visualKey={poem.data.visualKey} title={poem.data.title} index={index} />
+    <InkScene profile={visualProfile} title={poem.data.title} index={index} />
     <div class="shell poem-page__inner">
       <div class="poem-page__index" aria-hidden="true">
         <span>{String(index + 1).padStart(2, '0')}</span>
@@ -38,7 +40,7 @@ const next = journey[(index + 1) % journey.length];
           <p class="eyebrow"><Bilingual zh="一诗一境" en="One poem · One world" /></p>
           <h1><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h1>
         </header>
-        <PoemText poem={poem} compact={poem.data.visualKey === 'mountain-spring'} />
+        <PoemText poem={poem} compact={compact} />
         <footer class="poem-page__meta">
           <div>
             <span><ScriptText text="谛深" /></span>
@@ -63,17 +65,21 @@ const next = journey[(index + 1) % journey.length];
   </article>
 
   <nav class="poem-navigation shell" aria-label="诗歌前后导航 / Adjacent poems">
-    <a href={poemPath(previous)}>
-      <span class="eyebrow"><Bilingual zh="上一境" en="Previous" /></span>
-      <strong><ScriptText text={previous.data.title} originalScript={previous.data.originalScript} /></strong>
-    </a>
+    {previous ? (
+      <a href={poemPath(previous)}>
+        <span class="eyebrow"><Bilingual zh="较新一首" en="Newer" /></span>
+        <strong><ScriptText text={previous.data.title} originalScript={previous.data.originalScript} /></strong>
+      </a>
+    ) : <span class="poem-navigation__boundary"><Bilingual zh="已是最新一首" en="Newest poem" /></span>}
     <a class="poem-navigation__archive" href="/archive/">
       <Icon name="archive" />
       <Bilingual zh="时间档案" en="Archive" />
     </a>
-    <a class="poem-navigation__next" href={poemPath(next)}>
-      <span class="eyebrow"><Bilingual zh="下一境" en="Next" /></span>
-      <strong><ScriptText text={next.data.title} originalScript={next.data.originalScript} /></strong>
-    </a>
+    {next ? (
+      <a class="poem-navigation__next" href={poemPath(next)}>
+        <span class="eyebrow"><Bilingual zh="较早一首" en="Older" /></span>
+        <strong><ScriptText text={next.data.title} originalScript={next.data.originalScript} /></strong>
+      </a>
+    ) : <span class="poem-navigation__boundary poem-navigation__boundary--next"><Bilingual zh="已是最早一首" en="Earliest poem" /></span>}
   </nav>
 </BaseLayout>
