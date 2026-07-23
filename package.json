@@ -9,7 +9,8 @@
     "sync": "ASTRO_TELEMETRY_DISABLED=1 astro sync",
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && vitest run && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "test:pdf": "python3 -m unittest tests/pdf_import_test.py",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && vitest run && python3 -m unittest tests/pdf_import_test.py && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
   },
   "dependencies": {
