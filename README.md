@@ -73,11 +73,11 @@ python3 scripts/import_pdf_poems.py --apply --publish-year latest
 
 开发环境中的草稿预览路径为 `/preview/exhibitions/<id>/`；草稿不会进入生产构建。
 
-## 候选音频与批准闸门
+## 三层声景与批准闸门
 
-候选清单位于 `src/data/audio-assets.json`，本地开发试听页为 `/preview/audio/candidates/`，生产构建既不会生成该路由，也不会复制 `audio/candidates/` 中的试听文件。三个古琴与四个环境声均从 Wikimedia Commons 的 MP3 转码下载，状态保持 `candidate`；只有用户试听确认噪声、响度、循环接缝和整体效果，将文件移入公开音频目录，并补齐 `approvedAt`、`approvedBy` 与 `review.listening: approved` 后，资源才会进入正式播放器和署名页。
+音频清单位于 `src/data/audio-assets.json`。早期三个古琴与四个环境声仍是本地 `candidate`，只可通过开发试听页 `/preview/audio/candidates/` 检查；生产构建不会生成该路由，也不会复制已被 Git 忽略的 `audio/candidates/`。两个完整古琴曲目和五个竹笛、颂钵、风铃点缀已经过用户直接批准与许可、解码、尺寸、响度和校验值检查，正式 MP3 位于 `public/audio/`，并自动进入署名页。
 
-正式播放器使用古琴顺序循环与四选一环境层，不自动播放、不提供时间轴，初始 `preload="none"`。ClientRouter 保留播放器节点；主题、语言、分享、随机漫游与揭示动画统一在 `astro:page-load` 初始化。页面进入后台或硬刷新后都保持暂停。
+正式播放器使用古琴顺序循环、四选一环境层和默认关闭的稀疏点缀层。点缀启用后首次等待 45–90 秒，之后间隔 120–240 秒；同一时间只播放一个点缀，并在开始时将古琴降低约 7 dB、环境声降低约 3 dB，结束后平滑恢复。播放器不自动播放、不提供时间轴，初始 `preload="none"`。ClientRouter 保留播放器节点；页面进入后台或硬刷新后都保持暂停。
 
 ## 设计与决策
 

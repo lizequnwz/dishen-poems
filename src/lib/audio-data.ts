@@ -3,7 +3,8 @@ import playlistRecord from '../data/audio-playlists.json';
 
 export interface AudioAsset {
   id: string;
-  role: 'music' | 'ambient';
+  role: 'music' | 'ambient' | 'accent';
+  family?: AccentPreset['id'];
   title: { zh: string; en: string };
   creator: string;
   sourcePage: string;
@@ -35,18 +36,30 @@ export interface AmbientPreset {
   assetId: string;
 }
 
+export interface AccentPreset {
+  id: 'flute' | 'bowl' | 'chimes';
+  title: { zh: string; en: string };
+  assetIds: string[];
+}
+
+export type AccentMode = 'off' | 'mixed' | AccentPreset['id'];
+
 export interface AudioPreference {
   mainVolume: number;
   ambientVolume: number;
+  accentVolume: number;
   mainMuted: boolean;
   ambientMuted: boolean;
+  accentMuted: boolean;
   trackId: string | null;
   ambientId: AmbientPreset['id'] | null;
+  accentMode: AccentMode;
 }
 
 export const audioAssets = assetRecords as AudioAsset[];
 export const musicPlaylist = playlistRecord.music as MusicPlaylist;
 export const ambientPresets = playlistRecord.ambient as AmbientPreset[];
+export const accentPresets = playlistRecord.accent as AccentPreset[];
 
 export function validateAudioCatalog(assets: AudioAsset[] = audioAssets) {
   const ids = new Set<string>();
@@ -70,12 +83,25 @@ export function validateAudioCatalog(assets: AudioAsset[] = audioAssets) {
         throw new Error(`[audio] Approved asset lacks a complete human approval record: ${asset.id}`);
       }
     }
+    if (asset.role === 'accent' && !asset.family) {
+      throw new Error(`[audio] Accent asset lacks a family: ${asset.id}`);
+    }
   }
   for (const id of musicPlaylist.assetIds) {
     if (!ids.has(id)) throw new Error(`[audio] Playlist references missing asset: ${id}`);
   }
   for (const preset of ambientPresets) {
     if (!ids.has(preset.assetId)) throw new Error(`[audio] Ambient preset references missing asset: ${preset.assetId}`);
+  }
+  for (const preset of accentPresets) {
+    if (preset.assetIds.length === 0) throw new Error(`[audio] Accent preset is empty: ${preset.id}`);
+    for (const id of preset.assetIds) {
+      const asset = assets.find((item) => item.id === id);
+      if (!asset) throw new Error(`[audio] Accent preset references missing asset: ${id}`);
+      if (asset.role !== 'accent' || asset.family !== preset.id) {
+        throw new Error(`[audio] Accent preset family mismatch: ${id}`);
+      }
+    }
   }
 }
 
@@ -90,6 +116,9 @@ export function approvedPlaybackCatalog() {
     assets: approvedAudioAssets,
     musicIds: musicPlaylist.assetIds.filter((id) => approvedIds.has(id)),
     ambient: ambientPresets.filter((preset) => approvedIds.has(preset.assetId)),
+    accent: accentPresets
+      .map((preset) => ({ ...preset, assetIds: preset.assetIds.filter((id) => approvedIds.has(id)) }))
+      .filter((preset) => preset.assetIds.length > 0),
   };
 }
 
@@ -99,5 +128,8 @@ export function candidatePlaybackCatalog() {
     assets: candidateAudioAssets,
     musicIds: musicPlaylist.assetIds.filter((id) => candidateIds.has(id)),
     ambient: ambientPresets.filter((preset) => candidateIds.has(preset.assetId)),
+    accent: accentPresets
+      .map((preset) => ({ ...preset, assetIds: preset.assetIds.filter((id) => candidateIds.has(id)) }))
+      .filter((preset) => preset.assetIds.length > 0),
   };
 }

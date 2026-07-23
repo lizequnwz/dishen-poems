@@ -1,7 +1,7 @@
 {
   "music": {
     "id": "guqin-main",
-    "assetIds": ["guqin-liu-shui", "guqin-pei-lan", "guqin-pingsha-luoyan"],
+    "assetIds": ["guqin-liu-shui", "guqin-pei-lan", "guqin-pingsha-luoyan", "guqin-zuiyu-changwan", "guqin-yangguan-sandie"],
     "repeat": "all"
   },
   "ambient": [
@@ -9,5 +9,22 @@
     { "id": "stream", "assetId": "ambient-swale" },
     { "id": "forest", "assetId": "ambient-forest" },
     { "id": "birds", "assetId": "ambient-garden-birds" }
+  ],
+  "accent": [
+    {
+      "id": "flute",
+      "title": { "zh": "竹笛", "en": "Bamboo flute" },
+      "assetIds": ["accent-dizi-sample"]
+    },
+    {
+      "id": "bowl",
+      "title": { "zh": "颂钵", "en": "Singing bowl" },
+      "assetIds": ["accent-singing-bowl-struck", "accent-singing-bowl-rubbed"]
+    },
+    {
+      "id": "chimes",
+      "title": { "zh": "风铃", "en": "Chimes" },
+      "assetIds": ["accent-windchimes-short", "accent-koshi-chimes"]
+    }
   ]
 }

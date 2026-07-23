@@ -42,6 +42,8 @@ import { approvedAudioAssets } from '@/lib/audio-data';
           <p>
             {asset.creator} · <a href={asset.sourcePage} target="_blank" rel="external noopener">{asset.originalFile}</a><br />
             <a href={asset.license.url} target="_blank" rel="license noopener">{asset.license.name}</a> · {asset.retrievedAt}<br />
+            <Bilingual zh="处理" en="Processing" />: {asset.mp3.transcode}<br />
+            <Bilingual zh="批准" en="Approval" />: {asset.approvedBy} · {asset.approvedAt}<br />
             MP3 SHA-256: <code>{asset.mp3.sha256}</code>
           </p>
         </article>
