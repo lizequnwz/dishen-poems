@@ -2,7 +2,7 @@
 
 ## Current objective
 
-Publish the remaining approved 2005 portion of the pages 25–50 PDF batch without overwriting unrelated work. The 2006 portion is complete, while the remaining PDF pages and development-only review dashboard are intentionally deferred. The three-layer audio work is complete in commit `ba7a236`.
+Preserve the completed pages 25–50 publication checkpoint and prepare the next bounded PDF review phase without overwriting unrelated work. All 62 automatically eligible poems from the first batch are published. Physical page 24, pages 51 through the end, and the development-only review dashboard remain intentionally deferred. The three-layer audio work is complete in commit `ba7a236`.
 
 ## Source of truth
 
@@ -32,6 +32,8 @@ Publish the remaining approved 2005 portion of the pages 25–50 PDF batch witho
 - Many regions yield two poems; several pages yield four candidates. The range spans 2005–2006.
 - The automatically eligible set contains 37 poems from 2006 and 25 poems from 2005.
 - All 37 automatically eligible 2006 poems have been generated as verified content. A full build produced the 2006 archive and all 37 poem routes; repeating the same apply command created zero files.
+- All 25 automatically eligible 2005 poems have been generated as verified content. A full build produced the 2005 archive and all 25 poem routes; repeating the same apply command created zero files.
+- Publication of the 62 high-confidence poems from pages 25–50 is complete. The site now contains 67 poems total, including the five manually curated 2026 works.
 - The generated local review bundle is `tmp/pdf-import/review-25-50/REVIEW.md`, with machine-readable data in `review.json` and 65 images under `crops/`.
 
 ## Remaining work
@@ -39,9 +41,8 @@ Publish the remaining approved 2005 portion of the pages 25–50 PDF batch witho
 ### Approved batch publication
 
 1. The 2006 publication step is complete: 37 verified Markdown files, 37 archive entries, and 37 static poem routes. Homepage latest-five remains the five 2026 poems.
-2. Repeat the same process for the 25 automatically eligible 2005 poems with `--page-from 25 --page-to 50 --apply --publish-year 2005`.
-3. Inspect the generated Markdown and validate the catalog, date navigation, random navigation, homepage latest-five selection, tests, and static build. Commit and deploy 2005 as an independent rollback point.
-4. Keep “出门儿” and “赠众生” out of automatic publication until their reviewed manual decisions are represented by a tracked override or their extraction mismatch is resolved. Keep “弟子求对联” excluded.
+2. The 2005 publication step is complete: 25 verified Markdown files, 25 archive entries, and 25 static poem routes. Homepage latest-five remains the five 2026 poems.
+3. Keep “出门儿” and “赠众生” out of automatic publication until their reviewed manual decisions are represented by a tracked override or their extraction mismatch is resolved. Keep “弟子求对联” excluded.
 
 ### Deferred PDF coverage
 
