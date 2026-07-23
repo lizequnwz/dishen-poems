@@ -37,4 +37,28 @@ describe('validateSiteRecords', () => {
       validateSiteRecords(poems, [{ ...exhibition, poemIds: ['poem-one', 'missing'] }]),
     ).toThrow('references missing poem');
   });
+
+  it('only publishes high-confidence PDF poems from calibrated templates', () => {
+    const pdfPoem: RulePoem = {
+      id: 'poem-pdf',
+      slug: '2023-01-01-pdf',
+      status: 'verified',
+      source: { kind: 'pdf', confidence: 'high', layoutTemplateStatus: 'pending' },
+    };
+    expect(() => validateSiteRecords([pdfPoem], [{ ...exhibition, poemIds: ['poem-pdf'] }])).toThrow(
+      'calibrated layout template',
+    );
+    expect(() =>
+      validateSiteRecords(
+        [{ ...pdfPoem, source: { kind: 'pdf', confidence: 'medium', layoutTemplateStatus: 'calibrated' } }],
+        [{ ...exhibition, poemIds: ['poem-pdf'] }],
+      ),
+    ).toThrow('high confidence');
+    expect(() =>
+      validateSiteRecords(
+        [{ ...pdfPoem, source: { kind: 'pdf', confidence: 'high', layoutTemplateStatus: 'calibrated' } }],
+        [{ ...exhibition, poemIds: ['poem-pdf'] }],
+      ),
+    ).not.toThrow();
+  });
 });
