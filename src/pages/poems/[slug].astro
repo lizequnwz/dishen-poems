@@ -6,6 +6,7 @@ import PoemText from '@/components/PoemText.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { formatWrittenDate, getResolvedVisualProfile, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
+import { poemLineTier } from '@/lib/poem-layout';
 
 export async function getStaticPaths() {
   const { publicPoems } = await loadSiteData();
@@ -23,13 +24,14 @@ const index = journey.findIndex((entry) => entry.data.id === poem.data.id);
 const previous = index > 0 ? journey[index - 1] : undefined;
 const next = index < journey.length - 1 ? journey[index + 1] : undefined;
 const visualProfile = getResolvedVisualProfile(poem);
-const compact = (poem.body?.length ?? 0) > 80;
+const lineTier = poemLineTier(poem.body ?? '');
+const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
 ---
 
 <BaseLayout title={poem.data.title} description={`${poem.data.title}，谛深作于 ${formatWrittenDate(poem.data.writtenDate)}。`}>
   <article class="poem-page">
     <InkScene profile={visualProfile} title={poem.data.title} index={index} />
-    <div class="shell poem-page__inner">
+    <div class:list={['shell', 'poem-page__inner', { 'poem-page__inner--without-note': !hasDescriptiveTags }]}>
       <div class="poem-page__index" aria-hidden="true">
         <span>{String(index + 1).padStart(2, '0')}</span>
         <i></i>
@@ -40,7 +42,7 @@ const compact = (poem.body?.length ?? 0) > 80;
           <p class="eyebrow"><Bilingual zh="一诗一境" en="One poem · One world" /></p>
           <h1><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h1>
         </header>
-        <PoemText poem={poem} compact={compact} />
+        <PoemText poem={poem} tier={lineTier} />
         <footer class="poem-page__meta">
           <div>
             <span><ScriptText text="谛深" /></span>
@@ -55,12 +57,14 @@ const compact = (poem.body?.length ?? 0) > 80;
           </button>
         </footer>
       </div>
-      <aside class="poem-page__note">
-        <span class="eyebrow"><Bilingual zh="诗中意象" en="Imagery" /></span>
-        <ul>
-          {poem.data.descriptiveTags.map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
-        </ul>
-      </aside>
+      {hasDescriptiveTags && (
+        <aside class="poem-page__note">
+          <span class="eyebrow"><Bilingual zh="诗中意象" en="Imagery" /></span>
+          <ul>
+            {poem.data.descriptiveTags.map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
+          </ul>
+        </aside>
+      )}
     </div>
   </article>
 

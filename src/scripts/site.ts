@@ -37,6 +37,7 @@ function applyScript(mode: DisplayScript) {
     const active = button.dataset.scriptTarget === mode;
     button.setAttribute('aria-pressed', String(active));
   });
+  document.dispatchEvent(new CustomEvent('dishen:script-change'));
 }
 
 function setupPreferences() {
@@ -134,6 +135,46 @@ function setupReveals() {
   elements.forEach((element) => observer.observe(element));
 }
 
+function setupPoemScrollRegions() {
+  document.querySelectorAll<HTMLElement>('[data-poem-scroll-region]').forEach((region) => {
+    if (region.dataset.scrollBound) return;
+    region.dataset.scrollBound = 'true';
+
+    const sync = () => {
+      const overflowing = region.scrollWidth > region.clientWidth + 1;
+      region.toggleAttribute('data-overflowing', overflowing);
+      if (overflowing) {
+        region.tabIndex = 0;
+        region.setAttribute('role', 'region');
+      } else {
+        region.removeAttribute('tabindex');
+        region.removeAttribute('role');
+        region.scrollLeft = 0;
+      }
+    };
+    const scheduleSync = () => requestAnimationFrame(sync);
+    const observer = new ResizeObserver(scheduleSync);
+    observer.observe(region);
+    region.addEventListener('keydown', (event) => {
+      if (!region.hasAttribute('data-overflowing')) return;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        region.scrollBy({ left: event.key === 'ArrowRight' ? 56 : -56, behavior: 'smooth' });
+      }
+      if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        region.scrollTo({ left: event.key === 'End' ? region.scrollWidth : 0, behavior: 'smooth' });
+      }
+    });
+    document.addEventListener('dishen:script-change', scheduleSync);
+    document.addEventListener('astro:before-swap', () => {
+      observer.disconnect();
+      document.removeEventListener('dishen:script-change', scheduleSync);
+    }, { once: true });
+    scheduleSync();
+  });
+}
+
 function setup() {
   applyLanguage((storage.get('dishen-language') === 'en' ? 'en' : 'zh') as UiLanguage);
   applyScript(normalizeDisplayScript(storage.get('dishen-script')));
@@ -141,6 +182,7 @@ function setup() {
   setupShare();
   setupRandomJourney();
   setupReveals();
+  setupPoemScrollRegions();
 }
 
 document.addEventListener('astro:page-load', setup);

@@ -20,7 +20,11 @@ import {
   chooseAccentId,
   effectiveVolume,
 } from '../src/lib/audio-playback';
-import { defaultAudioPreference, normalizeAudioPreference } from '../src/lib/audio-preferences';
+import {
+  defaultAudioPreference,
+  normalizeAudioPanelExpanded,
+  normalizeAudioPreference,
+} from '../src/lib/audio-preferences';
 
 const projectRoot = join(import.meta.dirname, '..');
 
@@ -87,6 +91,14 @@ describe('audio preferences', () => {
       mainVolume: 0.4,
       ambientVolume: 0.2,
     });
+  });
+
+  it('restores only an explicit expanded panel preference', () => {
+    expect(normalizeAudioPanelExpanded(true)).toBe(true);
+    expect(normalizeAudioPanelExpanded(false)).toBe(false);
+    expect(normalizeAudioPanelExpanded('true')).toBe(false);
+    expect(normalizeAudioPanelExpanded({ expanded: true })).toBe(false);
+    expect(normalizeAudioPanelExpanded(null)).toBe(false);
   });
 });
 

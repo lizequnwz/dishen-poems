@@ -402,11 +402,20 @@ a {
 }
 
 .poem-text {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 8px;
   font-family: var(--serif);
   font-size: clamp(19px, 2vw, 28px);
   font-weight: 430;
   line-height: 2.05;
   letter-spacing: 0.08em;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: color-mix(in srgb, var(--vermilion), transparent 40%) transparent;
+  scrollbar-width: thin;
 }
 
 .poem-text--compact {
@@ -415,8 +424,26 @@ a {
   letter-spacing: 0.03em;
 }
 
+.poem-text--long {
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
+}
+
 .poem-text__line {
   display: block;
+  width: max-content;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.poem-text[data-overflowing] {
+  cursor: ew-resize;
+  mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+
+.poem-text[data-overflowing]:focus-visible {
+  mask-image: none;
 }
 
 .poem-panel {
@@ -1307,6 +1334,11 @@ a {
   padding-block: calc(var(--header-height) + 90px) 80px;
 }
 
+.poem-page__inner--without-note {
+  grid-template-columns: 90px minmax(0, 920px);
+  justify-content: center;
+}
+
 .poem-page__index {
   display: flex;
   flex-direction: column;
@@ -1329,6 +1361,7 @@ a {
 
 .poem-page__card {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 24px;
   padding: clamp(34px, 5vw, 70px);
@@ -1650,8 +1683,8 @@ a {
   right: 24px;
   bottom: 20px;
   z-index: 30;
-  width: min(920px, calc(100vw - 48px));
-  padding: 14px 16px;
+  width: min(380px, calc(100vw - 48px));
+  padding: 6px;
   border: 1px solid color-mix(in srgb, var(--line), var(--ink) 8%);
   background: color-mix(in srgb, var(--paper), transparent 4%);
   box-shadow: 0 18px 64px rgb(15 25 22 / 20%);
@@ -1663,11 +1696,66 @@ a {
   right: auto;
   bottom: auto;
   width: 100%;
+  padding: 14px 16px;
   margin-bottom: 48px;
 }
 
 body:has(.audio-player:not(.audio-player--preview)) {
-  padding-bottom: 118px;
+  padding-bottom: 82px;
+}
+
+.audio-player__bar {
+  display: grid;
+  grid-template-columns: 44px minmax(70px, 1fr) minmax(100px, 120px) 40px;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.audio-player__now {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.audio-player__now [data-audio-track-label] {
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 520;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-player__panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: min(520px, calc(100vw - 48px));
+  max-height: min(70svh, 520px);
+  padding: 16px;
+  overflow-y: auto;
+  border: 1px solid color-mix(in srgb, var(--line), var(--ink) 8%);
+  background: color-mix(in srgb, var(--paper), transparent 2%);
+  box-shadow: 0 18px 64px rgb(15 25 22 / 20%);
+  backdrop-filter: blur(22px);
+}
+
+.audio-player__panel[hidden] {
+  display: none;
+}
+
+.audio-player--preview .audio-player__panel {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  max-height: none;
+  margin-top: 12px;
+  box-shadow: none;
 }
 
 .audio-player__header {
@@ -1692,14 +1780,6 @@ body:has(.audio-player:not(.audio-player--preview)) {
   letter-spacing: 0.08em;
 }
 
-.audio-player__header [data-audio-track-label] {
-  overflow: hidden;
-  color: var(--ink-soft);
-  font-size: 11px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .audio-player__mark {
   display: grid;
   width: 30px;
@@ -1719,9 +1799,9 @@ body:has(.audio-player:not(.audio-player--preview)) {
 
 .audio-player__controls {
   display: grid;
-  grid-template-columns: auto minmax(120px, 0.65fr) minmax(220px, 1fr) minmax(220px, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .audio-player__transport,
@@ -1735,8 +1815,8 @@ body:has(.audio-player:not(.audio-player--preview)) {
 
 .audio-player button {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--line);
@@ -1750,9 +1830,17 @@ body:has(.audio-player:not(.audio-player--preview)) {
 }
 
 .audio-player__play {
-  width: 40px !important;
-  height: 40px !important;
+  width: 44px !important;
+  height: 44px !important;
   border-color: var(--vermilion) !important;
+}
+
+.audio-player__panel-toggle .icon {
+  transition: transform 180ms ease;
+}
+
+.audio-player--expanded .audio-player__panel-toggle .icon {
+  transform: rotate(180deg);
 }
 
 .audio-player__volume label,
@@ -1765,8 +1853,13 @@ body:has(.audio-player:not(.audio-player--preview)) {
 
 .audio-player input[type='range'] {
   width: 100%;
-  min-width: 68px;
+  min-width: 54px;
   accent-color: var(--vermilion);
+}
+
+.audio-player__panel .audio-player__ambient,
+.audio-player__panel .audio-player__accent {
+  grid-column: 1 / -1;
 }
 
 .audio-player__ambient > label:first-child,
@@ -1790,10 +1883,18 @@ body:has(.audio-player:not(.audio-player--preview)) {
 }
 
 .audio-player__status {
-  min-height: 1.4em;
-  margin: 6px 0 -5px 40px;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
   color: var(--ink-soft);
   font-size: 9px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-player__status:empty {
+  display: none;
 }
 
 .audio-player > audio {
@@ -1928,6 +2029,10 @@ body:has(.audio-player:not(.audio-player--preview)) {
     grid-template-columns: 60px minmax(0, 1fr);
   }
 
+  .poem-page__inner--without-note {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
   .poem-page__note {
     grid-column: 2;
     max-width: 620px;
@@ -1945,26 +2050,37 @@ body:has(.audio-player:not(.audio-player--preview)) {
   }
 
   body:has(.audio-player:not(.audio-player--preview)) {
-    padding-bottom: 250px;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 
   .audio-player {
     right: 8px;
-    bottom: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom, 0px));
     width: calc(100vw - 16px);
-    padding: 12px;
+    padding: 6px;
   }
 
   .audio-player--preview {
     right: auto;
     bottom: auto;
     width: 100%;
+    padding: 12px;
   }
 
-  .audio-player__header > div {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0;
+  .audio-player__bar {
+    grid-template-columns: 44px minmax(50px, 1fr) minmax(96px, 104px) 44px;
+  }
+
+  .audio-player button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .audio-player__panel {
+    right: -1px;
+    width: calc(100vw - 16px);
+    max-height: calc(100svh - 92px - env(safe-area-inset-bottom, 0px));
+    padding: 14px;
   }
 
   .audio-player__controls {
@@ -1980,7 +2096,7 @@ body:has(.audio-player:not(.audio-player--preview)) {
   }
 
   .audio-player__status {
-    margin-left: 0;
+    font-size: 8px;
   }
 
   .audio-review__grid {
@@ -2057,14 +2173,21 @@ body:has(.audio-player:not(.audio-player--preview)) {
   }
 
   .poem-text {
-    font-size: clamp(17px, 4.8vw, 22px);
+    font-size: clamp(16px, 4.8vw, 22px);
     line-height: 1.95;
     letter-spacing: 0.035em;
   }
 
   .poem-text--compact {
-    font-size: 15px;
+    font-size: clamp(14px, 4.1vw, 17px);
     line-height: 1.85;
+    letter-spacing: 0.02em;
+  }
+
+  .poem-text--long {
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 0;
   }
 
   .poem-panel__rail {
@@ -2223,6 +2346,9 @@ body:has(.audio-player:not(.audio-player--preview)) {
 
   .poem-page__inner {
     display: block;
+    width: calc(100vw - 28px);
+    min-width: 0;
+    max-width: calc(100vw - 28px);
     padding-block: 165px 80px;
   }
 
@@ -2231,6 +2357,8 @@ body:has(.audio-player:not(.audio-player--preview)) {
   }
 
   .poem-page__card {
+    width: 100%;
+    max-width: 100%;
     padding: 30px 22px;
   }
 
@@ -2333,7 +2461,10 @@ body:has(.audio-player:not(.audio-player--preview)) {
 
   .poem-panel,
   .poem-panel__inner,
-  .poem-panel__content {
+  .poem-panel__content,
+  .poem-page,
+  .poem-page__inner,
+  .poem-page__card {
     display: block;
     min-height: 0;
     padding: 0;
@@ -2341,5 +2472,22 @@ body:has(.audio-player:not(.audio-player--preview)) {
     background: #fff;
     box-shadow: none;
     color: #000;
+  }
+
+  .poem-text {
+    overflow: visible;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    mask-image: none;
+  }
+
+  .poem-text--compact {
+    font-size: 12px;
+    letter-spacing: 0.01em;
+  }
+
+  .poem-text--long {
+    font-size: 10px;
+    letter-spacing: 0;
   }
 }

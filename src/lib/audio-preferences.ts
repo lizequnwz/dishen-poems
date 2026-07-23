@@ -1,5 +1,11 @@
 import type { AudioPreference } from './audio-data';
 
+export const AUDIO_PANEL_STORAGE_KEY = 'dishen-audio-panel-v1';
+
+export function normalizeAudioPanelExpanded(value: unknown): boolean {
+  return value === true;
+}
+
 export const defaultAudioPreference: AudioPreference = {
   mainVolume: 0.58,
   ambientVolume: 0.24,

@@ -19,6 +19,7 @@ const { catalog, preview = false } = Astro.props;
 const byId = new Map(catalog.assets.map((asset) => [asset.id, asset]));
 const firstMusic = catalog.musicIds.map((id) => byId.get(id)).find(Boolean);
 const shouldRender = Boolean(firstMusic);
+const panelId = preview ? 'audio-preview-controls' : 'audio-global-controls';
 ---
 
 {shouldRender && (
@@ -30,25 +31,15 @@ const shouldRender = Boolean(firstMusic);
     transition:persist={preview ? 'audio-preview-player' : 'global-audio-player'}
     aria-label={preview ? '候选音频试听 / Candidate audio review' : '全站声景播放器 / Site audio player'}
   >
-    <header class="audio-player__header">
-      <span class="audio-player__mark"><Icon name="music" /></span>
-      <div>
-        <strong><Bilingual zh={preview ? '候选声景试听' : '诗境声景'} en={preview ? 'Candidate listening' : 'Poetry soundscape'} /></strong>
+    <div class="audio-player__bar">
+      <button type="button" class="audio-player__play" data-audio-toggle aria-label="播放古琴 / Play guqin" aria-pressed="false">
+        <span data-audio-play-icon><Icon name="play" /></span>
+        <span data-audio-pause-icon hidden><Icon name="pause" /></span>
+      </button>
+      <div class="audio-player__now">
         <span data-audio-track-label></span>
+        <p class="audio-player__status" aria-live="polite" data-audio-status></p>
       </div>
-      {preview && <span class="audio-player__candidate"><Bilingual zh="待批准" en="Unapproved" /></span>}
-    </header>
-
-    <div class="audio-player__controls">
-      <div class="audio-player__transport" role="group" aria-label="古琴播放 / Guqin playback">
-        <button type="button" data-audio-previous aria-label="上一首 / Previous track"><Icon name="previous" /></button>
-        <button type="button" class="audio-player__play" data-audio-toggle aria-label="播放古琴 / Play guqin" aria-pressed="false">
-          <span data-audio-play-icon><Icon name="play" /></span>
-          <span data-audio-pause-icon hidden><Icon name="pause" /></span>
-        </button>
-        <button type="button" data-audio-next aria-label="下一首 / Next track"><Icon name="next" /></button>
-      </div>
-
       <div class="audio-player__volume">
         <button type="button" data-audio-main-mute aria-label="古琴静音 / Mute guqin" aria-pressed="false"><Icon name="volume" /></button>
         <label>
@@ -56,47 +47,75 @@ const shouldRender = Boolean(firstMusic);
           <input type="range" min="0" max="1" step="0.05" data-audio-main-volume />
         </label>
       </div>
-
-      <div class="audio-player__ambient">
-        <label>
-          <span><Bilingual zh="环境" en="Ambient" /></span>
-          <select data-audio-ambient>
-            <option value="">关闭 / Off</option>
-            {catalog.ambient.map((preset) => {
-              const asset = byId.get(preset.assetId)!;
-              return <option value={preset.id}>{asset.title.zh} / {asset.title.en}</option>;
-            })}
-          </select>
-        </label>
-        <button type="button" data-audio-ambient-mute aria-label="环境声静音 / Mute ambient sound" aria-pressed="false"><Icon name="volume" /></button>
-        <label class="audio-player__ambient-volume">
-          <span class="sr-only"><Bilingual zh="环境声音量" en="Ambient volume" /></span>
-          <input type="range" min="0" max="1" step="0.05" data-audio-ambient-volume />
-        </label>
-      </div>
-
-      {catalog.accent.length > 0 && (
-        <div class="audio-player__accent">
-          <label>
-            <span><Bilingual zh="点缀" en="Accent" /></span>
-            <select data-audio-accent>
-              <option value="off">关闭 / Off</option>
-              <option value="mixed">混合 / Mixed</option>
-              {catalog.accent.map((preset) => (
-                <option value={preset.id}>{preset.title.zh} / {preset.title.en}</option>
-              ))}
-            </select>
-          </label>
-          <button type="button" data-audio-accent-mute aria-label="点缀声静音 / Mute accent sound" aria-pressed="false"><Icon name="volume" /></button>
-          <label class="audio-player__accent-volume">
-            <span class="sr-only"><Bilingual zh="点缀声音量" en="Accent volume" /></span>
-            <input type="range" min="0" max="1" step="0.05" data-audio-accent-volume />
-          </label>
-        </div>
+      {!preview && (
+        <button
+          type="button"
+          class="audio-player__panel-toggle"
+          data-audio-panel-toggle
+          aria-expanded="false"
+          aria-controls={panelId}
+          aria-label="展开声景设置 / Expand soundscape settings"
+        >
+          <Icon name="chevron" />
+        </button>
       )}
     </div>
 
-    <p class="audio-player__status" aria-live="polite" data-audio-status></p>
+    <section class="audio-player__panel" id={panelId} data-audio-panel hidden={!preview}>
+      <header class="audio-player__header">
+        <span class="audio-player__mark"><Icon name="music" /></span>
+        <div>
+          <strong><Bilingual zh={preview ? '候选声景试听' : '诗境声景'} en={preview ? 'Candidate listening' : 'Poetry soundscape'} /></strong>
+        </div>
+        {preview && <span class="audio-player__candidate"><Bilingual zh="待批准" en="Unapproved" /></span>}
+      </header>
+
+      <div class="audio-player__controls">
+        <div class="audio-player__transport" role="group" aria-label="古琴选曲 / Guqin track selection">
+          <button type="button" data-audio-previous aria-label="上一首 / Previous track"><Icon name="previous" /></button>
+          <button type="button" data-audio-next aria-label="下一首 / Next track"><Icon name="next" /></button>
+        </div>
+
+        <div class="audio-player__ambient">
+          <label>
+            <span><Bilingual zh="环境" en="Ambient" /></span>
+            <select data-audio-ambient>
+              <option value="">关闭 / Off</option>
+              {catalog.ambient.map((preset) => {
+                const asset = byId.get(preset.assetId)!;
+                return <option value={preset.id}>{asset.title.zh} / {asset.title.en}</option>;
+              })}
+            </select>
+          </label>
+          <button type="button" data-audio-ambient-mute aria-label="环境声静音 / Mute ambient sound" aria-pressed="false"><Icon name="volume" /></button>
+          <label class="audio-player__ambient-volume">
+            <span class="sr-only"><Bilingual zh="环境声音量" en="Ambient volume" /></span>
+            <input type="range" min="0" max="1" step="0.05" data-audio-ambient-volume />
+          </label>
+        </div>
+
+        {catalog.accent.length > 0 && (
+          <div class="audio-player__accent">
+            <label>
+              <span><Bilingual zh="点缀" en="Accent" /></span>
+              <select data-audio-accent>
+                <option value="off">关闭 / Off</option>
+                <option value="mixed">混合 / Mixed</option>
+                {catalog.accent.map((preset) => (
+                  <option value={preset.id}>{preset.title.zh} / {preset.title.en}</option>
+                ))}
+              </select>
+            </label>
+            <button type="button" data-audio-accent-mute aria-label="点缀声静音 / Mute accent sound" aria-pressed="false"><Icon name="volume" /></button>
+            <label class="audio-player__accent-volume">
+              <span class="sr-only"><Bilingual zh="点缀声音量" en="Accent volume" /></span>
+              <input type="range" min="0" max="1" step="0.05" data-audio-accent-volume />
+            </label>
+          </div>
+        )}
+      </div>
+    </section>
+
     <audio preload="none" data-audio-main></audio>
     <audio preload="none" loop data-audio-ambient-layer></audio>
     <audio preload="none" data-audio-accent-layer></audio>

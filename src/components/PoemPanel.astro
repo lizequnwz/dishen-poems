@@ -6,6 +6,7 @@ import Icon from './Icon.astro';
 import InkScene from './InkScene.astro';
 import PoemText from './PoemText.astro';
 import ScriptText from './ScriptText.astro';
+import { poemLineTier } from '@/lib/poem-layout';
 
 interface Props {
   poem: PoemEntry;
@@ -15,7 +16,7 @@ interface Props {
 
 const { poem, index, total } = Astro.props;
 const visualProfile = getResolvedVisualProfile(poem);
-const compact = (poem.body?.length ?? 0) > 80;
+const lineTier = poemLineTier(poem.body ?? '');
 ---
 
 <section class="poem-panel" id={`poem-${index + 1}`} data-reveal>
@@ -32,7 +33,7 @@ const compact = (poem.body?.length ?? 0) > 80;
     </div>
     <article class="poem-panel__content">
       <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
-      <PoemText poem={poem} compact={compact} />
+      <PoemText poem={poem} tier={lineTier} />
       <div class="poem-panel__meta">
         <span><ScriptText text="谛深" /></span>
         <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>

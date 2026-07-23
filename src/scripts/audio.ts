@@ -1,4 +1,8 @@
-import { normalizeAudioPreference } from '@/lib/audio-preferences';
+import {
+  AUDIO_PANEL_STORAGE_KEY,
+  normalizeAudioPanelExpanded,
+  normalizeAudioPreference,
+} from '@/lib/audio-preferences';
 import {
   ACCENT_DUCK_DELAY_MS,
   AMBIENT_DUCK_MULTIPLIER,
@@ -36,6 +40,22 @@ function writePreference(preference: AudioPreference) {
   }
 }
 
+function readPanelExpanded(): boolean {
+  try {
+    return normalizeAudioPanelExpanded(JSON.parse(localStorage.getItem(AUDIO_PANEL_STORAGE_KEY) ?? 'null'));
+  } catch {
+    return false;
+  }
+}
+
+function writePanelExpanded(expanded: boolean) {
+  try {
+    localStorage.setItem(AUDIO_PANEL_STORAGE_KEY, JSON.stringify(expanded));
+  } catch {
+    // The player remains collapsed by default when storage is unavailable.
+  }
+}
+
 function setupPlayer(player: HTMLElement) {
   if (player.dataset.bound) return;
   player.dataset.bound = 'true';
@@ -60,8 +80,12 @@ function setupPlayer(player: HTMLElement) {
   const status = player.querySelector<HTMLElement>('[data-audio-status]')!;
   const playIcon = player.querySelector<HTMLElement>('[data-audio-play-icon]')!;
   const pauseIcon = player.querySelector<HTMLElement>('[data-audio-pause-icon]')!;
+  const panel = player.querySelector<HTMLElement>('[data-audio-panel]')!;
+  const panelToggle = player.querySelector<HTMLButtonElement>('[data-audio-panel-toggle]');
+  const preview = player.dataset.preview === 'true';
 
   let preference = readPreference();
+  let panelExpanded = preview || readPanelExpanded();
   let wantedPlaying = false;
   let ducked = false;
   let rampFrame: number | null = null;
@@ -96,6 +120,28 @@ function setupPlayer(player: HTMLElement) {
 
   function message(zh: string, en: string) {
     status.textContent = document.documentElement.dataset.language === 'en' ? en : zh;
+  }
+
+  function syncPanelState() {
+    panel.hidden = !panelExpanded;
+    player.classList.toggle('audio-player--expanded', panelExpanded);
+    if (!panelToggle) return;
+    const english = document.documentElement.dataset.language === 'en';
+    panelToggle.setAttribute('aria-expanded', String(panelExpanded));
+    panelToggle.setAttribute(
+      'aria-label',
+      english
+        ? panelExpanded ? 'Collapse soundscape settings' : 'Expand soundscape settings'
+        : panelExpanded ? '收起声景设置' : '展开声景设置',
+    );
+  }
+
+  function setPanelExpanded(expanded: boolean) {
+    const returnFocus = !expanded && panel.contains(document.activeElement);
+    panelExpanded = preview || expanded;
+    syncPanelState();
+    if (!preview) writePanelExpanded(panelExpanded);
+    if (returnFocus) panelToggle?.focus();
   }
 
   function setSource(element: HTMLAudioElement, asset: AudioAsset) {
@@ -391,13 +437,21 @@ function setupPlayer(player: HTMLElement) {
     preference.accentMode = accentSelect.value as AudioPreference['accentMode'];
     updateAccentAvailability();
   });
+  panelToggle?.addEventListener('click', () => setPanelExpanded(!panelExpanded));
+  panel.addEventListener('keydown', (event) => {
+    if (!preview && event.key === 'Escape') setPanelExpanded(false);
+  });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && wantedPlaying) pauseLayers('background');
   });
-  document.addEventListener('dishen:language-change', () => updateUi(false));
+  document.addEventListener('dishen:language-change', () => {
+    updateUi(false);
+    syncPanelState();
+  });
 
   // Restores selections and levels only. Playback always waits for a fresh user gesture.
   wantedPlaying = false;
+  syncPanelState();
   updateUi();
 }
 

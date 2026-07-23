@@ -2,11 +2,12 @@
 
 ## Current objective
 
-Preserve the completed pages 25–50 publication checkpoint and prepare the next bounded PDF review phase without overwriting unrelated work. All 62 automatically eligible poems from the first batch are published. Physical page 24, pages 51 through the end, and the development-only review dashboard remain intentionally deferred. The three-layer audio work is complete in commit `ba7a236`.
+Preserve the completed pages 25–50 publication and compact-reading-UI checkpoints, then prepare the next bounded PDF review phase without overwriting unrelated work. All 62 automatically eligible poems from the first batch are published. Physical page 24, pages 51 through the end, and the development-only review dashboard remain intentionally deferred.
 
 ## Source of truth
 
 - Audio design: `docs/superpowers/specs/2026-07-22-three-layer-audio-ducking-design.md` (commit `a706dd7`).
+- Compact-player and poem-line design: `docs/superpowers/specs/2026-07-22-compact-audio-and-poem-line-layout-design.md` and its matching implementation plan under `docs/superpowers/plans/`.
 - Product design and implementation plan: `docs/superpowers/specs/2026-07-20-dishen-zen-poetry-website-design.md` and `docs/superpowers/plans/2026-07-21-dishen-poetry-mvp-implementation.md`.
 - PDF extraction decision: `docs/adr/0003-calibrated-pdf-ingestion.md` and `scripts/import_pdf_poems.py`.
 - Current generated extraction artifacts: `tmp/pdf-import/report.json` and `tmp/pdf-import/calibration/manifest.json`.
@@ -35,6 +36,16 @@ Preserve the completed pages 25–50 publication checkpoint and prepare the next
 - All 25 automatically eligible 2005 poems have been generated as verified content. A full build produced the 2005 archive and all 25 poem routes; repeating the same apply command created zero files.
 - Publication of the 62 high-confidence poems from pages 25–50 is complete. The site now contains 67 poems total, including the five manually curated 2026 works.
 - The generated local review bundle is `tmp/pdf-import/review-25-50/REVIEW.md`, with machine-readable data in `review.json` and 65 images under `crops/`.
+
+## Completed reading UI refinement
+
+- The production audio player defaults to a compact fixed bar and exposes previous/next, environment, and accent controls in an upward-opening panel. Expanded state is remembered independently from playback preferences; the review player remains expanded in document flow.
+- The compact bar is 58px high in tested desktop and mobile layouts, with 44px mobile touch targets. Mobile document padding dropped from 250px to 72px plus the safe-area inset.
+- Poem typography tiers now depend on the longest source line rather than total poem length. Source newlines remain authoritative and visual lines never wrap.
+- Tag-free single-poem pages omit the empty imagery column and widen the poem card. At 1280px, 《普陀境》 renders both 16-character lines without overflow; at 320px it uses the compact tier and still fits without wrapping.
+- Extremely long lines scroll only inside the poem block. The block becomes focusable only when it overflows and supports Arrow Left/Right plus Home/End; the page itself remains free of horizontal overflow.
+- Browser checks covered 1280px, 320px, a 640px zoom-equivalent layout, persisted collapsed/expanded state, dark mode, and the long-line fallback using 《高山春》.
+- Final validation passed Astro check, 39 Vitest tests, 7 PDF tests, and a 75-page static build.
 
 ## Remaining work
 
