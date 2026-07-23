@@ -191,29 +191,24 @@ a {
   background: var(--vermilion);
   color: #fff8ef;
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 15px;
+  line-height: 1;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 25%);
 }
 
+.brand__mark [data-script-inline] {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.08em;
+}
+
 .brand__name {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-weight: 580;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-}
-
-.brand__name small {
   color: var(--ink-soft);
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 450;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
   letter-spacing: 0.18em;
-}
-
-.brand__dot {
-  color: var(--vermilion);
-  margin-inline: 3px;
+  white-space: nowrap;
 }
 
 .site-nav {
