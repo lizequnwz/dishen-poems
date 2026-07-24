@@ -29,7 +29,7 @@ const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
 ---
 
 <BaseLayout title={poem.data.title} description={`${poem.data.title}，谛深作于 ${formatWrittenDate(poem.data.writtenDate)}。`}>
-  <article class="poem-page">
+  <article class:list={['poem-page', `poem-page--${visualProfile.sceneFamily}`]}>
     <InkScene profile={visualProfile} title={poem.data.title} index={index} />
     <div class:list={['shell', 'poem-page__inner', { 'poem-page__inner--without-note': !hasDescriptiveTags }]}>
       <div class="poem-page__index" aria-hidden="true">

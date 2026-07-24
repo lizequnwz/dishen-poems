@@ -7,19 +7,21 @@ import InkScene from './InkScene.astro';
 import PoemText from './PoemText.astro';
 import ScriptText from './ScriptText.astro';
 import { poemLineTier } from '@/lib/poem-layout';
+import type { ResolvedVisualProfile } from '@/lib/visual-profile';
 
 interface Props {
   poem: PoemEntry;
   index: number;
   total: number;
+  visualProfile?: ResolvedVisualProfile;
 }
 
-const { poem, index, total } = Astro.props;
-const visualProfile = getResolvedVisualProfile(poem);
+const { poem, index, total, visualProfile: suppliedVisualProfile } = Astro.props;
+const visualProfile = suppliedVisualProfile ?? getResolvedVisualProfile(poem);
 const lineTier = poemLineTier(poem.body ?? '');
 ---
 
-<section class="poem-panel" id={`poem-${index + 1}`} data-reveal>
+<section class:list={['poem-panel', `poem-panel--${visualProfile.sceneFamily}`]} id={`poem-${index + 1}`} data-reveal>
   <InkScene profile={visualProfile} title={poem.data.title} index={index} />
   <div class="poem-panel__rail" aria-hidden="true">
     <span>{String(index + 1).padStart(2, '0')}</span>

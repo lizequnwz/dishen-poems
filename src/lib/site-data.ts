@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { validateSiteRecords, type RuleReviewDecision } from './content-rules';
 import { deriveTextVariants, type TextVariant } from './script-conversion';
-import { resolveVisualProfile } from './visual-profile';
+import { resolveVisualProfile, resolveVisualSequence } from './visual-profile';
 import { comparePoemsNewestFirst } from './poem-ordering';
 import pdfReviewDecisionData from '../../imports/pdf-review-decisions.json';
 
@@ -29,6 +29,16 @@ export function getResolvedVisualProfile(poem: PoemEntry) {
     body: normalizeBody(poem.body),
     profile: poem.data.visualProfile,
   });
+}
+
+export function getResolvedVisualSequence(poems: PoemEntry[]) {
+  return resolveVisualSequence(poems.map((poem) => ({
+    id: poem.data.id,
+    writtenDate: poem.data.writtenDate,
+    title: poem.data.title,
+    body: normalizeBody(poem.body),
+    profile: poem.data.visualProfile,
+  })));
 }
 
 export function formatWrittenDate(date: string, locale: 'zh' | 'en' = 'zh') {

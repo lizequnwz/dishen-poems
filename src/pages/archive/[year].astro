@@ -21,6 +21,10 @@ interface Props {
 const { year, poems } = Astro.props;
 const { years } = await loadSiteData();
 const randomPaths = JSON.stringify(poems.map(poemPath));
+const months = [...new Set(poems.map((poem) => poem.data.writtenDate.slice(5, 7)))];
+const showMonthAnchors = poems.length > 12;
+const monthLabels = new Intl.DateTimeFormat('zh-CN', { month: 'long', timeZone: 'UTC' });
+const monthName = (month: string) => monthLabels.format(new Date(Date.UTC(2000, Number(month) - 1, 1)));
 ---
 
 <BaseLayout title={`${year} · 作品档案`}>
@@ -48,18 +52,31 @@ const randomPaths = JSON.stringify(poems.map(poemPath));
     </button>
   </div>
 
-  <section class="archive-list shell" aria-label={`${year} poems`}>
-    {poems.map((poem, index) => (
-      <a class="archive-row" href={poemPath(poem)} data-reveal>
-        <span class="archive-row__index">{String(index + 1).padStart(2, '0')}</span>
-        <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
-        <div class="archive-row__title">
-          <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
-          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+  {showMonthAnchors && (
+    <nav class="month-anchors shell" aria-label="按月份跳转 / Jump by month">
+      <span><Bilingual zh="月序" en="Months" /></span>
+      {months.map((month) => <a href={`#month-${month}`}>{monthName(month)}</a>)}
+    </nav>
+  )}
+
+  <section class="archive-year-list shell" aria-label={`${year} poems`}>
+    {months.map((month) => (
+      <section class="archive-month" id={`month-${month}`}>
+        <header><span>{month}</span><h2>{monthName(month)}</h2><i></i></header>
+        <div class="archive-month__grid">
+          {poems.filter((poem) => poem.data.writtenDate.slice(5, 7) === month).map((poem, index) => (
+            <a class="archive-row" href={poemPath(poem)} data-reveal>
+              <span class="archive-row__index">{String(index + 1).padStart(2, '0')}</span>
+              <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
+              <div class="archive-row__title">
+                <h3><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h3>
+                <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+              </div>
+              <span class="archive-row__arrow"><Icon name="arrow" /></span>
+            </a>
+          ))}
         </div>
-        <ul>{poem.data.descriptiveTags.slice(0, 3).map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}</ul>
-        <span class="archive-row__arrow"><Icon name="arrow" /></span>
-      </a>
+      </section>
     ))}
   </section>
 </BaseLayout>

@@ -1,56 +1,66 @@
 ---
 import Bilingual from '@/components/Bilingual.astro';
 import Icon from '@/components/Icon.astro';
+import InkScene from '@/components/InkScene.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { formatWrittenDate, getPoemVariants, loadSiteData, poemPath } from '@/lib/site-data';
+import { formatWrittenDate, loadSiteData, poemPath } from '@/lib/site-data';
+import { resolveYearVisualProfile } from '@/lib/visual-profile';
 
 const { publicPoems, years } = await loadSiteData();
 const randomPaths = JSON.stringify(publicPoems.map(poemPath));
+const yearGroups = years.map((year, index) => {
+  const poems = publicPoems.filter((poem) => poem.data.writtenDate.startsWith(year));
+  return {
+    year,
+    index,
+    poems,
+    newest: poems[0],
+    oldest: poems.at(-1)!,
+    profile: resolveYearVisualProfile(year),
+  };
+});
 ---
 
-<BaseLayout title="作品档案" description="按谛深大师创作日期浏览诗作。">
-  <header class="page-hero archive-hero">
+<BaseLayout title="作品档案" description="按谛深大师创作年份浏览诗作。">
+  <header class="page-hero archive-hero archive-hero--gallery">
     <div class="shell page-hero__inner">
       <div>
-        <span class="eyebrow"><Bilingual zh="作品档案" en="Poetry archive" /></span>
+        <span class="eyebrow"><Bilingual zh="作品档案 · 年份画廊" en="Poetry archive · Year gallery" /></span>
         <h1><Bilingual zh="循时间，见诗境" en="Poems across time" /></h1>
-        <p><Bilingual zh="按师父创作日期，从最近一页回望。" en="Browse verified poems by the date they were written." /></p>
+        <p><Bilingual zh="每一年是一方庭院，循创作日期由近及远。" en="Each year opens as its own courtyard, newest to oldest." /></p>
       </div>
       <div class="archive-hero__count">
         <strong>{String(publicPoems.length).padStart(2, '0')}</strong>
-        <span><Bilingual zh="首诗作" en="poems" /></span>
+        <span><Bilingual zh={`首诗作 · ${years.length} 个年份`} en={`poems · ${years.length} years`} /></span>
       </div>
     </div>
   </header>
 
   <div class="archive-toolbar shell">
     <nav aria-label="按年份浏览 / Browse by year">
-      <a aria-current="page" href="/archive/"><Bilingual zh="全部" en="All" /></a>
+      <a aria-current="page" href="/archive/"><Bilingual zh="年份画廊" en="Years" /></a>
       {years.map((year) => <a href={`/archive/${year}/`}>{year}</a>)}
     </nav>
     <button class="outline-button" type="button" data-random-paths={randomPaths}>
-      <Icon name="random" />
-      <Bilingual zh="随机漫游" en="Random poem" />
+      <Icon name="random" /><Bilingual zh="随机漫游" en="Random poem" />
     </button>
   </div>
 
-  <section class="archive-list shell" aria-label="诗歌列表 / Poems">
-    {publicPoems.map((poem, index) => (
-      <a class="archive-row" href={poemPath(poem)} data-reveal>
-        <span class="archive-row__index">{String(index + 1).padStart(2, '0')}</span>
-        <time datetime={poem.data.writtenDate}>
-          <span data-copy-zh>{formatWrittenDate(poem.data.writtenDate, 'zh')}</span>
-          <span data-copy-en>{formatWrittenDate(poem.data.writtenDate, 'en')}</span>
-        </time>
-        <div class="archive-row__title">
-          <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
-          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+  <section class="year-gallery shell" aria-label="诗歌年份 / Poetry years">
+    {yearGroups.map((group) => (
+      <a class:list={['year-card', `year-card--${group.profile.sceneFamily}`]} href={`/archive/${group.year}/`} data-reveal>
+        <InkScene profile={group.profile} title={group.year} index={group.index} />
+        <span class="year-card__index">{String(group.index + 1).padStart(2, '0')}</span>
+        <div class="year-card__heading">
+          <strong>{group.year}</strong>
+          <span>{group.poems.length} <Bilingual zh="首" en="poems" /></span>
         </div>
-        <ul aria-label="描述性标签">
-          {poem.data.descriptiveTags.slice(0, 3).map((tag) => <li><ScriptText text={tag} originalScript={poem.data.originalScript} /></li>)}
-        </ul>
-        <span class="archive-row__arrow"><Icon name="arrow" /></span>
+        <div class="year-card__meta">
+          <span>{formatWrittenDate(group.oldest.data.writtenDate)} — {formatWrittenDate(group.newest.data.writtenDate)}</span>
+          <h2><ScriptText text={group.newest.data.title} originalScript={group.newest.data.originalScript} /></h2>
+          <p><Bilingual zh="从这一年入卷" en="Enter this year's scroll" /> <Icon name="arrow" /></p>
+        </div>
       </a>
     ))}
   </section>

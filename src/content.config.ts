@@ -7,6 +7,7 @@ import {
   visualLights,
   visualMotifs,
   visualPalettes,
+  visualSceneFamilies,
 } from './lib/visual-profile';
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -40,6 +41,7 @@ const poemSource = z.discriminatedUnion('kind', [
 ]);
 
 const visualProfile = z.object({
+  sceneFamily: z.enum(visualSceneFamilies).optional(),
   palette: z.enum(visualPalettes).optional(),
   motifs: z.array(z.enum(visualMotifs)).min(1).optional(),
   composition: z.enum(visualCompositions).optional(),

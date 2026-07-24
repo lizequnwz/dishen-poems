@@ -4,10 +4,12 @@ import Icon from '@/components/Icon.astro';
 import PoemPanel from '@/components/PoemPanel.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { loadSiteData, poemPath } from '@/lib/site-data';
+import { getResolvedVisualSequence, loadSiteData, poemPath } from '@/lib/site-data';
 
-const { latestPoems, publicPoems } = await loadSiteData();
+const { latestPoems, publicPoems, years } = await loadSiteData();
 const randomPaths = JSON.stringify(publicPoems.map(poemPath));
+const latestVisualProfiles = getResolvedVisualSequence(latestPoems);
+const oldestYear = years.at(-1);
 ---
 
 <BaseLayout>
@@ -63,9 +65,19 @@ const randomPaths = JSON.stringify(publicPoems.map(poemPath));
 
   <div class="poem-scroll">
     {latestPoems.map((poem, index) => (
-      <PoemPanel poem={poem} index={index} total={latestPoems.length} />
+      <PoemPanel poem={poem} index={index} total={latestPoems.length} visualProfile={latestVisualProfiles[index]} />
     ))}
   </div>
+
+  <section class="year-ring shell" aria-labelledby="year-ring-title">
+    <div class="year-ring__orbit" aria-hidden="true"><i></i><span>{publicPoems.length}</span></div>
+    <div class="year-ring__copy">
+      <span class="eyebrow"><Bilingual zh="诗卷年轮" en="Archive rings" /></span>
+      <h2 id="year-ring-title"><Bilingual zh={`${oldestYear} 至 ${years[0]}`} en={`${oldestYear} to ${years[0]}`} /></h2>
+      <p><Bilingual zh={`共 ${publicPoems.length} 首诗，循 ${years.length} 个创作年份展开。`} en={`${publicPoems.length} poems across ${years.length} years of writing.`} /></p>
+    </div>
+    <a class="text-link" href="/archive/"><Bilingual zh="浏览年份画廊" en="Browse the year gallery" /><Icon name="arrow" /></a>
+  </section>
 
   <section class="journey-end">
     <div class="shell journey-end__inner">

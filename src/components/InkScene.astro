@@ -16,6 +16,8 @@ const palettes: Record<VisualPalette, { accent: string; glow: string; ink: strin
   winter: { accent: '#a0574d', glow: '#c7d1cc', ink: '#4c5d5d' },
   moonlit: { accent: '#8798a5', glow: '#d8d3bb', ink: '#334f59' },
   paper: { accent: '#a46a55', glow: '#d8bf8e', ink: '#60635b' },
+  saffron: { accent: '#a65f45', glow: '#d8b074', ink: '#5f554b' },
+  lapis: { accent: '#5c7291', glow: '#c2bd9b', ink: '#344f6a' },
 };
 const palette = palettes[profile.palette];
 const has = (motif: VisualMotif) => profile.motifs.includes(motif);
@@ -25,6 +27,7 @@ const filterId = `mist-${profile.palette}-${profile.composition}-${index}`;
 <div
   class:list={[
     'ink-scene',
+    `ink-scene--${profile.sceneFamily}`,
     `ink-scene--${profile.composition}`,
     `ink-scene--${profile.light}`,
     `ink-scene--${profile.intensity}`,
@@ -33,6 +36,9 @@ const filterId = `mist-${profile.palette}-${profile.composition}-${index}`;
   data-composition={profile.composition}
   aria-hidden="true"
 >
+  {profile.sceneFamily === 'courtyard' && <div class="ink-scene__moon-gate"></div>}
+  {profile.sceneFamily === 'scroll' && <div class="ink-scene__scroll"><i></i><i></i><i></i></div>}
+  {profile.sceneFamily === 'celestial' && <div class="ink-scene__enso"></div>}
   {(has('sun') || profile.light === 'dawn' || profile.light === 'day') && <div class="ink-scene__celestial ink-scene__celestial--sun"></div>}
   {(has('moon') || profile.light === 'night') && <div class="ink-scene__celestial ink-scene__celestial--moon"></div>}
   <div class="ink-scene__wash ink-scene__wash--one"></div>
@@ -97,6 +103,29 @@ const filterId = `mist-${profile.palette}-${profile.composition}-${index}`;
         </g>
       )}
       {has('lightning') && <path class="scene-lightning" d="m430 78-88 168h92L312 455"></path>}
+      {(profile.sceneFamily === 'courtyard' || has('lattice')) && (
+        <g class="scene-lattice">
+          <path d="M690 120h230v270H690zM747 120v270M805 120v270M862 120v270M690 188h230M690 256h230M690 324h230"></path>
+        </g>
+      )}
+      {(profile.sceneFamily === 'courtyard' || has('bamboo')) && (
+        <g class="scene-bamboo">
+          <path d="M155 720 225 105M225 720 305 190M192 400l-82-66M204 315l76-82M255 475l92-72M270 350l-66-60"></path>
+        </g>
+      )}
+      {(profile.sceneFamily === 'scroll' || has('sutra-thread')) && (
+        <g class="scene-sutra">
+          <path d="M250 155h500M215 230h570M270 305h460M225 380h550M290 455h420M245 530h510"></path>
+        </g>
+      )}
+      {(profile.sceneFamily === 'celestial' || has('bell-ripple')) && (
+        <g class="scene-ripples">
+          <circle cx="735" cy="420" r="58"></circle><circle cx="735" cy="420" r="118"></circle><circle cx="735" cy="420" r="184"></circle>
+        </g>
+      )}
+      {has('bird') && <path class="scene-bird" d="M570 205q22-25 44 0 22-25 44 0M640 255q18-20 36 0 18-20 36 0"></path>}
+      {has('lotus-ripple') && <path class="scene-lotus" d="M460 560q35-70 70 0-35 45-70 0Zm70 0q35-70 70 0-35 45-70 0Z"></path>}
+      {has('lantern') && <g class="scene-lantern"><path d="M370 75v95M325 170h90l-12 126-33 34-33-34z"></path><circle cx="370" cy="230" r="26"></circle></g>}
     </g>
   </svg>
   <span class="ink-scene__title">{title}</span>
