@@ -53,12 +53,42 @@ describe('validateSiteRecords', () => {
         [{ ...pdfPoem, source: { kind: 'pdf', confidence: 'medium', layoutTemplateStatus: 'calibrated' } }],
         [{ ...exhibition, poemIds: ['poem-pdf'] }],
       ),
-    ).toThrow('high confidence');
+    ).toThrow('high confidence or an exact approved review decision');
     expect(() =>
       validateSiteRecords(
         [{ ...pdfPoem, source: { kind: 'pdf', confidence: 'high', layoutTemplateStatus: 'calibrated' } }],
         [{ ...exhibition, poemIds: ['poem-pdf'] }],
       ),
     ).not.toThrow();
+  });
+
+  it('allows an exact manual review without changing extraction confidence', () => {
+    const pdfPoem: RulePoem = {
+      id: 'poem-reviewed',
+      slug: '2023-01-01-reviewed',
+      status: 'verified',
+      source: {
+        kind: 'pdf',
+        pdfSha256: 'a'.repeat(64),
+        confidence: 'medium',
+        layoutTemplateStatus: 'calibrated',
+        failureReasons: ['coordinate_crop_mismatch'],
+        candidateId: 'pdf-abc',
+        contentFingerprint: 'b'.repeat(64),
+        reviewDecisionId: 'review-pdf-abc',
+      },
+    };
+    const decision = {
+      id: 'review-pdf-abc',
+      action: 'approve' as const,
+      candidateId: 'pdf-abc',
+      pdfSha256: 'a'.repeat(64),
+      extractedContentFingerprint: 'b'.repeat(64),
+    };
+    const reviewedExhibition = { ...exhibition, poemIds: ['poem-reviewed'] };
+    expect(() => validateSiteRecords([pdfPoem], [reviewedExhibition], [decision])).not.toThrow();
+    expect(() => validateSiteRecords([pdfPoem], [reviewedExhibition], [{ ...decision, extractedContentFingerprint: 'c'.repeat(64) }])).toThrow(
+      'exact approved review decision',
+    );
   });
 });

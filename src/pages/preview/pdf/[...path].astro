@@ -1,0 +1,119 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return [{ params: { path: undefined } }];
+}
+---
+
+<BaseLayout title="PDF 诗稿审核台" hideChrome>
+  <section class="pdf-review" data-pdf-review>
+    <header class="pdf-review__header">
+      <div>
+        <span>开发预览 · 不公开</span>
+        <h1>PDF 诗稿审核台</h1>
+      </div>
+      <div class="pdf-review__summary" data-review-summary>正在读取候选目录…</div>
+    </header>
+
+    <div class="pdf-review__filters" aria-label="候选过滤">
+      <label>搜索<input type="search" data-filter-search placeholder="标题、正文或页码" /></label>
+      <label>范围<select data-filter-scope><option value="exceptions">只看待审核</option><option value="all">全部候选</option></select></label>
+      <label>批次<select data-filter-batch><option value="all">全部批次</option></select></label>
+      <label>年份<select data-filter-year><option value="all">全部年份</option></select></label>
+      <label>置信度<select data-filter-confidence><option value="all">全部</option><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select></label>
+      <label>状态<select data-filter-state><option value="all">全部状态</option></select></label>
+    </div>
+
+    <div class="pdf-review__notice" data-review-notice role="status" aria-live="polite"></div>
+
+    <div class="pdf-review__workspace" hidden data-review-workspace>
+      <aside class="pdf-review__queue" aria-label="候选诗稿">
+        <div class="pdf-review__queue-count" data-queue-count></div>
+        <div data-review-list></div>
+      </aside>
+
+      <section class="pdf-review__source" aria-label="PDF 原稿">
+        <div class="pdf-review__source-toolbar">
+          <strong data-source-location></strong>
+          <label>图像<select data-image-mode><option value="crop">逐诗裁图</option><option value="page">整页上下文</option></select></label>
+        </div>
+        <div class="pdf-review__image-stage"><img data-source-image alt="" /></div>
+        <dl class="pdf-review__audit" data-source-audit></dl>
+      </section>
+
+      <form class="pdf-review__form" data-review-form>
+        <div class="pdf-review__form-heading">
+          <span data-current-index></span>
+          <strong data-current-state></strong>
+        </div>
+        <label>标题<input name="title" required /></label>
+        <div class="pdf-review__form-row">
+          <label>完整公历日期<input name="writtenDate" type="date" required /></label>
+          <label>分类<select name="candidateType"><option value="poetry">诗歌</option><option value="excluded">排除</option></select></label>
+        </div>
+        <label>正文<textarea name="body" rows="15" required></textarea></label>
+        <div class="pdf-review__diff" data-review-diff></div>
+        <fieldset class="pdf-review__actions">
+          <legend>审核决定</legend>
+          <button type="button" data-review-action="approve">批准</button>
+          <button type="button" data-review-action="correct">修正后批准</button>
+          <button type="button" data-review-action="hold">搁置</button>
+          <button type="button" data-review-action="reject">排除</button>
+        </fieldset>
+        <label>理由／备注<textarea name="reason" rows="3" placeholder="搁置与排除必须填写理由"></textarea></label>
+        <div class="pdf-review__save-row">
+          <span>快捷键：J/K 前后，1–4 选择决定</span>
+          <button class="pdf-review__save" type="submit">保存并下一首</button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <script>
+    import '@/scripts/pdf-review';
+  </script>
+</BaseLayout>
+
+<style>
+  .pdf-review { min-height: 100svh; padding: 24px; background: var(--paper-deep); }
+  .pdf-review__header { display: flex; align-items: end; justify-content: space-between; gap: 32px; padding: 18px 0 24px; border-bottom: 1px solid var(--line); }
+  .pdf-review__header span { color: var(--vermilion); font-size: 11px; letter-spacing: .18em; }
+  .pdf-review__header h1 { margin: 8px 0 0; font-family: var(--serif); font-size: clamp(32px, 5vw, 62px); font-weight: 430; }
+  .pdf-review__summary { max-width: 520px; color: var(--ink-soft); font-size: 12px; line-height: 1.7; text-align: right; }
+  .pdf-review__filters { display: grid; grid-template-columns: minmax(180px, 1.5fr) repeat(5, minmax(120px, .7fr)); gap: 10px; padding-block: 16px; }
+  .pdf-review label { display: grid; gap: 6px; color: var(--ink-soft); font-size: 11px; letter-spacing: .05em; }
+  .pdf-review input, .pdf-review select, .pdf-review textarea { width: 100%; border: 1px solid var(--line); border-radius: 0; background: var(--surface); color: var(--ink); font: inherit; }
+  .pdf-review input, .pdf-review select { min-height: 40px; padding: 8px 10px; }
+  .pdf-review textarea { resize: vertical; padding: 12px; font-family: var(--serif); font-size: 16px; line-height: 1.8; }
+  .pdf-review__notice { min-height: 22px; color: var(--vermilion); font-size: 12px; }
+  .pdf-review__workspace { display: grid; grid-template-columns: minmax(230px, .72fr) minmax(330px, 1.05fr) minmax(360px, 1.15fr); height: calc(100svh - 210px); min-height: 620px; border: 1px solid var(--line); background: var(--surface); }
+  .pdf-review__queue, .pdf-review__source, .pdf-review__form { min-width: 0; overflow: auto; }
+  .pdf-review__queue, .pdf-review__source { border-right: 1px solid var(--line); }
+  .pdf-review__queue-count, .pdf-review__source-toolbar, .pdf-review__form-heading { position: sticky; top: 0; z-index: 2; padding: 12px 14px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface), transparent 4%); backdrop-filter: blur(14px); }
+  .pdf-review__candidate { display: grid; width: 100%; grid-template-columns: auto 1fr; gap: 8px 12px; padding: 13px 14px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
+  .pdf-review__candidate[aria-current='true'] { background: color-mix(in srgb, var(--vermilion), transparent 91%); box-shadow: inset 3px 0 var(--vermilion); }
+  .pdf-review__candidate small { color: var(--ink-soft); font-size: 10px; }
+  .pdf-review__candidate strong { font-family: var(--serif); font-size: 16px; font-weight: 520; }
+  .pdf-review__candidate em { grid-column: 2; color: var(--ink-soft); font-size: 10px; font-style: normal; }
+  .pdf-review__source-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .pdf-review__source-toolbar label { display: flex; align-items: center; gap: 8px; }
+  .pdf-review__source-toolbar select { width: auto; }
+  .pdf-review__image-stage { display: grid; min-height: 440px; place-items: center; padding: 18px; background: #d8d1bf; }
+  .pdf-review__image-stage img { display: block; max-width: 100%; max-height: 68vh; object-fit: contain; box-shadow: 0 12px 40px rgb(0 0 0 / 18%); }
+  .pdf-review__audit { display: grid; grid-template-columns: auto 1fr; gap: 7px 14px; padding: 16px; color: var(--ink-soft); font-size: 11px; }
+  .pdf-review__audit dt { color: var(--ink); }
+  .pdf-review__audit dd { margin: 0; overflow-wrap: anywhere; }
+  .pdf-review__form { display: flex; flex-direction: column; gap: 14px; padding: 0 18px 22px; }
+  .pdf-review__form-heading { display: flex; justify-content: space-between; margin: 0 -18px 2px; }
+  .pdf-review__form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pdf-review__diff { min-height: 22px; color: var(--vermilion); font-size: 11px; }
+  .pdf-review__actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0; padding: 0; border: 0; }
+  .pdf-review__actions legend { margin-bottom: 8px; color: var(--ink-soft); font-size: 11px; }
+  .pdf-review__actions button, .pdf-review__save { min-height: 42px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+  .pdf-review__actions button[aria-pressed='true'] { border-color: var(--vermilion); background: var(--vermilion); color: var(--paper); }
+  .pdf-review__save-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--ink-soft); font-size: 10px; }
+  .pdf-review__save { min-width: 150px; background: var(--ink); color: var(--paper); }
+  @media (max-width: 1080px) { .pdf-review__filters { grid-template-columns: repeat(3, 1fr); } .pdf-review__workspace { grid-template-columns: 230px 1fr; height: auto; } .pdf-review__form { grid-column: 1 / -1; max-height: none; border-top: 1px solid var(--line); } }
+  @media (max-width: 700px) { .pdf-review { padding: 12px; } .pdf-review__header { display: block; } .pdf-review__summary { margin-top: 12px; text-align: left; } .pdf-review__filters { grid-template-columns: 1fr 1fr; } .pdf-review__workspace { display: block; } .pdf-review__queue { max-height: 300px; border-right: 0; border-bottom: 1px solid var(--line); } .pdf-review__source { border-right: 0; } .pdf-review__form-row, .pdf-review__actions { grid-template-columns: 1fr 1fr; } }
+</style>

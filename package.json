@@ -10,6 +10,8 @@
     "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "vitest run",
     "test:pdf": "python3 -m unittest tests/pdf_import_test.py",
+    "pdf:catalog": "python3 scripts/build_pdf_catalog.py --render",
+    "pdf:publish": "python3 scripts/publish_pdf_catalog.py",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && vitest run && python3 -m unittest tests/pdf_import_test.py && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview"
   },

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "pdf": "poems/谛深大师诗集（简体）.pdf",
+  "batches": [
+    { "id": "page-24", "pageFrom": 24, "pageTo": 24 },
+    { "id": "pages-51-75", "pageFrom": 51, "pageTo": 75 },
+    { "id": "pages-76-100", "pageFrom": 76, "pageTo": 100 },
+    { "id": "pages-101-125", "pageFrom": 101, "pageTo": 125 },
+    { "id": "pages-126-150", "pageFrom": 126, "pageTo": 150 },
+    { "id": "pages-151-175", "pageFrom": 151, "pageTo": 175 },
+    { "id": "pages-176-200", "pageFrom": 176, "pageTo": 200 },
+    { "id": "pages-201-206", "pageFrom": 201, "pageTo": 206 }
+  ],
+  "legacyExceptions": {
+    "pageFrom": 25,
+    "pageTo": 50,
+    "titles": ["出门儿", "赠众生"]
+  },
+  "permanentExclusions": [
+    {
+      "pdfPage": 204,
+      "title": "师父为坐下弟子建的QQ群写的群联：",
+      "reason": "couplet_excluded"
+    }
+  ],
+  "expected": {
+    "remainingCandidates": 177,
+    "poetryCandidates": 175,
+    "highConfidence": 167,
+    "mediumConfidence": 8,
+    "lowConfidence": 2,
+    "legacyExceptions": 2
+  }
+}

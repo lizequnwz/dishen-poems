@@ -19,7 +19,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
-RULES_VERSION = "pdf-coordinate-v2"
+RULES_VERSION = "pdf-coordinate-v3"
 MIN_PUBLIC_PDF_PAGE = 24
 DEFAULT_PDF = Path("poems/谛深大师诗集（简体）.pdf")
 DEFAULT_CALIBRATIONS = Path("imports/pdf-layout-calibrations.json")
@@ -52,6 +52,8 @@ class Candidate:
     layout_template_status: str
     pdf_sha256: str
     content_fingerprint: str
+    candidate_id: str = ""
+    review_batch_id: str | None = None
     region_sequence: int = 0
     crop_bbox: list[float] = field(default_factory=list)
     extraction_rule_version: str = RULES_VERSION
@@ -62,6 +64,8 @@ class Candidate:
     slug: str | None = None
     crop_agreement: bool = False
     content_status: str = "ingested"
+    review_decision_id: str | None = None
+    extracted_content_fingerprint: str | None = None
 
     @property
     def can_publish(self) -> bool:
@@ -90,6 +94,17 @@ def normalize_text(value: str) -> str:
 def content_fingerprint(title: str, body: str, written_date: str | None) -> str:
     payload = "\n".join([written_date or "", normalize_text(title), normalize_text(body)])
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def candidate_identity(
+    pdf_sha256: str,
+    pdf_page: int,
+    region: str,
+    region_sequence: int,
+    fingerprint: str,
+) -> str:
+    payload = f"{pdf_sha256}|{pdf_page}|{region}|{region_sequence}|{fingerprint}"
+    return f"pdf-{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:24]}"
 
 
 def parse_gregorian_date(value: str) -> str | None:
@@ -160,7 +175,8 @@ def classify_poetry(title: str, body_lines: list[str]) -> tuple[str, list[str]]:
     normalized_lines = [normalize_text(line) for line in body_lines if normalize_text(line)]
     cjk_counts = [len(re.findall(r"[\u3400-\u9fff]", line)) for line in normalized_lines]
     punctuation_lines = sum(bool(re.search(r"[，。；！？、：]", line)) for line in normalized_lines)
-    prose_markers = ("简介", "生平", "序言", "前言", "后记", "说明", "楹联", "对联")
+    prose_markers = ("简介", "生平", "序言", "前言", "后记", "说明", "楹联", "对联", "群联")
+    couplet_markers = ("楹联", "对联", "群联")
 
     if any(marker in title for marker in prose_markers):
         failures.append("non_poetry_heading")
@@ -170,7 +186,7 @@ def classify_poetry(title: str, body_lines: list[str]) -> tuple[str, list[str]]:
         failures.append("verse_line_structure_uncertain")
     if cjk_counts and statistics.median(cjk_counts) > 42:
         failures.append("prose_like_line_length")
-    if "楹联" in title or "对联" in title:
+    if any(marker in title for marker in couplet_markers):
         failures.append("couplet_excluded")
     return ("poetry", []) if not failures else ("excluded", sorted(set(failures)))
 
@@ -292,6 +308,7 @@ def extract_region_candidates(
         failures = sorted(set(failures))
         fingerprint = content_fingerprint(title_line.text, "\n".join(body_texts), written_date)
         confidence = "high" if not failures else "medium" if candidate_type == "poetry" and written_date else "low"
+        region_sequence = len(candidates) + 1
         candidates.append(
             Candidate(
                 title=title_line.text,
@@ -305,7 +322,8 @@ def extract_region_candidates(
                 layout_template_status=template_status,
                 pdf_sha256=pdf_sha256,
                 content_fingerprint=fingerprint,
-                region_sequence=len(candidates) + 1,
+                candidate_id=candidate_identity(pdf_sha256, pdf_page, region, region_sequence, fingerprint),
+                region_sequence=region_sequence,
                 crop_bbox=[round(float(value), 2) for value in bbox],
                 confidence=confidence,
                 candidate_type=candidate_type,
@@ -375,6 +393,8 @@ def candidate_markdown(candidate: Candidate, status: str, pdf_label: str) -> str
         f"  pdfSha256: {candidate.pdf_sha256}",
         f"  pdfPage: {candidate.pdf_page}",
         f"  region: {candidate.region}",
+        f"  regionSequence: {candidate.region_sequence}",
+        f"  candidateId: {candidate.candidate_id}",
     ]
     if candidate.printed_page is not None:
         source_lines.append(f"  printedPage: {candidate.printed_page}")
@@ -385,6 +405,10 @@ def candidate_markdown(candidate: Candidate, status: str, pdf_label: str) -> str
             f"  confidence: {candidate.confidence}",
         ]
     )
+    if candidate.extracted_content_fingerprint:
+        source_lines.append(f"  extractedContentFingerprint: {candidate.extracted_content_fingerprint}")
+    if candidate.review_decision_id:
+        source_lines.append(f"  reviewDecisionId: {candidate.review_decision_id}")
     if candidate.failure_reasons:
         source_lines.extend(["  failureReasons:", *[f"    - {reason}" for reason in candidate.failure_reasons]])
     else:

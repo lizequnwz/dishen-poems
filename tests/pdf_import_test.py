@@ -1,6 +1,7 @@
 import importlib.util
 import sys
 import unittest
+import json
 from pathlib import Path
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "import_pdf_poems.py"
@@ -28,6 +29,21 @@ class PdfImportRulesTest(unittest.TestCase):
         one = MODULE.content_fingerprint("天 山", "山中有 水", "2023-01-01")
         two = MODULE.content_fingerprint("天山", "山中有水", "2023-01-01")
         self.assertEqual(one, two)
+
+    def test_candidate_identity_is_stable_and_location_specific(self):
+        one = MODULE.candidate_identity("a" * 64, 24, "right", 1, "b" * 64)
+        two = MODULE.candidate_identity("a" * 64, 24, "right", 1, "b" * 64)
+        moved = MODULE.candidate_identity("a" * 64, 24, "right", 2, "b" * 64)
+        self.assertEqual(one, two)
+        self.assertNotEqual(one, moved)
+
+    def test_group_couplet_heading_is_permanently_excluded(self):
+        kind, failures = MODULE.classify_poetry(
+            "师父为坐下弟子建的QQ群写的群联：",
+            ["入此门不许你七颠八倒", "横批是：统统放下"],
+        )
+        self.assertEqual(kind, "excluded")
+        self.assertIn("couplet_excluded", failures)
 
     def test_uncalibrated_candidate_cannot_publish(self):
         candidate = MODULE.Candidate(
@@ -69,17 +85,36 @@ class PdfImportRulesTest(unittest.TestCase):
         self.assertFalse(candidate.can_publish)
 
     def test_page_range_is_inclusive_and_validated(self):
-        self.assertEqual(MODULE.resolve_page_range(458, 25, 50), (25, 50))
-        self.assertEqual(MODULE.resolve_page_range(458, None, None), (1, 458))
+        self.assertEqual(MODULE.resolve_page_range(206, 25, 50), (25, 50))
+        self.assertEqual(MODULE.resolve_page_range(206, None, None), (1, 206))
         with self.assertRaises(ValueError):
             MODULE.resolve_page_range(458, 50, 25)
         with self.assertRaises(ValueError):
-            MODULE.resolve_page_range(458, 1, 459)
+            MODULE.resolve_page_range(206, 1, 207)
 
     def test_owner_layout_decisions_are_recorded(self):
         registry = MODULE.load_calibrations(Path(__file__).parents[1] / "imports" / "pdf-layout-calibrations.json")
         self.assertEqual(registry["spread-964696f761"]["status"], "rejected")
         self.assertEqual(sum(item["status"] == "calibrated" for item in registry.values()), 7)
+
+    def test_remaining_batch_registry_covers_the_document_tail(self):
+        data = json.loads((Path(__file__).parents[1] / "imports" / "pdf-review-batches.json").read_text())
+        ranges = [(item["pageFrom"], item["pageTo"]) for item in data["batches"]]
+        self.assertEqual(ranges[0], (24, 24))
+        self.assertEqual(ranges[-1], (201, 206))
+        self.assertEqual(data["expected"]["remainingCandidates"], 177)
+
+    @unittest.skipUnless(importlib.util.find_spec("pdfplumber"), "pdfplumber not installed")
+    def test_fixed_remaining_pdf_regression_pages(self):
+        root = Path(__file__).parents[1]
+        pdf = root / "poems" / "谛深大师诗集（简体）.pdf"
+        calibrations = root / "imports" / "pdf-layout-calibrations.json"
+        _, page24, _ = MODULE.scan_pdf(pdf, calibrations, 24, 24)
+        self.assertEqual([(item.title, item.confidence) for item in page24], [("那罗延窟观善境", "high"), ("九水", "high")])
+        _, page204, _ = MODULE.scan_pdf(pdf, calibrations, 204, 204)
+        self.assertEqual(len(page204), 1)
+        self.assertIn("couplet_excluded", page204[0].failure_reasons)
+        self.assertEqual(page204[0].confidence, "low")
 
 
 if __name__ == "__main__":

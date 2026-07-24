@@ -1,8 +1,9 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { validateSiteRecords } from './content-rules';
+import { validateSiteRecords, type RuleReviewDecision } from './content-rules';
 import { deriveTextVariants, type TextVariant } from './script-conversion';
 import { resolveVisualProfile } from './visual-profile';
 import { comparePoemsNewestFirst } from './poem-ordering';
+import pdfReviewDecisionData from '../../imports/pdf-review-decisions.json';
 
 export { comparePoemsNewestFirst } from './poem-ordering';
 
@@ -59,6 +60,7 @@ export async function loadSiteData() {
       status: exhibition.data.status,
       poemIds: exhibition.data.poemIds,
     })),
+    Object.values(pdfReviewDecisionData.decisions) as RuleReviewDecision[],
   );
 
   const poemById = new Map(poems.map((poem) => [poem.data.id, poem]));
