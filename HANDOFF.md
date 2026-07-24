@@ -2,7 +2,7 @@
 
 ## Current state
 
-The remaining-PDF, development review desk, visual expansion, and 167-poem automatic publication project was completed on 2026-07-23. The production collection now contains **258 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
+The remaining-PDF, development review desk, visual expansion, 167-poem automatic publication, and 12-poem human-reviewed supplement were completed on 2026-07-23. The production collection now contains **270 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
 
 Authoritative design: `docs/superpowers/specs/2026-07-23-pdf-review-visual-expansion-design.md`.
 
@@ -49,7 +49,7 @@ The previous collection had 91 poems; `91 + 167 = 258`. No existing poem body wa
 - Decisions are written only by **Save and next**. The middleware accepts same-origin localhost requests, validates every field and candidate identity, then atomically updates `imports/pdf-review-decisions.json`.
 - Decisions are valid only while candidate ID, PDF SHA-256, and extracted fingerprint all match. Explicit hold/reject always overrides automatic eligibility.
 
-## Human review completed; supplemental publication pending
+## Human-reviewed supplement completed
 
 All 12 review exceptions now have tracked human decisions in `imports/pdf-review-decisions.json` (commit `f9c2e29`):
 
@@ -57,16 +57,16 @@ All 12 review exceptions now have tracked human decisions in `imports/pdf-review
 - 《弹指微风射大汗》 corrected and approved;
 - 《妙湛寺过斋》 reconstructed, classified as poetry, and approved.
 
-They remain intentionally **unpublished** because the approved plan kept the 12 manual exceptions out of the 167 automatic batch and required separate supplemental year checkpoints. Their years are:
+They were kept out of the 167 automatic batch, then published through six independent supplemental year checkpoints after explicit review:
 
-- 2020: 1
-- 2019: 1
-- 2012: 2
-- 2011: 2
-- 2008: 2
-- 2006: 4
+- 2020: 1 (`89935d2`)
+- 2019: 1 (`e104a93`)
+- 2012: 2 (`1a0ed20`)
+- 2011: 2 (`ac23a55`)
+- 2008: 2 (`ad18fc2`)
+- 2006: 4 (`04f67ec`)
 
-Next publication step: for each year above, first dry-run and inspect the exact delta, then use `--include-reviewed --apply`, run the full build, and commit that year's new files independently. Do not alter original confidence or failure reasons; manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
+The collection total is now `258 + 12 = 270`. Original confidence and failure reasons remain unchanged; manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
 
 ## Visual system completed
 
@@ -80,11 +80,11 @@ Next publication step: for each year above, first dry-run and inspect the exact 
 
 ## Validation baseline
 
-- Public poems: 258
+- Public poems: 270
 - Duplicate slugs: 0
 - Vitest: 66 tests
 - Python PDF suite: 12 tests
-- Final automatic-year build: 281 static pages
+- Final supplemental-year build: 293 static pages
 - Production `/preview/pdf/` and `__pdf-review`: absent
 - Browser checks: review crop loading, 12-item exception queue, five homepage compositions/four families, year cards, mobile single-column gallery, and month anchors.
 
