@@ -51,6 +51,10 @@ def candidate_from_catalog(item: dict[str, Any], decision: dict[str, Any] | None
         review_decision_id = decision.get("id")
     elif decision and decision.get("action") == "approve":
         review_decision_id = decision.get("id")
+        # The explicit human approval also affirms that a low/excluded
+        # extraction is a poem. Keep its original confidence and failure
+        # reasons in the source audit instead of disguising it as auto-high.
+        candidate_type = "poetry"
 
     return Candidate(
         title=title,

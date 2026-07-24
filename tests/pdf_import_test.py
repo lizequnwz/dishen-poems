@@ -10,8 +10,43 @@ MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
+PUBLISH_PATH = Path(__file__).parents[1] / "scripts" / "publish_pdf_catalog.py"
+PUBLISH_SPEC = importlib.util.spec_from_file_location("publish_pdf_catalog", PUBLISH_PATH)
+PUBLISH_MODULE = importlib.util.module_from_spec(PUBLISH_SPEC)
+sys.modules[PUBLISH_SPEC.name] = PUBLISH_MODULE
+PUBLISH_SPEC.loader.exec_module(PUBLISH_MODULE)
+
 
 class PdfImportRulesTest(unittest.TestCase):
+    def test_explicit_approval_affirms_excluded_candidate_is_poetry(self):
+        item = {
+            "title": "春姑",
+            "body": "春风一缕过山门，\n花影无声照故人。",
+            "writtenDate": "2012-04-03",
+            "candidateType": "excluded",
+            "pdfPage": 143,
+            "region": "right",
+            "printedPage": 136,
+            "printedPageRaw": "一三六",
+            "layoutTemplate": "spread-example",
+            "layoutTemplateStatus": "calibrated",
+            "pdfSha256": "a" * 64,
+            "contentFingerprint": "b" * 64,
+            "candidateId": "pdf-" + "c" * 24,
+            "reviewBatchId": "pages-126-150",
+            "regionSequence": 1,
+            "cropBbox": [0, 0, 100, 100],
+            "confidence": "low",
+            "failureReasons": ["verse_line_structure_uncertain"],
+            "visualSignals": ["花"],
+            "cropAgreement": True,
+        }
+        decision = {"action": "approve", "id": "review-pdf-" + "c" * 24}
+        candidate = PUBLISH_MODULE.candidate_from_catalog(item, decision)
+        self.assertEqual(candidate.candidate_type, "poetry")
+        self.assertEqual(candidate.confidence, "low")
+        self.assertEqual(candidate.failure_reasons, ["verse_line_structure_uncertain"])
+
     def test_accepts_only_valid_full_gregorian_dates(self):
         self.assertEqual(MODULE.parse_gregorian_date("2 0 2 3 · 0 1 · 0 9"), "2023-01-09")
         self.assertIsNone(MODULE.parse_gregorian_date("2023 年春"))

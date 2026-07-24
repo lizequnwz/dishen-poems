@@ -45,7 +45,7 @@ visualProfile:
 
 `title`、`writtenDate`、`id` 与 `slug` 是结构化权威字段。`writtenDate` 只接受完整、有效、无歧义的公历 `YYYY-MM-DD`。文件名必须与日期和标题一致；URL 一经公开，不随文件名或标题修正而变化。简繁显示由 OpenCC 构建时派生，需要时使用每诗 `scriptOverrides` 保存人工审核例外。
 
-`visualProfile` 的五个字段均可省略；数据层会用月份、正文中的字面视觉信号和稳定作品 ID 确定性补齐。自动识别的雨、雪、山、月、花等只保存在内部解析结果与 PDF 审计报告中，不会自动写入公开 `descriptiveTags`。
+`visualProfile` 的 `sceneFamily`、色谱、意象、构图、光线和强度均可省略；数据层会用月份、正文中的字面视觉信号和稳定作品 ID 确定性补齐。四类场景为 `landscape`、`courtyard`、`scroll` 与 `celestial`。自动识别的雨、雪、山、月、花等只保存在内部解析结果与 PDF 审计报告中，不会自动写入公开 `descriptiveTags`。
 
 ## 导入 PDF 旧作
 
@@ -58,6 +58,22 @@ python3 scripts/render_pdf_calibration.py
 ```
 
 报告位于 `tmp/pdf-import/report.json`，每种版式的代表半页图位于 `tmp/pdf-import/calibration/`。每发现一种版式，必须人工核对代表作，并在 `imports/pdf-layout-calibrations.json` 中显式记录 `status: "calibrated"`；实施者和导入器都不得自行批准。
+
+剩余页候选使用受版本控制的批次配置与一个共享目录：
+
+```sh
+npm run pdf:catalog
+npm run dev
+```
+
+开发审核台位于 `/preview/pdf/`，审核决定写入 `imports/pdf-review-decisions.json`。该页面、裁图、目录数据和写入端点不会进入生产构建。发布器只消费冻结目录，不重新扫描 PDF：
+
+```sh
+python3 scripts/publish_pdf_catalog.py --publish-year 2023
+python3 scripts/publish_pdf_catalog.py --publish-year 2023 --apply
+```
+
+只有明确人工决定且指纹仍匹配的非 high 候选，才可额外使用 `--include-reviewed` 进入独立补充批次。
 
 确认版式后重新 dry-run，检查标题、正文、日期、页码、左右区域、内容指纹、坐标／裁剪一致性与重复冲突。只有已校准版式的高置信诗歌才可成为 `verified`。显式写入命令如下，且不会覆盖现有文件：
 

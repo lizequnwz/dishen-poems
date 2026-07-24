@@ -1,96 +1,97 @@
 # Dishen Poems Handoff
 
-## Current objective
+## Current state
 
-Preserve the completed pages 25–50 publication and compact-reading-UI checkpoints, then prepare the next bounded PDF review phase without overwriting unrelated work. All 62 automatically eligible poems from the first batch are published. Physical page 24, pages 51 through the end, and the development-only review dashboard remain intentionally deferred.
+The remaining-PDF, development review desk, visual expansion, and 167-poem automatic publication project was completed on 2026-07-23. The production collection now contains **258 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
 
-## Source of truth
+Authoritative design: `docs/superpowers/specs/2026-07-23-pdf-review-visual-expansion-design.md`.
 
-- Audio design: `docs/superpowers/specs/2026-07-22-three-layer-audio-ducking-design.md` (commit `a706dd7`).
-- Compact-player and poem-line design: `docs/superpowers/specs/2026-07-22-compact-audio-and-poem-line-layout-design.md` and its matching implementation plan under `docs/superpowers/plans/`.
-- Product design and implementation plan: `docs/superpowers/specs/2026-07-20-dishen-zen-poetry-website-design.md` and `docs/superpowers/plans/2026-07-21-dishen-poetry-mvp-implementation.md`.
-- PDF extraction decision: `docs/adr/0003-calibrated-pdf-ingestion.md` and `scripts/import_pdf_poems.py`.
-- Current generated extraction artifacts: `tmp/pdf-import/report.json` and `tmp/pdf-import/calibration/manifest.json`.
-- Layout decisions: `imports/pdf-layout-calibrations.json`.
+## Completed PDF coverage
 
-## Locked decisions
+- Formal poetry begins at physical PDF page 24. No page before 24 is eligible.
+- The tracked batch registry is `imports/pdf-review-batches.json` and covers page 24 plus pages 51–206. The earlier pages 25–50 batch remains part of the published collection.
+- The frozen remaining-page regression baseline is exact: 177 candidates, 175 poetry candidates, 167 high, 8 medium, and 2 low/excluded. There are no cross-batch title/date duplicates.
+- Page 204 “师父为坐下弟子建的QQ群写的群联：” is permanently excluded by `couplet_excluded`. Pages 174–203 were scanned and yielded no complete-date candidates.
+- The shared deterministic catalog is generated at `tmp/pdf-import/catalog/catalog.json`; the review desk and publisher both consume it. It is intentionally ignored by Git and can be recreated with `npm run pdf:catalog`.
+- `scripts/publish_pdf_catalog.py` never rescans the PDF, never overwrites existing Markdown, and validates the catalog rules version plus PDF checksum before planning a year.
 
-- Reject `spread-964696f761`, represented by “和尚祝全世界广众虎年吉祥！” on PDF page 7 right. It is front matter, not formal poetry.
-- Formal poetry begins on PDF page 24; nothing before that page may be published.
-- Pages 25–50 inclusive are the first extraction batch. The user completed and approved its poem review on 2026-07-22.
-- Pages and half-page regions can contain multiple poems. Preserve document order and never assume one poem per page or region.
-- Keep the existing year-by-year publication gate after batch review.
-- Only unambiguous, full Gregorian dates qualify. Exclude prose, couplets, introductions, and mixed content.
-- Preserve all existing worktree changes and do not reset or broadly reformat them.
+## Automatic publication completed
 
-## Verified batch facts
+The 167 zero-failure high candidates were published as 17 independent year commits, each after a complete `npm run build`:
 
-- Pages 25–50 yield 65 candidates: 64 classified as poetry, 62 high confidence, and all 65 with a parsed full date.
-- The user approved the extracted poems' title, body, punctuation, and date on 2026-07-22.
-- “弟子求对联” on page 25 remains explicitly excluded as a couplet.
-- “出门儿” and “赠众生” passed human content review, but remain medium-confidence ingestion candidates because small-print annotations make coordinate and crop text differ. Publish them only after recording an explicit manual override or reconciling the two extraction paths; do not weaken the global high-confidence rule.
-- The range contains six layout templates: `spread-4bb95f21ab`, `spread-895df3e0ab`, `spread-b4c9f9ead7`, `spread-ccfa425d52`, `spread-e6a283a8d6`, and `spread-f4d759d177`.
-- Many regions yield two poems; several pages yield four candidates. The range spans 2005–2006.
-- The automatically eligible set contains 37 poems from 2006 and 25 poems from 2005.
-- All 37 automatically eligible 2006 poems have been generated as verified content. A full build produced the 2006 archive and all 37 poem routes; repeating the same apply command created zero files.
-- All 25 automatically eligible 2005 poems have been generated as verified content. A full build produced the 2005 archive and all 25 poem routes; repeating the same apply command created zero files.
-- Publication of the 62 high-confidence poems from pages 25–50 is complete. The site now contains 67 poems total, including the five manually curated 2026 works.
-- The generated local review bundle is `tmp/pdf-import/review-25-50/REVIEW.md`, with machine-readable data in `review.json` and 65 images under `crops/`.
+| Year | Count | Commit |
+|---:|---:|---|
+| 2023 | 1 | `14418dc` |
+| 2021 | 2 | `0716ed7` |
+| 2020 | 9 | `6b4d728` |
+| 2019 | 2 | `9cf251d` |
+| 2018 | 1 | `1d6d538` |
+| 2017 | 3 | `aa5ab3d` |
+| 2015 | 2 | `8faeb4c` |
+| 2014 | 4 | `125ec9e` |
+| 2013 | 2 | `96f6574` |
+| 2012 | 6 | `5d3dd81` |
+| 2011 | 9 | `c08df53` |
+| 2010 | 8 | `cfd6ba9` |
+| 2009 | 14 | `0758066` |
+| 2008 | 22 | `acca69e` |
+| 2007 | 50 | `5583e51` |
+| 2006 | 30 | `2f06cc6` |
+| 2005 | 2 | `557404d` |
 
-## Completed reading UI refinement
+The previous collection had 91 poems; `91 + 167 = 258`. No existing poem body was rewritten by these commits.
 
-- The production audio player defaults to a compact fixed bar and exposes previous/next, environment, and accent controls in an upward-opening panel. Expanded state is remembered independently from playback preferences; the review player remains expanded in document flow.
-- The compact bar is 58px high in tested desktop and mobile layouts, with 44px mobile touch targets. Mobile document padding dropped from 250px to 72px plus the safe-area inset.
-- Poem typography tiers now depend on the longest source line rather than total poem length. Source newlines remain authoritative and visual lines never wrap.
-- Tag-free single-poem pages omit the empty imagery column and widen the poem card. At 1280px, 《普陀境》 renders both 16-character lines without overflow; at 320px it uses the compact tier and still fits without wrapping.
-- Extremely long lines scroll only inside the poem block. The block becomes focusable only when it overflows and supports Arrow Left/Right plus Home/End; the page itself remains free of horizontal overflow.
-- Browser checks covered 1280px, 320px, a 640px zoom-equivalent layout, persisted collapsed/expanded state, dark mode, and the long-line fallback using 《高山春》.
-- Final validation passed Astro check, 39 Vitest tests, 7 PDF tests, and a 75-page static build.
+## Development PDF review desk
 
-## Remaining work
+- Run `npm run pdf:catalog`, then `npm run dev`, and open `/preview/pdf/`.
+- The route and its `__pdf-review` read/write middleware exist only under the Vite development server. Production static builds contain neither the page, review data, crops, nor a write endpoint.
+- The desk supports batch, year, page, confidence, decision, publication-status, and text filters. It shows the queue, crop/full-page context, extracted fields, failures, source audit, and before/after corrections.
+- Decisions are written only by **Save and next**. The middleware accepts same-origin localhost requests, validates every field and candidate identity, then atomically updates `imports/pdf-review-decisions.json`.
+- Decisions are valid only while candidate ID, PDF SHA-256, and extracted fingerprint all match. Explicit hold/reject always overrides automatic eligibility.
 
-### Approved batch publication
+## Human review completed; supplemental publication pending
 
-1. The 2006 publication step is complete: 37 verified Markdown files, 37 archive entries, and 37 static poem routes. Homepage latest-five remains the five 2026 poems.
-2. The 2005 publication step is complete: 25 verified Markdown files, 25 archive entries, and 25 static poem routes. Homepage latest-five remains the five 2026 poems.
-3. Keep “出门儿” and “赠众生” out of automatic publication until their reviewed manual decisions are represented by a tracked override or their extraction mismatch is resolved. Keep “弟子求对联” excluded.
+All 12 review exceptions now have tracked human decisions in `imports/pdf-review-decisions.json` (commit `f9c2e29`):
 
-### Deferred PDF coverage
+- 10 approved without text changes;
+- 《弹指微风射大汗》 corrected and approved;
+- 《妙湛寺过斋》 reconstructed, classified as poetry, and approved.
 
-- Extract and review physical PDF page 24, which belongs to the formal poetry section but was intentionally omitted from the first batch.
-- Continue from physical PDF page 51 through the end in small, inclusive page ranges. Do not extract or publish all remaining pages as one unreviewable batch.
-- Preserve multiple poems per page and per half-page, full Gregorian date requirements, calibrated-layout gating, document order, stable fingerprints, and the year-by-year publication gate.
-- Store future review decisions in a tracked, machine-readable approval/override manifest so a rebuilt review bundle retains human decisions.
+They remain intentionally **unpublished** because the approved plan kept the 12 manual exceptions out of the 167 automatic batch and required separate supplemental year checkpoints. Their years are:
 
-## Deferred development-only review desk
+- 2020: 1
+- 2019: 1
+- 2012: 2
+- 2011: 2
+- 2008: 2
+- 2006: 4
 
-Design and build `/preview/pdf/` in a later iteration. It must be available only in development and absent from production output.
+Next publication step: for each year above, first dry-run and inspect the exact delta, then use `--include-reviewed --apply`, run the full build, and commit that year's new files independently. Do not alter original confidence or failure reasons; manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
 
-The desk should:
+## Visual system completed
 
-- consume generated review artifacts rather than parse PDFs in the browser;
-- display each PDF crop beside the extracted title, body, punctuation, date, PDF page/region/order, failure reasons, confidence, and publication status;
-- support filtering by page range, year, status, and confidence;
-- support explicit approve, reject, correct, and hold decisions;
-- persist decisions to a tracked, machine-readable approval/override manifest rather than relying only on browser state or `localStorage`;
-- export deterministic reviewed data that the importer can consume without weakening its normal safety gates.
+- `VisualProfile` now supports `sceneFamily`: `landscape`, `courtyard`, `scroll`, or `celestial`.
+- Code-native motifs include mountain/water/weather plus enso, moon gate, lattice window, bamboo, bird, lantern, lotus ripple, bell ripple, and sutra thread. Palettes include low-saturation saffron and lapis.
+- Resolution remains deterministic from complete date, literal text signals, and stable ID. Runtime randomness is not used, and automatic signals never become public tags.
+- Homepage latest-five uses five distinct compositions spanning at least four scene families; explicit frontmatter overrides remain authoritative.
+- Single-poem pages use family-specific reading frames while preserving the poem safe area and original line breaks. Mobile degrades to one stable column; print removes nonessential scenery.
+- `/archive/` is now a deterministic year gallery. `/archive/[year]/` groups every work by month and adds month anchors for populous years. The homepage includes the compact “诗卷年轮” entry.
+- No PDF photography, new curated raster image, Tailwind, shadcn, or runtime visual dependency was introduced. Future curated-image work should continue using the existing asset override interface and a separate human review flow.
 
-## Acceptance checks
+## Validation baseline
 
-- Pages before 24 can never publish.
-- A pages 25–50 dry run reports only that inclusive range and does not modify `poems/`.
-- Multiple poems in one page or half-page remain separate and correctly ordered.
-- Rejected or uncalibrated layouts cannot produce verified content.
-- Apply mode refuses overwrites and preserves stable slugs and fingerprints.
-- Astro check, unit tests, PDF tests, and static build pass after every deployable phase.
+- Public poems: 258
+- Duplicate slugs: 0
+- Vitest: 66 tests
+- Python PDF suite: 12 tests
+- Final automatic-year build: 281 static pages
+- Production `/preview/pdf/` and `__pdf-review`: absent
+- Browser checks: review crop loading, 12-item exception queue, five homepage compositions/four families, year cards, mobile single-column gallery, and month anchors.
 
-## Suggested skills
-
-- `brainstorming` before any new behavior or the deferred review-desk design.
-- `pdf:pdf` for source/crop comparison and multi-poem layout verification.
-- `ui-styling` only after the review-desk design is approved.
-- `grilling` before relaxing any automatic-publication gate.
+Before the next deploy, rerun `npm run build`, the bundled Python PDF suite, `git diff --check`, and the production-route absence assertion. Regenerate the ignored catalog if `tmp/pdf-import/catalog/catalog.json` is unavailable.
 
 ## Repository hygiene
 
-Candidate MP3 files under `audio/candidates/` are local review artifacts and are ignored by Git. Seven approved production MP3 files are tracked under `public/audio/` with checksums and attribution; the older seven candidates remain unapproved.
+- `tmp/pdf-import/`, PDF crops, full-page thumbnails, build output, caches, and candidate MP3 files remain untracked.
+- Approved production audio stays under `public/audio/`; audio attribution remains generated from the tracked manifest.
+- Preserve tracked review decisions and all stable poem URLs. Never broadly regenerate or rewrite already published Markdown.
