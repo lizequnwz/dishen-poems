@@ -1,5 +1,138 @@
 {
   "version": 1,
   "reviewedBy": "site-owner",
-  "decisions": {}
+  "decisions": {
+    "pdf-06247bfeed6f11a6d5ce0d3b": {
+      "id": "review-pdf-06247bfeed6f11a6d5ce0d3b",
+      "candidateId": "pdf-06247bfeed6f11a6d5ce0d3b",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "bd93c9c1130dff1a71404d8e0f8697ebb79560754d0e8d70cd9f21ff942df44f",
+      "reviewedAt": "2026-07-24T01:24:46.283Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-15614f589261883a21b71fc1": {
+      "id": "review-pdf-15614f589261883a21b71fc1",
+      "candidateId": "pdf-15614f589261883a21b71fc1",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "45b2c0dfd39ed5a450d745771faf204a5edb494f85c8b91bb54905905ffc80b4",
+      "reviewedAt": "2026-07-24T01:31:13.457Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-2dd9a988dffdd234c56d62a1": {
+      "id": "review-pdf-2dd9a988dffdd234c56d62a1",
+      "candidateId": "pdf-2dd9a988dffdd234c56d62a1",
+      "action": "correct",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "e12e557b1ec0d2f2a30856359b0b8f9d825c3f427152ce62092f17efd6911971",
+      "corrections": {
+        "title": "弹指微风射大汗",
+        "body": "默眼雪山,\n鞋扣美洲;\n气息风云万变,\n不知星星落耳边;\n叹\n狂人尸卧水晶，\n多少蚁人惊叹！\n五大洋如碗中水，\n尘起万缘；\n不经意，\n弹指微风射大汗！",
+        "writtenDate": "2006-10-22",
+        "candidateType": "poetry"
+      },
+      "reviewedAt": "2026-07-24T01:26:00.329Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-50ef19d29c3f8a52d3336b01": {
+      "id": "review-pdf-50ef19d29c3f8a52d3336b01",
+      "candidateId": "pdf-50ef19d29c3f8a52d3336b01",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "a037d77388e86dec25d083c6ec5928bf2541754b6c4b32ac8996e9a61c9262c5",
+      "reviewedAt": "2026-07-24T01:27:20.628Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-608e338744a3888b47083a7e": {
+      "id": "review-pdf-608e338744a3888b47083a7e",
+      "candidateId": "pdf-608e338744a3888b47083a7e",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "cc27deeeae7675a58b65edef78cd492ad52456ba08c65eef5d8db2c9d0d32121",
+      "reviewedAt": "2026-07-24T01:28:11.102Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-6579be81701f730eab72074f": {
+      "id": "review-pdf-6579be81701f730eab72074f",
+      "candidateId": "pdf-6579be81701f730eab72074f",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "4d91b197e2c083f66fba143f4217a500146088b74a861d62fb38c03936bac89c",
+      "reviewedAt": "2026-07-24T01:27:00.420Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-77c726870a1e0f7304a7a364": {
+      "id": "review-pdf-77c726870a1e0f7304a7a364",
+      "candidateId": "pdf-77c726870a1e0f7304a7a364",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "d1c1a73ced527404464528cbd2c82193d0168d928999238a3fc5415c21919a31",
+      "reviewedAt": "2026-07-24T01:28:23.967Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-7df37b990b002faf4ad9c573": {
+      "id": "review-pdf-7df37b990b002faf4ad9c573",
+      "candidateId": "pdf-7df37b990b002faf4ad9c573",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "f0157e446ff362797c9f84dce1bc25830f875c87b5ba222d4b80e776f569c5c5",
+      "reviewedAt": "2026-07-24T01:24:30.126Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-a1931f4206e30cfdf9ce6018": {
+      "id": "review-pdf-a1931f4206e30cfdf9ce6018",
+      "candidateId": "pdf-a1931f4206e30cfdf9ce6018",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "c6e71faf6cd384c04c81a22c309fea320fe44d185f2954acf3e143f6dee4f8ce",
+      "reviewedAt": "2026-07-24T01:26:23.530Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-a5d3e945da889c94c64bea4c": {
+      "id": "review-pdf-a5d3e945da889c94c64bea4c",
+      "candidateId": "pdf-a5d3e945da889c94c64bea4c",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "97da95e2e235d1789fce9ecfe79f612c0108665f1367d9158ec333afb8dde357",
+      "reviewedAt": "2026-07-24T01:27:44.609Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-d259cf5980aa0d3e715ba926": {
+      "id": "review-pdf-d259cf5980aa0d3e715ba926",
+      "candidateId": "pdf-d259cf5980aa0d3e715ba926",
+      "action": "correct",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "5a00a0e0d8a730b2ba4ce7ea12370c76c883b5362b56502703325a8722b8d838",
+      "corrections": {
+        "title": "妙湛寺过斋",
+        "body": "山亭随风与僧餐，\n四方无窗垂蓝天。\n饭食经行为道处，\n耳廓鸟声鸣满川。",
+        "writtenDate": "2019-05-01",
+        "candidateType": "poetry"
+      },
+      "reviewedAt": "2026-07-24T01:30:50.893Z",
+      "reviewedBy": "site-owner"
+    },
+    "pdf-eec4384f91f6cfed06f110b9": {
+      "id": "review-pdf-eec4384f91f6cfed06f110b9",
+      "candidateId": "pdf-eec4384f91f6cfed06f110b9",
+      "action": "approve",
+      "reason": "",
+      "pdfSha256": "de99ec1607dad80b2876b7796b8a004e039168a3fa1d1cda98920c364de873fd",
+      "extractedContentFingerprint": "03d842f6a97e99ebeb236ebbd55910112929b09bb2b5978212f43a51657384a3",
+      "reviewedAt": "2026-07-24T01:28:50.744Z",
+      "reviewedBy": "site-owner"
+    }
+  }
 }
