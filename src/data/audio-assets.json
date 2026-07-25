@@ -1,203 +1,210 @@
 [
   {
-    "id": "guqin-liu-shui",
-    "role": "music",
-    "title": { "zh": "流水", "en": "Liu Shui (Flowing Water)" },
-    "creator": "Charlie Huang（古琴演奏）",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Liu_Shui.ogg",
-    "originalFile": "Liu Shui.ogg",
-    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/liu-shui.mp3", "localFile": "audio/candidates/liu-shui.mp3", "bytes": 7869519, "sha256": "ce822b055dea58207cb19c2f64eb2d8a3d48bef829d02f78f13b9bf48c860856", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
-  },
-  {
-    "id": "guqin-pei-lan",
-    "role": "music",
-    "title": { "zh": "佩兰", "en": "Pei Lan (Admiring the Orchid)" },
-    "creator": "Charlie Huang（古琴演奏）",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pei_Lan.ogg",
-    "originalFile": "Pei Lan.ogg",
-    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/pei-lan.mp3", "localFile": "audio/candidates/pei-lan.mp3", "bytes": 7652930, "sha256": "f520bfde91e11ad44bb7de53626c9892833764608b4c86e0170f54d0377a9bfc", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
-  },
-  {
-    "id": "guqin-pingsha-luoyan",
-    "role": "music",
-    "title": { "zh": "平沙落雁", "en": "Pingsha Luoyan (Wild Geese Descending)" },
-    "creator": "Charlie Huang（古琴演奏）",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pingsha_Luoyan.ogg",
-    "originalFile": "Pingsha Luoyan.ogg",
-    "license": { "name": "CC BY 2.5", "url": "https://creativecommons.org/licenses/by/2.5/", "attributionRequired": true },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/pingsha-luoyan.mp3", "localFile": "audio/candidates/pingsha-luoyan.mp3", "bytes": 6679880, "sha256": "7a0e90720355ccbdf80008cbfd25c83b93b804479a0d920eccb019e79b527cd2", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "not-applicable", "listening": "pending" }
-  },
-  {
-    "id": "ambient-rain-window",
-    "role": "ambient",
-    "title": { "zh": "细雨", "en": "Rain against the Window" },
-    "creator": "cori",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg",
-    "originalFile": "Rain against the window.ogg",
-    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/rain-window.mp3", "localFile": "audio/candidates/rain-window.mp3", "bytes": 1285217, "sha256": "ccabe05cccbea7a6253a4b1b469a048beec4b125cd2e2737f0086e89ed500be3", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
-  },
-  {
-    "id": "ambient-swale",
-    "role": "ambient",
-    "title": { "zh": "溪水", "en": "Swale" },
-    "creator": "Ksd5",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Swale.ogg",
-    "originalFile": "Swale.ogg",
-    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/swale.mp3", "localFile": "audio/candidates/swale.mp3", "bytes": 634633, "sha256": "1c7bfaae3f54cd9824fc11c0d11351a0905adcc9e35bd105a9e1d237cbfc4080", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
-  },
-  {
-    "id": "ambient-forest",
-    "role": "ambient",
-    "title": { "zh": "山林", "en": "Forest ambience" },
-    "creator": "nille",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:20090610_0_ambience.ogg",
-    "originalFile": "20090610 0 ambience.ogg",
-    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/forest-ambience.mp3", "localFile": "audio/candidates/forest-ambience.mp3", "bytes": 3428007, "sha256": "f438752983df422c2fecd9efd0c590b1d7bd93c9c3573465e32e39c9ad2cfb20", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "known-noisy", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
-  },
-  {
-    "id": "ambient-garden-birds",
-    "role": "ambient",
-    "title": { "zh": "鸟鸣", "en": "Birds chirping in a garden" },
-    "creator": "Akum20",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Birds_chirping_in_a_garden.ogg",
-    "originalFile": "Birds chirping in a garden.ogg",
-    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/preview/audio/assets/garden-birds.mp3", "localFile": "audio/candidates/garden-birds.mp3", "bytes": 3869520, "sha256": "6fa43f550a291f1f6cfd8202890b298dd4aedfeeceb13d4638391c6116824299", "transcode": "Wikimedia Commons MP3 transcode; 64 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "candidate",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "pending", "loudness": "pending", "loopSeam": "pending", "listening": "pending" }
-  },
-  {
-    "id": "guqin-zuiyu-changwan",
-    "role": "music",
-    "title": { "zh": "醉渔唱晚", "en": "Zuiyu Changwan (Evening Song of the Drunken Fisherman)" },
-    "creator": "Charlie Huang（古琴演奏）",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Guqin-Zuiyu_Changwan.ogg",
-    "originalFile": "Guqin-Zuiyu Changwan.ogg",
-    "license": { "name": "CC BY-SA 3.0", "url": "https://creativecommons.org/licenses/by-sa/3.0/", "attributionRequired": true },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/zuiyu-changwan.mp3", "localFile": "public/audio/zuiyu-changwan.mp3", "bytes": 4592996, "sha256": "b4d616a3cf95677cb783e06386f3ea23ac50325b869d1bbe4dcdc5c6d6bd0f44", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -20 LUFS / -2 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-morning-mist-1",
+    "role": "soundscape",
+    "theme": "morning-mist",
+    "variant": 1,
+    "displayTitle": { "zh": "晨雾 I", "en": "Morning Mist I" },
+    "sources": [
+      {
+        "title": "Ethereal",
+        "creator": "Amarent",
+        "sourcePage": "https://freemusicarchive.org/music/amarent/free-atmospheric-music/ethereal-2/",
+        "originalFile": "Ethereal.mp3",
+        "license": { "name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attributionRequired": true },
+        "retrievedAt": "2026-07-25"
+      },
+      {
+        "title": "Birds chirping in a garden",
+        "creator": "Akum20",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Birds_chirping_in_a_garden.ogg",
+        "originalFile": "Birds chirping in a garden.ogg",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-22"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/morning-mist-1.mp3",
+      "localFile": "public/audio/morning-mist-1.mp3",
+      "bytes": 6313316,
+      "sha256": "15e24b101cb995fe52269d1b225ac256bed95775d2e8113ce485590ac38eecee",
+      "transcode": "Ethereal mixed with a restrained garden-bird bed; resampled, filtered, faded, and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-20.43 LUFS / -2.34 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.44 LUFS / -11.12 dBTP / LRA 7.60 LU", "listening": "approved" }
   },
   {
-    "id": "guqin-yangguan-sandie",
-    "role": "music",
-    "title": { "zh": "阳关三叠", "en": "Yangguan Sandie (Three Refrains on the Yang Pass Theme)" },
-    "creator": "Charlie Huang（古琴演奏）",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Guqin-Yangguan_Sandie.ogg",
-    "originalFile": "Guqin-Yangguan Sandie.ogg",
-    "license": { "name": "CC BY-SA 3.0", "url": "https://creativecommons.org/licenses/by-sa/3.0/", "attributionRequired": true },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/yangguan-sandie.mp3", "localFile": "public/audio/yangguan-sandie.mp3", "bytes": 5603203, "sha256": "9d0ea5bba41610f594466e3d28462ece1ef577454643288e9eb0406eaa6c7795", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -20 LUFS / -2 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-morning-mist-2",
+    "role": "soundscape",
+    "theme": "morning-mist",
+    "variant": 2,
+    "displayTitle": { "zh": "晨雾 II", "en": "Morning Mist II" },
+    "sources": [
+      {
+        "title": "20 Minute Meditation 12",
+        "creator": "HoliznaCC0",
+        "sourcePage": "https://freemusicarchive.org/music/holiznacc0/space-sleep-meditation/20-minute-meditation-12/",
+        "originalFile": "20 Minute Meditation 12.mp3",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-25"
+      },
+      {
+        "title": "Rain against the Window",
+        "creator": "cori",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Rain_against_the_window.ogg",
+        "originalFile": "Rain against the window.ogg",
+        "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-22"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/morning-mist-2.mp3",
+      "localFile": "public/audio/morning-mist-2.mp3",
+      "bytes": 9600983,
+      "sha256": "98248b27ffbe2ab88a1785e564ce5a5aa4a46da3219ab9b919b5df2a3bfac44a",
+      "transcode": "A ten-minute excerpt of 20 Minute Meditation 12 mixed with restrained rain; resampled, filtered, faded, and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-20.42 LUFS / -2.24 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.44 LUFS / -7.47 dBTP / LRA 4.00 LU", "listening": "approved" }
   },
   {
-    "id": "accent-dizi-sample",
-    "role": "accent",
-    "family": "flute",
-    "title": { "zh": "竹笛点缀", "en": "Dizi bamboo flute accent" },
-    "creator": "Gorgoroth6669",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:DiZi_Chinese_Flute_Sample.ogg",
-    "originalFile": "DiZi Chinese Flute Sample.ogg",
-    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/dizi-sample.mp3", "localFile": "public/audio/dizi-sample.mp3", "bytes": 278403, "sha256": "17efb817fed9460470ba82b5cd276160c29c13df7f7a46d5e1ec1b2628893d2f", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -24 LUFS / -6 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-sea-of-clouds-1",
+    "role": "soundscape",
+    "theme": "sea-of-clouds",
+    "variant": 1,
+    "displayTitle": { "zh": "云海 I", "en": "Sea of Clouds I" },
+    "sources": [
+      {
+        "title": "Tuesday Night (Radio Edit)",
+        "creator": "Amarent",
+        "sourcePage": "https://freemusicarchive.org/music/amarent/free-atmospheric-music/tuesday-night-radio-edit/",
+        "originalFile": "Tuesday Night (Radio Edit).mp3",
+        "license": { "name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attributionRequired": true },
+        "retrievedAt": "2026-07-25"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/sea-of-clouds-1.mp3",
+      "localFile": "public/audio/sea-of-clouds-1.mp3",
+      "bytes": 8465388,
+      "sha256": "d0867141cdd3e58baf23f1c25e5adb8345292a5cbb8f177d9903a6392cabbf33",
+      "transcode": "Tuesday Night mixed with a synthesized, filtered pink-noise air bed; faded and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -13.10 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -10.48 dBTP / LRA 5.10 LU", "listening": "approved" }
   },
   {
-    "id": "accent-singing-bowl-struck",
-    "role": "accent",
-    "family": "bowl",
-    "title": { "zh": "颂钵敲击", "en": "Struck singing bowl" },
-    "creator": "BambooBeast",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:SingingBowl1.ogg",
-    "originalFile": "SingingBowl1.ogg",
-    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/singing-bowl-struck.mp3", "localFile": "public/audio/singing-bowl-struck.mp3", "bytes": 206096, "sha256": "80dabdc9f8197a86c9aa138630eb1331d3bc21ae77fe58f52b52bab7e8f7be59", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -24 LUFS / -6 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-still-waters-1",
+    "role": "soundscape",
+    "theme": "still-waters",
+    "variant": 1,
+    "displayTitle": { "zh": "静水 I", "en": "Still Waters I" },
+    "sources": [
+      {
+        "title": "20 Minute Meditation 2",
+        "creator": "HoliznaCC0",
+        "sourcePage": "https://freemusicarchive.org/music/holiznacc0/space-sleep-meditation/20-minute-meditation-2/",
+        "originalFile": "20 Minute Meditation 2.mp3",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-25"
+      },
+      {
+        "title": "Swale",
+        "creator": "Ksd5",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Swale.ogg",
+        "originalFile": "Swale.ogg",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-22"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/still-waters-1.mp3",
+      "localFile": "public/audio/still-waters-1.mp3",
+      "bytes": 7680878,
+      "sha256": "562ec4d6f012a02fff9665e1bf296a60ce48e212ae60c6a86da1c6eb7102dbd5",
+      "transcode": "An eight-minute excerpt of 20 Minute Meditation 2 mixed with a restrained stream bed; resampled, filtered, faded, and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -12.72 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.44 LUFS / -10.97 dBTP / LRA 3.30 LU", "listening": "approved" }
   },
   {
-    "id": "accent-singing-bowl-rubbed",
-    "role": "accent",
-    "family": "bowl",
-    "title": { "zh": "颂钵摩擦", "en": "Rubbed singing bowl" },
-    "creator": "BambooBeast",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:SingingBowl2.ogg",
-    "originalFile": "SingingBowl2.ogg",
-    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/singing-bowl-rubbed.mp3", "localFile": "public/audio/singing-bowl-rubbed.mp3", "bytes": 150508, "sha256": "3bdcb61c4bf928fb01fc0d9a615e56e9fdabff455f383d718d388e9f970003ae", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -24 LUFS / -6 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-sea-of-clouds-2",
+    "role": "soundscape",
+    "theme": "sea-of-clouds",
+    "variant": 2,
+    "displayTitle": { "zh": "云海 II", "en": "Sea of Clouds II" },
+    "sources": [
+      {
+        "title": "Outer Space",
+        "creator": "Amarent",
+        "sourcePage": "https://freemusicarchive.org/music/amarent/free-atmospheric-music/outer-space/",
+        "originalFile": "Outer Space.mp3",
+        "license": { "name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attributionRequired": true },
+        "retrievedAt": "2026-07-25"
+      },
+      {
+        "title": "Shakuhachi flute 440 Hz",
+        "creator": "--DeletedUser--",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Shakuhachi-flute-440Hz.ogg",
+        "originalFile": "Shakuhachi-flute-440Hz.ogg",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-25"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/sea-of-clouds-2.mp3",
+      "localFile": "public/audio/sea-of-clouds-2.mp3",
+      "bytes": 4068039,
+      "sha256": "52b09a40c1e029103705120d7a9fe1602de97ae5f017d56eb8d6e0e8bf42c3ae",
+      "transcode": "Outer Space mixed with two very quiet, delayed shakuhachi breaths; resampled, filtered, faded, and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -14.95 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -11.79 dBTP / LRA 4.10 LU", "listening": "approved" }
   },
   {
-    "id": "accent-windchimes-short",
-    "role": "accent",
-    "family": "chimes",
-    "title": { "zh": "短风铃", "en": "Short wind chimes" },
-    "creator": "Esc861",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Windchimes.ogg",
-    "originalFile": "Windchimes.ogg",
-    "license": { "name": "Public domain", "url": "https://creativecommons.org/publicdomain/mark/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/windchimes-short.mp3", "localFile": "public/audio/windchimes-short.mp3", "bytes": 86978, "sha256": "e0f784bc8aa1ea04cbdee9170dd697edced17cf6fdd9a2a3746311839f52d9d8", "transcode": "Wikimedia Commons MP3 derivative; two-pass EBU R128 normalization to -24 LUFS / -6 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
+    "id": "soundscape-still-waters-2",
+    "role": "soundscape",
+    "theme": "still-waters",
+    "variant": 2,
+    "displayTitle": { "zh": "静水 II", "en": "Still Waters II" },
+    "sources": [
+      {
+        "title": "RF9-Dipping My Toe in the Water",
+        "creator": "legacyAlli — Allison Gordon Mastropieri",
+        "sourcePage": "https://freemusicarchive.org/music/legacyalli/2023-royalty-free-by-legacyalli/rf9-dipping-my-toe-in-the-water/",
+        "originalFile": "RF9-Dipping My Toe in the Water.mp3",
+        "license": { "name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/", "attributionRequired": true },
+        "retrievedAt": "2026-07-25"
+      },
+      {
+        "title": "Swale",
+        "creator": "Ksd5",
+        "sourcePage": "https://commons.wikimedia.org/wiki/File:Swale.ogg",
+        "originalFile": "Swale.ogg",
+        "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
+        "retrievedAt": "2026-07-22"
+      }
+    ],
+    "mp3": {
+      "path": "/audio/still-waters-2.mp3",
+      "localFile": "public/audio/still-waters-2.mp3",
+      "bytes": 3166501,
+      "sha256": "a4cd37e6ca3fca223738cfac0bdd65becf871ebb2021296dd295ab30bedf3403",
+      "transcode": "Dipping My Toe in the Water mixed with a low-passed stream bed; resampled, filtered, faded, and two-pass EBU R128 normalized with ffmpeg-static 6.1.1/libmp3lame to 128 kbps, 44.1 kHz stereo."
+    },
     "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
+    "approvedAt": "2026-07-25",
     "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-24.55 LUFS / -7.85 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
-  },
-  {
-    "id": "accent-koshi-chimes",
-    "role": "accent",
-    "family": "chimes",
-    "title": { "zh": "Koshi 八音风铃", "en": "Koshi eight-tone chimes" },
-    "creator": "Membeth",
-    "sourcePage": "https://commons.wikimedia.org/wiki/File:Windglockenspiel.Koshi.ogg",
-    "originalFile": "Windglockenspiel.Koshi.ogg",
-    "license": { "name": "CC0 1.0", "url": "https://creativecommons.org/publicdomain/zero/1.0/", "attributionRequired": false },
-    "retrievedAt": "2026-07-22",
-    "mp3": { "path": "/audio/koshi-chimes.mp3", "localFile": "public/audio/koshi-chimes.mp3", "bytes": 193140, "sha256": "813f98f7ac6f0be07aba84d20dc00e07b0aeb93110381ba9b003edd36149ff58", "transcode": "12-second excerpt from 00:20–00:32 with 0.8-second fade-in and 1.5-second fade-out; two-pass EBU R128 normalization to -24 LUFS / -6 dBTP; ffmpeg 7.1 libmp3lame, 128 kbps, 44.1 kHz, stereo" },
-    "approvalStatus": "approved",
-    "approvedAt": "2026-07-22",
-    "approvedBy": "site-owner-direct-approval",
-    "review": { "licenseMetadata": "checked", "fileSize": "checked", "noise": "technical-check-passed", "loudness": "-24.27 LUFS / -6.10 dBTP", "loopSeam": "not-applicable", "listening": "approved" }
+    "review": { "licenseMetadata": "checked", "fileSize": "checked", "decode": "passed", "noise": "technical-check-passed", "loudness": "-24.45 LUFS / -11.54 dBTP / LRA 4.80 LU", "listening": "approved" }
   }
 ]

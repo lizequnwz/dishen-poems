@@ -38,10 +38,14 @@ import { approvedAudioAssets } from '@/lib/audio-data';
       {approvedAudioAssets.map((asset, index) => (
         <article>
           <span>{String(index + 4).padStart(2, '0')}</span>
-          <h3><Bilingual zh={asset.title.zh} en={asset.title.en} /></h3>
+          <h3><Bilingual zh={asset.displayTitle.zh} en={asset.displayTitle.en} /></h3>
           <p>
-            {asset.creator} · <a href={asset.sourcePage} target="_blank" rel="external noopener">{asset.originalFile}</a><br />
-            <a href={asset.license.url} target="_blank" rel="license noopener">{asset.license.name}</a> · {asset.retrievedAt}<br />
+            {asset.sources.map((source) => (
+              <span>
+                {source.creator} · <a href={source.sourcePage} target="_blank" rel="external noopener">{source.title} ({source.originalFile})</a><br />
+                <a href={source.license.url} target="_blank" rel="license noopener">{source.license.name}</a> · {source.retrievedAt}<br />
+              </span>
+            ))}
             <Bilingual zh="处理" en="Processing" />: {asset.mp3.transcode}<br />
             <Bilingual zh="批准" en="Approval" />: {asset.approvedBy} · {asset.approvedAt}<br />
             MP3 SHA-256: <code>{asset.mp3.sha256}</code>

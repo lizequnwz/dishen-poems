@@ -98,15 +98,18 @@ python3 scripts/import_pdf_poems.py --apply --publish-year latest
 
 开发环境中的草稿预览路径为 `/preview/exhibitions/<id>/`；草稿不会进入生产构建。
 
-## 三层声景与批准闸门
+## 六轨整体式声景
 
-音频清单位于 `src/data/audio-assets.json`。早期三个古琴与四个环境声仍是本地 `candidate`，只可通过开发试听页 `/preview/audio/candidates/` 检查；生产构建不会生成该路由，也不会复制已被 Git 忽略的 `audio/candidates/`。两个完整古琴曲目和五个竹笛、颂钵、风铃点缀已经过用户直接批准与许可、解码、尺寸、响度和校验值检查，正式 MP3 位于 `public/audio/`，并自动进入署名页。
+音频清单位于 `src/data/audio-assets.json`。正式播放器固定循环晨雾 I、云海 I、静水 I、晨雾 II、云海 II、静水 II 六个预先混合的整体式声景；音乐、自然环境与极少量吹管气息在发布前完成混音，不再向使用者暴露主层、环境层或点缀层。每个成品可在 `sources[]` 中保存多个来源，署名页据此完整列出原作、作者、许可证、取得日期与修改说明。
 
-正式播放器使用古琴顺序循环、四选一环境层和默认关闭的稀疏点缀层。点缀启用后首次等待 45–90 秒，之后间隔 120–240 秒；同一时间只播放一个点缀，并在开始时将古琴降低约 7 dB、环境声降低约 3 dB，结束后平滑恢复。播放器不自动播放、不提供时间轴，初始 `preload="none"`。ClientRouter 保留播放器节点；页面进入后台或硬刷新后都保持暂停。
+声景使用固定版 `ffmpeg-static` 生成 44.1 kHz 立体声 MP3，目标约 −24 LUFS、峰值不高于 −2 dBTP、每档小于 12 MiB，并记录 SHA-256。播放器由双 `<audio>` deck 构成：首次手势前不设置 `src`，自动换景淡接 6 秒，手动换景淡接 1.8 秒；不自动播放、不提供时间轴。只保存 v2 的曲目、单一音量和静音状态，默认音量为 `0.32`；进入后台立即暂停且不自动恢复，Astro ClientRouter 站内导航则持续播放。
+
+未来替换素材仍可放入已忽略的 `audio/candidates/`，并通过仅开发环境存在的 `/preview/audio/candidates/` 试听；候选不会进入生产播放器或公开署名。
 
 ## 设计与决策
 
 - [产品规格](docs/superpowers/specs/2026-07-20-dishen-zen-poetry-website-design.md)
+- [现代自然疗愈声景规格](docs/superpowers/specs/2026-07-25-modern-nature-soundscape-design.md)
 - [实施计划](docs/superpowers/plans/2026-07-21-dishen-poetry-mvp-implementation.md)
 - [领域语言](CONTEXT.md)
 - [架构决策](docs/adr/)

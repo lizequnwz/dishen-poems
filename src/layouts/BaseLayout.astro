@@ -76,7 +76,7 @@ const localFontFaces = `
       <slot />
     </main>
     {!hideChrome && <SiteFooter />}
-    {!hideChrome && audioCatalog.musicIds.length > 0 && <AudioPlayer catalog={audioCatalog} />}
+    {!hideChrome && audioCatalog.trackIds.length > 0 && <AudioPlayer catalog={audioCatalog} />}
     <div class="sr-only" aria-live="polite" data-share-status></div>
     <script src="../scripts/site.ts"></script>
   </body>

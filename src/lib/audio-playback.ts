@@ -1,31 +1,34 @@
-export const MAIN_DUCK_MULTIPLIER = 0.45;
-export const AMBIENT_DUCK_MULTIPLIER = 0.71;
-export const DUCK_ATTACK_MS = 600;
-export const DUCK_RELEASE_MS = 1_800;
-export const ACCENT_DUCK_DELAY_MS = 180;
+export const AUTO_CROSSFADE_MS = 6_000;
+export const MANUAL_CROSSFADE_MS = 1_800;
 
 export function clampUnit(value: number) {
   return Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0));
 }
 
-export function effectiveVolume(baseVolume: number, multiplier = 1) {
-  return clampUnit(clampUnit(baseVolume) * Math.max(0, multiplier));
+export function crossfadeGains(progress: number, volume: number) {
+  const phase = clampUnit(progress) * Math.PI / 2;
+  const base = clampUnit(volume);
+  return {
+    outgoing: base * Math.cos(phase),
+    incoming: base * Math.sin(phase),
+  };
 }
 
-export function accentDelayMs(first: boolean, randomValue = Math.random()) {
-  const bounded = clampUnit(randomValue);
-  const [minimum, maximum] = first ? [45_000, 90_000] : [120_000, 240_000];
-  return Math.round(minimum + (maximum - minimum) * bounded);
-}
-
-export function chooseAccentId(
-  ids: string[],
+export function nextPlayableTrackId(
+  trackIds: readonly string[],
+  currentId: string | null,
   failedIds: ReadonlySet<string>,
-  previousId: string | null,
-  randomValue = Math.random(),
+  direction: 1 | -1 = 1,
 ) {
-  const available = ids.filter((id) => !failedIds.has(id));
-  if (available.length === 0) return null;
-  const withoutRepeat = available.length > 1 ? available.filter((id) => id !== previousId) : available;
-  return withoutRepeat[Math.min(withoutRepeat.length - 1, Math.floor(clampUnit(randomValue) * withoutRepeat.length))];
+  if (trackIds.length === 0 || failedIds.size >= trackIds.length) return null;
+  const current = Math.max(0, trackIds.indexOf(currentId ?? ''));
+  for (let offset = 1; offset <= trackIds.length; offset += 1) {
+    const index = (current + direction * offset + trackIds.length) % trackIds.length;
+    if (!failedIds.has(trackIds[index])) return trackIds[index];
+  }
+  return null;
+}
+
+export function louderDeck(firstVolume: number, secondVolume: number): 0 | 1 {
+  return secondVolume > firstVolume ? 1 : 0;
 }

@@ -12,13 +12,13 @@ export function getStaticPaths() {
 const catalog = candidatePlaybackCatalog();
 ---
 
-<BaseLayout title="候选声景试听" description="仅供人工试听批准的候选古琴与环境声，不进入正式播放器。">
+<BaseLayout title="候选声景试听" description="仅供人工试听批准的整体式声景，不进入正式播放器。">
   <header class="page-hero audio-review-hero">
     <div class="shell page-hero__inner">
       <div>
         <span class="eyebrow"><Bilingual zh="开发预览 · 不公开" en="Development preview · Not public" /></span>
         <h1><Bilingual zh="候选声景试听" en="Candidate audio review" /></h1>
-        <p><Bilingual zh="请逐项检查噪声、响度、循环接缝与整体气质；所有素材仍为待批准状态。" en="Review noise, loudness, loop seams, and overall character. Every asset remains unapproved." /></p>
+        <p><Bilingual zh="请逐项检查噪声、响度、衔接与整体气质；所有素材仍为待批准状态。" en="Review noise, loudness, transitions, and overall character. Every asset remains unapproved." /></p>
       </div>
     </div>
   </header>
@@ -27,16 +27,18 @@ const catalog = candidatePlaybackCatalog();
     <div class="audio-review__grid">
       {catalog.assets.map((asset, index) => (
         <article>
-          <span>{String(index + 1).padStart(2, '0')} · {asset.role === 'music' ? '古琴' : '环境'}</span>
-          <h2><Bilingual zh={asset.title.zh} en={asset.title.en} /></h2>
-          <p>{asset.creator} · {asset.license.name}</p>
+          <span>{String(index + 1).padStart(2, '0')} · 整体式声景</span>
+          <h2><Bilingual zh={asset.displayTitle.zh} en={asset.displayTitle.en} /></h2>
+          <p>{asset.sources.map((source) => `${source.creator} · ${source.license.name}`).join(' / ')}</p>
           <dl>
             <div><dt><Bilingual zh="噪声" en="Noise" /></dt><dd>{asset.review.noise}</dd></div>
             <div><dt><Bilingual zh="响度" en="Loudness" /></dt><dd>{asset.review.loudness}</dd></div>
-            <div><dt><Bilingual zh="循环" en="Loop" /></dt><dd>{asset.review.loopSeam}</dd></div>
+            <div><dt><Bilingual zh="解码" en="Decode" /></dt><dd>{asset.review.decode}</dd></div>
             <div><dt>SHA-256</dt><dd>{asset.mp3.sha256.slice(0, 16)}…</dd></div>
           </dl>
-          <a href={asset.sourcePage} target="_blank" rel="external noopener"><Bilingual zh="查看原始文件与许可" en="Open source file and license" /></a>
+          {asset.sources.map((source) => (
+            <a href={source.sourcePage} target="_blank" rel="external noopener"><Bilingual zh={`来源：${source.title}`} en={`Source: ${source.title}`} /></a>
+          ))}
         </article>
       ))}
     </div>
