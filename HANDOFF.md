@@ -2,7 +2,7 @@
 
 ## Current state
 
-The remaining-PDF, development review desk, visual expansion, 167-poem automatic publication, and 12-poem human-reviewed supplement were completed on 2026-07-23. The production collection now contains **270 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
+The remaining-PDF, development review desk, visual expansion, 167-poem automatic publication, and 12-poem human-reviewed supplement were completed on 2026-07-23. One directly supplied manual poem was added on 2026-07-25, so the production collection now contains **271 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
 
 Authoritative design: `docs/superpowers/specs/2026-07-23-pdf-review-visual-expansion-design.md`.
 
@@ -66,7 +66,7 @@ They were kept out of the 167 automatic batch, then published through six indepe
 - 2008: 2 (`ad18fc2`)
 - 2006: 4 (`04f67ec`)
 
-The collection total is now `258 + 12 = 270`. Original confidence and failure reasons remain unchanged; manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
+The PDF collection total is `258 + 12 = 270`; the later directly supplied manual poem brings the public total to 271. Original confidence and failure reasons remain unchanged; PDF manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
 
 ## Visual system completed
 
@@ -80,13 +80,13 @@ The collection total is now `258 + 12 = 270`. Original confidence and failure re
 
 ## Validation baseline
 
-- Public poems: 270
+- Public poems: 271
 - Duplicate slugs: 0
-- Vitest: 66 tests
+- Vitest: 69 tests
 - Python PDF suite: 12 tests
-- Final supplemental-year build: 293 static pages
+- Current production build: 294 static pages
 - Production `/preview/pdf/` and `__pdf-review`: absent
-- Browser checks: review crop loading, 12-item exception queue, five homepage compositions/four families, year cards, mobile single-column gallery, and month anchors.
+- Browser checks: review crop loading, completed review items hidden from the queue, five homepage compositions/four families, year cards, mobile single-column gallery, and month anchors.
 
 Before the next deploy, rerun `npm run build`, the bundled Python PDF suite, `git diff --check`, and the production-route absence assertion. Regenerate the ignored catalog if `tmp/pdf-import/catalog/catalog.json` is unavailable.
 

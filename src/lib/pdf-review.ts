@@ -60,3 +60,10 @@ export interface PdfCandidateCatalog {
   summary: Record<string, number>;
   candidates: PdfCandidate[];
 }
+
+export function isManuallyReviewed(
+  candidate: Pick<PdfCandidate, 'candidateId' | 'decision'>,
+  decisions: Readonly<Record<string, PdfReviewDecision>>,
+) {
+  return Boolean(decisions[candidate.candidateId] ?? candidate.decision);
+}

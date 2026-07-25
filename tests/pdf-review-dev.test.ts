@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { isAllowedReviewOrigin, validateReviewSubmission } from '../scripts/pdf-review-dev-plugin.mjs';
+import { isManuallyReviewed, type PdfReviewDecision } from '../src/lib/pdf-review';
 
 const candidate = {
   candidateId: 'pdf-1234567890abcdef12345678',
@@ -32,5 +33,19 @@ describe('PDF review development endpoint', () => {
       action: 'correct',
       corrections: { title: '诗', body: '正文', writtenDate: '2023-02-30', candidateType: 'poetry' },
     }, catalog)).toThrow('Corrected title, body, and date are required');
+  });
+});
+
+describe('PDF review queue', () => {
+  const reviewCandidate = { candidateId: candidate.candidateId, decision: null };
+  const decision = validateReviewSubmission(
+    { candidateId: candidate.candidateId, action: 'approve', reason: '' },
+    catalog,
+  ) as PdfReviewDecision;
+
+  it('keeps unreviewed candidates and hides decisions stored in either source', () => {
+    expect(isManuallyReviewed(reviewCandidate, {})).toBe(false);
+    expect(isManuallyReviewed(reviewCandidate, { [candidate.candidateId]: decision })).toBe(true);
+    expect(isManuallyReviewed({ ...reviewCandidate, decision }, {})).toBe(true);
   });
 });

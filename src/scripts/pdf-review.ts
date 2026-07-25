@@ -4,6 +4,7 @@ import type {
   PdfReviewDecision,
   ReviewAction,
 } from '@/lib/pdf-review';
+import { isManuallyReviewed } from '@/lib/pdf-review';
 
 type DecisionFile = { version: number; reviewedBy: string; decisions: Record<string, PdfReviewDecision> };
 
@@ -71,13 +72,16 @@ if (root) {
   function populateFilters() {
     const batches = [...new Set(catalog.candidates.map((candidate) => candidate.reviewBatchId))];
     const years = [...new Set(catalog.candidates.map((candidate) => candidate.writtenDate?.slice(0, 4)).filter(Boolean) as string[])].sort().reverse();
-    const states = [...new Set(catalog.candidates.map(effectiveState))].sort();
+    const states = [...new Set(catalog.candidates
+      .filter((candidate) => !isManuallyReviewed(candidate, decisions.decisions))
+      .map(effectiveState))].sort();
     batch.insertAdjacentHTML('beforeend', batches.map((value) => option(value)).join(''));
     year.insertAdjacentHTML('beforeend', years.map((value) => option(value)).join(''));
     stateFilter.insertAdjacentHTML('beforeend', states.map((value) => option(value)).join(''));
   }
 
   function matches(candidate: PdfCandidate) {
+    if (isManuallyReviewed(candidate, decisions.decisions)) return false;
     const text = `${candidate.title}\n${candidate.body}\n${candidate.pdfPage}`.toLowerCase();
     const exception = candidate.confidence !== 'high';
     return (scope.value === 'all' || exception)
@@ -192,6 +196,7 @@ if (root) {
       notice.textContent = '搁置和排除必须填写理由。';
       return;
     }
+    const nextCandidateId = filtered[filtered.findIndex((item) => item.candidateId === candidate.candidateId) + 1]?.candidateId;
     const payload = {
       candidateId: candidate.candidateId,
       action: selectedAction,
@@ -216,8 +221,7 @@ if (root) {
     decisions.decisions[candidate.candidateId] = result.decision;
     dirty = false;
     notice.textContent = `已保存《${candidate.title}》：${result.decision.action}`;
-    renderList(candidate.candidateId);
-    move(1);
+    renderList(nextCandidateId);
   }
 
   async function initialize() {
@@ -229,7 +233,9 @@ if (root) {
       if (!catalogResponse.ok) throw new Error('候选目录不存在。请先运行 PDF catalog 生成命令。');
       catalog = await catalogResponse.json();
       decisions = decisionResponse.ok ? await decisionResponse.json() : { version: 1, reviewedBy: 'site-owner', decisions: {} };
-      summary.textContent = `${catalog.summary.catalogCandidates} 个目录候选 · ${catalog.summary.highConfidence} 个 high · ${catalog.summary.reviewExceptions} 个待审核 · 规则 ${catalog.rulesVersion}`;
+      const reviewedCount = catalog.candidates.filter((candidate) => isManuallyReviewed(candidate, decisions.decisions)).length;
+      const pendingReviewCount = catalog.candidates.filter((candidate) => candidate.confidence !== 'high' && !isManuallyReviewed(candidate, decisions.decisions)).length;
+      summary.textContent = `${catalog.summary.catalogCandidates} 个目录候选 · ${catalog.summary.highConfidence} 个 high · ${pendingReviewCount} 个待审核 · 已隐藏 ${reviewedCount} 个完成项 · 规则 ${catalog.rulesVersion}`;
       populateFilters();
       workspace.hidden = false;
       notice.textContent = '';
