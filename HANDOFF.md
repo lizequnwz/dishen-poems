@@ -2,7 +2,7 @@
 
 ## Current state
 
-The remaining-PDF, development review desk, visual expansion, 167-poem automatic publication, and 12-poem human-reviewed supplement were completed on 2026-07-23. One directly supplied manual poem was added on 2026-07-25, followed by six more on 2026-08-06, so the production collection now contains **277 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
+The remaining-PDF, development review desk, visual expansion, 167-poem automatic publication, and 12-poem human-reviewed supplement were completed on 2026-07-23. One directly supplied manual poem was added on 2026-07-25, followed by six more on 2026-08-06 and seven more on 2026-08-24, so the production collection now contains **284 verified/curated poems** with unique stable routes. Homepage latest-five still resolves from the newest 2026 works.
 
 Authoritative design: `docs/superpowers/specs/2026-07-23-pdf-review-visual-expansion-design.md`.
 
@@ -66,7 +66,7 @@ They were kept out of the 167 automatic batch, then published through six indepe
 - 2008: 2 (`ad18fc2`)
 - 2006: 4 (`04f67ec`)
 
-The PDF collection total is `258 + 12 = 270`; the seven later directly supplied manual poems bring the public total to 277. Original confidence and failure reasons remain unchanged; PDF manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
+The PDF collection total is `258 + 12 = 270`; the fourteen later directly supplied manual poems bring the public total to 284. Original confidence and failure reasons remain unchanged; PDF manual review is represented by `reviewDecisionId` and, for corrections, `extractedContentFingerprint`.
 
 ## Visual system completed
 
@@ -80,11 +80,11 @@ The PDF collection total is `258 + 12 = 270`; the seven later directly supplied 
 
 ## Validation baseline
 
-- Public poems: 277
+- Public poems: 284
 - Duplicate slugs: 0
-- Vitest: 75 tests
+- Vitest: 82 tests
 - Python PDF suite: 12 tests
-- Current production build: 300 static pages
+- Current production build: 307 static pages
 - Production `/preview/pdf/` and `__pdf-review`: absent
 - Browser checks: review crop loading, completed review items hidden from the queue, five homepage compositions/four families, year cards, mobile single-column gallery, and month anchors.
 
