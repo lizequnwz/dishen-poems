@@ -1,227 +1,50 @@
-# Design System Master File
+# 谛深禅诗：视觉与交互规范
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+更新：2026-10-03。产品定位：以阅读、发现和回访为核心的中文数字诗集。
 
----
+## 视觉语言
 
-**Project:** 谛深禅诗
-**Generated:** 2026-07-21 07:38:41
-**Category:** Digital Signage / Kiosk
-**Design Dials:** Variance 6/10 (Balanced / Modern) | Motion 4/10 (Standard) | Density 2/10 (Spacious)
+以实纸、墨色、细线和少量朱印组成当代诗集排版。诗文本身是主要内容，程序化水墨场景提供气氛；场景、阴影和纹理不应侵入正文安全区。阅读页使用不透明纸面，避免反复堆叠玻璃面板、厚边框和大阴影。
 
----
+## 颜色
 
-## Global Rules
+沿用 `src/styles/global.css` 的语义变量，所有新组件随主题切换。
 
-### Color Palette
+| 用途 | 浅色 | 深色 | 变量 |
+|---|---|---|---|
+| 页面纸色 | #f3efe4 | #0d1514 | --paper |
+| 阅读纸面 | #faf7ef | #14201d | --reading-paper |
+| 正文 | #18221f | #eee8dc | --ink |
+| 次级文字 | #52605a | #aeb9b2 | --ink-soft |
+| 印记与重点动作 | #a44337 | #d86f61 | --vermilion |
+| 焦点 | #9f392f | #ed9488 | --focus |
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#18181B` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#27272A` | `--color-secondary` |
-| Accent/CTA | `#F8FAFC` | `--color-accent` |
-| Background | `#000000` | `--color-background` |
-| Foreground | `#FAFAFA` | `--color-foreground` |
-| Muted | `#181818` | `--color-muted` |
-| Border | `#3F3F46` | `--color-border` |
-| Destructive | `#EF4444` | `--color-destructive` |
-| Ring | `#18181B` | `--color-ring` |
+普通文字保持至少 4.5:1 对比度；控件与焦点至少 3:1。朱红只用于印记、选择反馈与少量关键动作。
 
-**Color Notes:** Pure black + white contrast
+## 字体与阅读
 
-### Typography
+使用项目已有的本地 Noto Serif SC Variable 与 Noto Sans SC Variable，按 Unicode 范围加载 CJK 子集。诗题与诗文用衬线，导航、日期和设置用无衬线。英文标题使用完整短句，按实际宽度自然换行。
 
-- **Heading Font:** Noto Serif TC
-- **Body Font:** Noto Sans TC
-- **Mood:** chinese, traditional, elegant, cultural, multilingual, readable
-- **Google Fonts:** [Noto Serif TC + Noto Sans TC](https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap)
+正文标准字号为 20–26px，行高 1.95；小号最小 18px，大号为标准的 1.18 倍。默认适屏阅读，保留原始诗行边界，只进行视觉折行；原行模式允许横向滚动且提供键盘操作。禁止为长行自动缩小到不可读字号。打印不输出设置、背景装饰和声景播放器。
 
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&display=swap');
-```
+## 布局与交互
 
-### Spacing Variables
+- 首页首段呈现网站身份、最新一首实际作品和明确阅读入口；最新五首按创作日期自动排序，另提供标题目录。
+- 单诗页显示档案与年份面包屑、字号与排版设置、作者与完整日期、收藏和分享、较新与较早一首。
+- 档案提供标题／正文搜索、年份筛选、画廊／紧凑列表；查询写入 URL，返回时恢复上下文。
+- 日期在手机上仍可读。固定双行导航的锚点偏移使用 `--chrome-height`。
+- 声景待机显示播放与状态；换景、音量在展开面板中。所有主要触摸控件至少 44px，320px 宽度内完整可用。
+- 持久化主题、界面语言、简繁、阅读偏好、本机收藏和上次阅读。收藏按稳定作品 ID 保存，无需账号。
+- 加载、无结果、失败与成功反馈明确可见，并通过适当的 live region 播报。所有操作使用原生按钮、链接或表单控件。
 
-*Density: 2/10 — Spacious*
+## 内容与策展边界
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `24px` / `1.5rem` | Standard padding |
-| `--space-lg` | `32px` / `2rem` | Section padding |
-| `--space-xl` | `48px` / `3rem` | Large gaps |
-| `--space-2xl` | `64px` / `4rem` | Section margins |
-| `--space-3xl` | `96px` / `6rem` | Hero padding |
+首页最新五首、全库时间顺序和人工展览顺序各自独立。英文界面翻译导航、说明和设置，诗歌继续显示中文。不得自动改写诗文、补充未经审核的解释或公开标签。
 
-### Shadow Depths
+正式策展素材必须沿用项目已有的资源与内容审核规则；程序化场景不代表已完成真实图片策展。不批量生成未经审核的全库配图。
 
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
+## 动效与验证
 
----
+动效用于轻微呈现与状态变化，避免让正文等待动画才能阅读；尊重 Reduced Motion。新增组件样式放入独立样式文件，通过语义变量共享主题。
 
-## Component Specs
-
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #F8FAFC;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #18181B;
-  border: 2px solid #18181B;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: #000000;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #18181B;
-  outline: none;
-  box-shadow: 0 0 0 3px #18181B20;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
-
----
-
-## Style Guidelines
-
-**Style:** Soft UI Evolution
-
-**Keywords:** Evolved soft UI, better contrast, modern aesthetics, subtle depth, accessibility-focused, improved shadows, hybrid
-
-**Best For:** Modern enterprise apps, SaaS platforms, health/wellness, modern business tools, professional, hybrid
-
-**Key Effects:** Improved shadows (softer than flat, clearer than neumorphism), modern (200-300ms), focus visible, WCAG AA/AAA
-
-### Page Pattern
-
-**Pattern Name:** Newsletter / Content First
-
-- **Conversion Strategy:** Single field form (Email only). Show 'Join X, 000 readers'. Read sample link.
-- **CTA Placement:** Hero inline form + Sticky header form
-- **Section Order:** 1. Hero (Value Prop + Form), 2. Recent Issues/Archives, 3. Social Proof (Subscriber count), 4. About Author
-
----
-
-## Motion
-
-**Page Transition** (Standard) — Trigger: route change | Duration: 400-600ms | Easing: `power2.inOut`
-
-```js
-const tl = gsap.timeline(); tl.to('.transition-overlay', { yPercent: 0, duration: 0.4, ease: 'power2.inOut' }).call(navigate).to('.transition-overlay', { yPercent: -100, duration: 0.4, ease: 'power2.inOut', delay: 0.1 });
-```
-
-**Framework notes:** Keep the overlay element mounted at the layout root (outside the page component) so it survives the route swap
-
-- ✅ Show a lightweight loading indicator if the destination route's data fetch outlasts the overlay
-- ❌ Don't tie the overlay's reveal directly to data-fetch completion without a max-wait timeout; a slow API stalls the whole transition
-- ⚡ Prefer CSS transform (yPercent) over top/left to keep the overlay animation on the compositor thread
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Flat design without depth
-- ❌ Text-heavy pages
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
-
-## Pre-Delivery Checklist
-
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+交付前运行 `npm run build`，并在 320px、375px、平板与桌面验证主要阅读流程，检查中英文、简繁、深浅主题、刷新和站内切页。只对实际业务边界与状态行为增加测试。

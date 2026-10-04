@@ -2,6 +2,7 @@
 import Bilingual from './Bilingual.astro';
 import Icon from './Icon.astro';
 import type { PlaybackCatalog } from '@/lib/audio-data';
+import '../styles/audio-player.css';
 
 interface Props {
   catalog: PlaybackCatalog;
@@ -11,6 +12,9 @@ interface Props {
 const { catalog, preview = false } = Astro.props;
 const byId = new Map(catalog.assets.map((asset) => [asset.id, asset]));
 const firstTrack = catalog.trackIds.map((id) => byId.get(id)).find(Boolean);
+const controlsId = preview ? 'preview-soundscape-controls' : 'soundscape-controls';
+const trackSelectId = `${controlsId}-track`;
+const volumeId = `${controlsId}-volume`;
 ---
 
 {firstTrack && (
@@ -27,21 +31,44 @@ const firstTrack = catalog.trackIds.map((id) => byId.get(id)).find(Boolean);
         <span data-audio-play-icon><Icon name="play" /></span>
         <span data-audio-pause-icon hidden><Icon name="pause" /></span>
       </button>
-      <div class="audio-player__transport" role="group" aria-label="切换声景 / Change soundscape">
-        <button type="button" data-audio-previous aria-label="上一景 / Previous soundscape"><Icon name="previous" /></button>
-        <button type="button" data-audio-next aria-label="下一景 / Next soundscape"><Icon name="next" /></button>
-      </div>
       <div class="audio-player__now">
-        <span data-audio-track-label></span>
-        <p class="audio-player__status" aria-live="polite" data-audio-status></p>
+        <span data-audio-track-label><Bilingual zh={firstTrack.displayTitle.zh} en={firstTrack.displayTitle.en} /></span>
+        <p class="audio-player__status" role="status" aria-live="polite" aria-atomic="true" data-audio-status><Bilingual zh="点按播放" en="Press play" /></p>
+      </div>
+      {!preview && (
+        <button type="button" class="audio-player__expand" data-audio-expand aria-label="展开声景设置 / Expand soundscape settings" aria-expanded="false" aria-controls={controlsId}>
+          <Icon name="chevron" />
+        </button>
+      )}
+    </div>
+
+    <div id={controlsId} class="audio-player__panel" data-audio-panel hidden={!preview}>
+      <div class="audio-player__panel-heading">
+        <h2><Bilingual zh="声景" en="Soundscape" /></h2>
+        {!preview && <button type="button" class="audio-player__close" data-audio-close><Bilingual zh="收起" en="Close" /></button>}
+      </div>
+      <div class="audio-player__selection">
+        <label for={trackSelectId}><Bilingual zh="选择声景" en="Choose a soundscape" /></label>
+        <select id={trackSelectId} data-audio-track>
+          {catalog.trackIds.map((id) => {
+            const asset = byId.get(id);
+            return asset && <option value={id} data-title-zh={asset.displayTitle.zh} data-title-en={asset.displayTitle.en}>{asset.displayTitle.zh}</option>;
+          })}
+        </select>
+      </div>
+      <div class="audio-player__transport" role="group" aria-label="切换声景 / Change soundscape">
+        <button type="button" data-audio-previous><Icon name="previous" /><Bilingual zh="上一景" en="Previous" /></button>
+        <button type="button" data-audio-next><Bilingual zh="下一景" en="Next" /><Icon name="next" /></button>
+      </div>
+      <div class="audio-player__volume-heading">
+        <label for={volumeId}><Bilingual zh="音量" en="Volume" /></label>
+        <output for={volumeId} data-audio-volume-label>32%</output>
       </div>
       <div class="audio-player__volume">
         <button type="button" data-audio-mute aria-label="声景静音 / Mute soundscape" aria-pressed="false"><Icon name="volume" /></button>
-        <label>
-          <span class="sr-only"><Bilingual zh="声景音量" en="Soundscape volume" /></span>
-          <input type="range" min="0" max="1" step="0.02" data-audio-volume />
-        </label>
+        <input id={volumeId} type="range" min="0" max="1" step="0.02" value="0.32" data-audio-volume />
       </div>
+      <p class="audio-player__detail" data-audio-detail><Bilingual zh="声景将依次循环；进入后台时自动暂停。" en="Soundscapes repeat in order and pause when this page enters the background." /></p>
     </div>
 
     <audio preload="none" data-audio-deck="0"></audio>

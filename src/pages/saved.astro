@@ -1,0 +1,41 @@
+---
+import Bilingual from '@/components/Bilingual.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/reading-library.css';
+---
+
+<BaseLayout title="我的收藏" description="在本机保留喜欢的谛深禅诗，继续上次的阅读。">
+  <header class="page-hero saved-hero">
+    <div class="shell page-hero__inner">
+      <div>
+        <span class="eyebrow"><Bilingual zh="一页诗，留在心上" en="Keep a poem close" /></span>
+        <h1><Bilingual zh="我的收藏" en="Saved poems" /></h1>
+        <p><Bilingual zh="收藏与阅读记录仅保存在当前浏览器中。" en="Saved poems and reading history stay in this browser." /></p>
+      </div>
+    </div>
+  </header>
+
+  <section class="saved-library shell" data-reading-library="saved" aria-label="本机收藏 / Poems saved on this device">
+    <div class="saved-library__last" data-last-read-card hidden>
+      <div>
+        <span class="eyebrow"><Bilingual zh="上次读到" en="Last opened" /></span>
+        <a data-last-read-link><strong data-last-read-title></strong><time data-last-read-date></time></a>
+      </div>
+      <button type="button" class="outline-button" data-clear-reading-history><Bilingual zh="清除阅读记录" en="Clear reading history" /></button>
+    </div>
+    <p class="library-status" data-library-status aria-live="polite" aria-atomic="true"></p>
+    <ul class="saved-library__list" data-saved-list></ul>
+    <div class="saved-library__empty" data-saved-empty hidden>
+      <h2><Bilingual zh="还没有收藏的诗" en="Your collection starts with a poem" /></h2>
+      <p><Bilingual zh="读到喜欢的作品时，点一下「收藏此诗」，下次便可在这里找到。" en="Choose “Save poem” while reading, then return here whenever you like." /></p>
+      <a class="button-link" href="/archive/" data-library-empty-link><Bilingual zh="去诗卷里看看" en="Explore the poems" /></a>
+    </div>
+    <div class="saved-library__error" data-library-error hidden>
+      <p data-library-error-message></p>
+      <button type="button" class="outline-button" data-library-retry><Bilingual zh="重新加载" en="Try again" /></button>
+      <a class="text-link" href="/archive/"><Bilingual zh="浏览作品档案" en="Browse the archive" /></a>
+    </div>
+    <noscript><p><Bilingual zh="请开启 JavaScript 以查看本机收藏；诗作仍可在作品档案中完整阅读。" en="Enable JavaScript to see poems saved in this browser. Every poem is also available in the archive." /></p><a class="text-link" href="/archive/"><Bilingual zh="浏览作品档案" en="Browse the archive" /></a></noscript>
+  </section>
+  <script src="../scripts/reading-library.ts"></script>
+</BaseLayout>

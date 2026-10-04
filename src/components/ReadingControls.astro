@@ -1,0 +1,31 @@
+---
+import Bilingual from './Bilingual.astro';
+---
+
+<div class="reading-controls" role="group" aria-label="阅读设置 / Reading settings">
+  <fieldset class="reading-controls__group">
+    <legend><Bilingual zh="字号" en="Text size" /></legend>
+    <div class="reading-controls__options">
+      <button type="button" data-reading-size-target="small" aria-pressed="false" aria-label="较小字号 / Smaller text">
+        <Bilingual zh="小" en="Small" />
+      </button>
+      <button type="button" data-reading-size-target="standard" aria-pressed="true" aria-label="标准字号 / Standard text">
+        <Bilingual zh="标准" en="Standard" />
+      </button>
+      <button type="button" data-reading-size-target="large" aria-pressed="false" aria-label="较大字号 / Larger text">
+        <Bilingual zh="大" en="Large" />
+      </button>
+    </div>
+  </fieldset>
+  <fieldset class="reading-controls__group">
+    <legend><Bilingual zh="排版" en="Line view" /></legend>
+    <div class="reading-controls__options">
+      <button type="button" data-reading-view-target="wrap" aria-pressed="true">
+        <Bilingual zh="适屏" en="Fit screen" />
+      </button>
+      <button type="button" data-reading-view-target="original" aria-pressed="false">
+        <Bilingual zh="原行" en="Original lines" />
+      </button>
+    </div>
+  </fieldset>
+</div>

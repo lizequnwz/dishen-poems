@@ -24,7 +24,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
           <span class="eyebrow"><Bilingual zh="关于谛深" en="About Dishen" /></span>
           <h1><Bilingual zh="谛深大师" en="Master Dishen" /></h1>
           <p class="about-copy__intro">
-            <ScriptText text="谛深大师俗姓吕，净土获证，禅宗传承。上乘清净愿力为谛，下令众生世界业障破灭称深。谛深法号为佛光普照神僧呼唤所得。落发戒名释迦妙生，祖籍山东即墨。" />
+            <Bilingual
+              zh="谛深大师俗姓吕，净土获证，禅宗传承。上乘清净愿力为谛，下令众生世界业障破灭称深。谛深法号为佛光普照神僧呼唤所得。落发戒名释迦妙生，祖籍山东即墨。"
+              en="Master Dishen was born into the Lü family, originally from Jimo, Shandong. His official biography describes realization in the Pure Land tradition and a Chan lineage. ‘Di’ signifies a pure vow of the highest order; ‘Shen’ names the command for karmic obstructions in the world of sentient beings to be dispelled. His Dharma name was bestowed by the monk Foguang Puzhao, and his ordination name is Shijia Miaosheng."
+            />
           </p>
           <a
             class="button-link"
@@ -45,7 +48,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     </div>
     <div class="shell about-project">
       <span class="eyebrow"><Bilingual zh="关于此数字诗集" en="About this collection" /></span>
-      <p><Bilingual zh="本网站收录谛深大师诗作，并按创作日期呈现。" en="This collection presents Master Dishen's poems by the dates they were written." /></p>
+      <div>
+        <p><Bilingual zh="本网站收录谛深大师诗作，并按创作日期呈现。" en="This collection presents Master Dishen's poems by the dates they were written." /></p>
+        <p data-copy-en>Poems retain their Chinese text. Navigation, descriptions and reading controls are available in English.</p>
+      </div>
     </div>
   </section>
 </BaseLayout>

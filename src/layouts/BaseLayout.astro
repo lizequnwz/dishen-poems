@@ -6,8 +6,9 @@ import AudioPlayer from '@/components/AudioPlayer.astro';
 import { approvedPlaybackCatalog } from '@/lib/audio-data';
 import { ClientRouter } from 'astro:transitions';
 import '@/styles/global.css';
-import sansLatinUrl from '@fontsource-variable/noto-sans-sc/files/noto-sans-sc-latin-wght-normal.woff2?url';
-import serifLatinUrl from '@fontsource-variable/noto-serif-sc/files/noto-serif-sc-latin-wght-normal.woff2?url';
+import '@fontsource-variable/noto-sans-sc';
+import '@fontsource-variable/noto-serif-sc';
+import '@/styles/reading.css';
 
 interface Props {
   title?: string;
@@ -22,26 +23,10 @@ const {
 } = Astro.props;
 const pageTitle = title === '谛深 · 禅诗' ? title : `${title} · 谛深禅诗`;
 const audioCatalog = approvedPlaybackCatalog();
-const localFontFaces = `
-  @font-face {
-    font-family: 'Noto Serif SC Variable';
-    font-style: normal;
-    font-display: swap;
-    font-weight: 200 900;
-    src: url('${serifLatinUrl}') format('woff2-variations');
-  }
-  @font-face {
-    font-family: 'Noto Sans SC Variable';
-    font-style: normal;
-    font-display: swap;
-    font-weight: 100 900;
-    src: url('${sansLatinUrl}') format('woff2-variations');
-  }
-`;
 ---
 
 <!doctype html>
-<html lang="zh-Hans" data-theme="light" data-language="zh" data-script="simplified">
+<html lang="zh-Hans" data-theme="light" data-language="zh" data-script="simplified" data-reading-size="standard" data-reading-view="wrap">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -53,18 +38,21 @@ const localFontFaces = `
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
     <ClientRouter fallback="swap" />
-    <style is:inline set:html={localFontFaces}></style>
     <script is:inline>
       (() => {
         document.documentElement.classList.add('js');
+        const preferredDark = matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = preferredDark ? 'dark' : 'light';
         try {
           const saved = localStorage.getItem('dishen-theme');
-          const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+          if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
           const language = localStorage.getItem('dishen-language') === 'en' ? 'en' : 'zh';
           document.documentElement.dataset.language = language;
           const script = localStorage.getItem('dishen-script') === 'traditional' ? 'traditional' : 'simplified';
           document.documentElement.dataset.script = script;
+          const size = localStorage.getItem('dishen-reading-size');
+          document.documentElement.dataset.readingSize = size === 'small' || size === 'large' ? size : 'standard';
+          document.documentElement.dataset.readingView = localStorage.getItem('dishen-reading-view') === 'original' ? 'original' : 'wrap';
           document.documentElement.lang = language === 'en' ? 'en' : script === 'traditional' ? 'zh-Hant' : 'zh-Hans';
         } catch {}
       })();
@@ -78,7 +66,7 @@ const localFontFaces = `
     </main>
     {!hideChrome && <SiteFooter />}
     {!hideChrome && audioCatalog.trackIds.length > 0 && <AudioPlayer catalog={audioCatalog} />}
-    <div class="sr-only" aria-live="polite" data-share-status></div>
+    <div class="share-status" aria-live="polite" aria-atomic="true" data-share-status></div>
     <script src="../scripts/site.ts"></script>
   </body>
 </html>

@@ -6,6 +6,17 @@ The remaining-PDF, development review desk, visual expansion, 167-poem automatic
 
 Authoritative design: `docs/superpowers/specs/2026-07-23-pdf-review-visual-expansion-design.md`.
 
+## Reading and discovery update — 2026-10-03
+
+- Local CJK Unicode-range fonts, a poem-led homepage, latest-five contents, opaque reading surfaces, mobile wrapping and saved reading-size/line-view controls.
+- Theme, language, script and reading preferences survive Astro navigation. Sharing has visible success/failure feedback; About and archive months have English interface copy.
+- Pagefind indexes public poem titles/bodies once per poem, with year filters, URL query state, gallery/list browsing and contextual return anchors. `scripts/search-integration.mjs` supplies the same index in development and production.
+- Stable-ID local saves, `/saved/`, independent reading-history removal, and a home continuation entry. No account or remote storage.
+- Compact soundscape controls, cancellable loading, failure retry, viewport-safe disclosure and cleanup when navigating to pages without a player. Approved media are unchanged.
+- The current visual direction is recorded in `design-system/default/MASTER.md`. Poem content, publication status and curated-art approvals are unchanged. Curated image samples, new human selections and canonical/social preview metadata belong to the next iteration after assets and the production domain are confirmed.
+
+Validation on 2026-10-04: complete `npm run build` passed (72 checked files, 142 Vitest tests, 12 Python tests with one optional dependency skip, 314 static pages and 290 indexed poems). Production-browser checks covered 320px/375px, desktop and short landscape; Chinese/English search, script conversion, 40-result return restoration, mobile dates, reading/theme persistence, clipboard success, local saves/history and retained keyboard focus. Actual library-wide search validation covered 2,320 query combinations with no missing expected poem. The native OS share sheet still needs a manual device check; the explicit copy-link action is verified.
+
 ## Completed PDF coverage
 
 - Formal poetry begins at physical PDF page 24. No page before 24 is eligible.

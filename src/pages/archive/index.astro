@@ -1,11 +1,14 @@
 ---
 import Bilingual from '@/components/Bilingual.astro';
+import ArchiveSearch from '@/components/ArchiveSearch.astro';
 import Icon from '@/components/Icon.astro';
 import InkScene from '@/components/InkScene.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { formatWrittenDate, loadSiteData, poemPath } from '@/lib/site-data';
+import { formatWrittenDate, getPoemVariants, loadSiteData, poemPath } from '@/lib/site-data';
 import { resolveYearVisualProfile } from '@/lib/visual-profile';
+import { archivePoemAnchor } from '@/lib/archive-navigation';
+import '@/styles/archive.css';
 
 const { publicPoems, years } = await loadSiteData();
 const randomPaths = JSON.stringify(publicPoems.map(poemPath));
@@ -37,6 +40,8 @@ const yearGroups = years.map((year, index) => {
     </div>
   </header>
 
+  <ArchiveSearch years={years} total={publicPoems.length} />
+
   <div class="archive-toolbar shell">
     <nav aria-label="按年份浏览 / Browse by year">
       <a aria-current="page" href="/archive/"><Bilingual zh="年份画廊" en="Years" /></a>
@@ -47,9 +52,9 @@ const yearGroups = years.map((year, index) => {
     </button>
   </div>
 
-  <section class="year-gallery shell" aria-label="诗歌年份 / Poetry years">
+  <section class="year-gallery shell" aria-label="诗歌年份 / Poetry years" data-archive-gallery>
     {yearGroups.map((group) => (
-      <a class:list={['year-card', `year-card--${group.profile.sceneFamily}`]} href={`/archive/${group.year}/`} data-reveal>
+      <a class:list={['year-card', `year-card--${group.profile.sceneFamily}`]} href={`/archive/${group.year}/`} data-archive-year={group.year} data-reveal>
         <InkScene profile={group.profile} title={group.year} index={group.index} />
         <span class="year-card__index">{String(group.index + 1).padStart(2, '0')}</span>
         <div class="year-card__heading">
@@ -61,6 +66,19 @@ const yearGroups = years.map((year, index) => {
           <h2><ScriptText text={group.newest.data.title} originalScript={group.newest.data.originalScript} /></h2>
           <p><Bilingual zh="从这一年入卷" en="Enter this year's scroll" /> <Icon name="arrow" /></p>
         </div>
+      </a>
+    ))}
+  </section>
+
+  <section class="archive-compact-list shell" aria-label="全部诗作列表 / All poems" data-archive-list hidden>
+    {publicPoems.map((poem) => (
+      <a class="archive-result" id={archivePoemAnchor(poem.data.slug)} href={poemPath(poem)} data-archive-row data-archive-poem-link data-year={poem.data.writtenDate.slice(0, 4)}>
+        <time datetime={poem.data.writtenDate}>{formatWrittenDate(poem.data.writtenDate)}</time>
+        <div>
+          <h2><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h2>
+          <p><ScriptText text={getPoemVariants(poem).original.split('\n')[0]} originalScript={poem.data.originalScript} /></p>
+        </div>
+        <span class="archive-result__arrow" aria-hidden="true"><Icon name="arrow" /></span>
       </a>
     ))}
   </section>

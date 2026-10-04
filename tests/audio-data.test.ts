@@ -19,7 +19,6 @@ import {
 } from '../src/lib/audio-playback';
 import {
   defaultAudioPreference,
-  migrateLegacyAudioPreference,
   normalizeAudioPreference,
 } from '../src/lib/audio-preferences';
 
@@ -92,14 +91,9 @@ describe('audio preferences v2', () => {
     expect(defaultAudioPreference).toEqual({ trackId: null, volume: 0.32, muted: false });
   });
 
-  it('migrates only legacy mute and caps legacy volume at 0.32', () => {
-    expect(migrateLegacyAudioPreference({
-      trackId: 'guqin-liu-shui',
-      ambientId: 'forest',
-      mainVolume: 0.8,
-      mainMuted: true,
-    })).toEqual({ trackId: null, volume: 0.32, muted: true });
-    expect(migrateLegacyAudioPreference({ mainVolume: 0.18 })).toEqual({ trackId: null, volume: 0.18, muted: false });
+  it('uses safe defaults for invalid preferences', () => {
+    expect(normalizeAudioPreference(null)).toEqual(defaultAudioPreference);
+    expect(normalizeAudioPreference({ volume: Number.NaN, muted: 'yes' })).toEqual(defaultAudioPreference);
   });
 });
 

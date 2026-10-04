@@ -3,10 +3,13 @@ import Bilingual from '@/components/Bilingual.astro';
 import Icon from '@/components/Icon.astro';
 import InkScene from '@/components/InkScene.astro';
 import PoemText from '@/components/PoemText.astro';
+import ReadingControls from '@/components/ReadingControls.astro';
+import SavePoemButton from '@/components/SavePoemButton.astro';
 import ScriptText from '@/components/ScriptText.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { formatWrittenDate, getResolvedVisualProfile, loadSiteData, poemPath, type PoemEntry } from '@/lib/site-data';
-import { poemLineTier } from '@/lib/poem-layout';
+import { archivePoemAnchor } from '@/lib/archive-navigation';
+import '@/styles/archive.css';
 
 export async function getStaticPaths() {
   const { publicPoems } = await loadSiteData();
@@ -24,11 +27,19 @@ const index = journey.findIndex((entry) => entry.data.id === poem.data.id);
 const previous = index > 0 ? journey[index - 1] : undefined;
 const next = index < journey.length - 1 ? journey[index + 1] : undefined;
 const visualProfile = getResolvedVisualProfile(poem);
-const lineTier = poemLineTier(poem.body ?? '');
 const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
+const year = poem.data.writtenDate.slice(0, 4);
 ---
 
 <BaseLayout title={poem.data.title} description={`${poem.data.title}，谛深作于 ${formatWrittenDate(poem.data.writtenDate)}。`}>
+  <nav class="poem-breadcrumb shell" aria-label="作品位置 / Poem location">
+    <ol>
+      <li><a href="/archive/"><Bilingual zh="作品档案" en="Archive" /></a></li>
+      <li><a href={`/archive/${year}/#${archivePoemAnchor(poem.data.slug)}`}>{year}</a></li>
+      <li aria-current="page"><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></li>
+    </ol>
+    <a class="poem-breadcrumb__return" href={`/archive/${year}/#${archivePoemAnchor(poem.data.slug)}`} data-archive-return>← <Bilingual zh={`返回 ${year} 年`} en={`Back to ${year}`} /></a>
+  </nav>
   <article class:list={['poem-page', `poem-page--${visualProfile.sceneFamily}`]}>
     <InkScene profile={visualProfile} title={poem.data.title} index={index} />
     <div class:list={['shell', 'poem-page__inner', { 'poem-page__inner--without-note': !hasDescriptiveTags }]}>
@@ -42,7 +53,8 @@ const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
           <p class="eyebrow"><Bilingual zh="一诗一境" en="One poem · One world" /></p>
           <h1><ScriptText text={poem.data.title} originalScript={poem.data.originalScript} /></h1>
         </header>
-        <PoemText poem={poem} tier={lineTier} />
+        <ReadingControls />
+        <PoemText poem={poem} />
         <footer class="poem-page__meta">
           <div>
             <span><ScriptText text="谛深" /></span>
@@ -51,10 +63,16 @@ const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
               <span data-copy-en>{formatWrittenDate(poem.data.writtenDate, 'en')}</span>
             </time>
           </div>
-          <button class="outline-button" type="button" data-share data-share-title={`${poem.data.title} · 谛深`} data-share-url={poemPath(poem)}>
-            <Icon name="share" />
-            <Bilingual zh="分享此诗" en="Share" />
-          </button>
+          <SavePoemButton poem={poem} />
+          <div class="poem-page__actions">
+            <button class="outline-button" type="button" data-copy-link data-share-url={poemPath(poem)}>
+              <Bilingual zh="复制链接" en="Copy link" />
+            </button>
+            <button class="outline-button" type="button" data-share data-share-title={`${poem.data.title} · 谛深`} data-share-url={poemPath(poem)}>
+              <Icon name="share" />
+              <Bilingual zh="分享此诗" en="Share" />
+            </button>
+          </div>
         </footer>
       </div>
       {hasDescriptiveTags && (
@@ -86,4 +104,5 @@ const hasDescriptiveTags = poem.data.descriptiveTags.length > 0;
       </a>
     ) : <span class="poem-navigation__boundary poem-navigation__boundary--next"><Bilingual zh="已是最早一首" en="Earliest poem" /></span>}
   </nav>
+  <script src="../../scripts/archive-search.ts"></script>
 </BaseLayout>

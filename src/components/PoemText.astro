@@ -1,21 +1,19 @@
 ---
 import type { PoemEntry } from '@/lib/site-data';
 import { getPoemVariants } from '@/lib/site-data';
-import { poemLineTier, poemSourceLines, type PoemLineTier } from '@/lib/poem-layout';
+import { poemSourceLines } from '@/lib/poem-layout';
 
 interface Props {
   poem: PoemEntry;
-  tier?: PoemLineTier;
 }
 
-const { poem, tier = poemLineTier(poem.body ?? '') } = Astro.props;
+const { poem } = Astro.props;
 const variants = getPoemVariants(poem);
 ---
 
 <div
-  class:list={['poem-text', `poem-text--${tier}`]}
+  class="poem-text"
   data-poem-scroll-region
-  data-line-tier={tier}
   aria-label="诗文原行 / Poem lines"
 >
   {(['simplified', 'traditional'] as const).map((mode) => (

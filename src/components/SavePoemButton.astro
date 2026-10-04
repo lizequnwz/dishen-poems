@@ -1,0 +1,25 @@
+---
+import Bilingual from './Bilingual.astro';
+import { loadSiteData, type PoemEntry } from '@/lib/site-data';
+import '@/styles/reading-library.css';
+
+interface Props { poem: PoemEntry }
+const { poem } = Astro.props;
+const { publicPoems } = await loadSiteData();
+const catalogIds = publicPoems.map((entry) => entry.data.id);
+---
+
+<div class="save-poem" data-poem-library data-poem-id={poem.data.id} data-catalog-ids={JSON.stringify(catalogIds)}>
+  <div class="save-poem__actions">
+    <button class="outline-button" type="button" aria-pressed="false" data-save-poem>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" />
+      </svg>
+      <span data-save-label><Bilingual zh="收藏此诗" en="Save poem" /></span>
+    </button>
+    <a class="save-poem__collection" href="/saved/"><Bilingual zh="我的收藏" en="Saved poems" /></a>
+  </div>
+  <p class="library-status" data-save-status aria-live="polite" aria-atomic="true"></p>
+</div>
+
+<script src="../scripts/reading-library.ts"></script>

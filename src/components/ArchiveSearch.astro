@@ -1,0 +1,51 @@
+---
+import Bilingual from './Bilingual.astro';
+
+interface Props {
+  years: string[];
+  total: number;
+  defaultYear?: string;
+  showViewControls?: boolean;
+}
+const { years, total, defaultYear = '', showViewControls = true } = Astro.props;
+---
+
+<section id="archive-search" class="archive-discovery shell" data-archive-discovery data-default-year={defaultYear} data-years={JSON.stringify(years)} data-total={total}>
+  <form class="archive-search-form" data-archive-search-form role="search">
+    <div class="archive-search-field">
+      <label for="archive-query"><Bilingual zh="寻找一首诗" en="Find a poem" /></label>
+      <input id="archive-query" name="q" type="search" maxlength="200" autocomplete="off" placeholder="诗题或诗句" data-placeholder-zh="诗题或诗句" data-placeholder-en="A title or a line in Chinese" aria-describedby="archive-search-help" disabled />
+    </div>
+    <div class="archive-search-year">
+      <label for="archive-year"><Bilingual zh="创作年份" en="Year written" /></label>
+      <select id="archive-year" name="year" disabled>
+        <option value="" data-all-years>全部年份</option>
+        {years.map((year) => <option value={year} selected={year === defaultYear}>{year}</option>)}
+      </select>
+    </div>
+    <button class="archive-search-submit" type="submit" disabled><Bilingual zh="搜索" en="Search" /></button>
+    <button class="archive-search-clear" type="button" data-archive-clear disabled><Bilingual zh="清除" en="Clear" /></button>
+  </form>
+  <p id="archive-search-help" class="archive-search-help" data-archive-search-help><Bilingual zh="支持简体或繁体诗题、诗句，搜索全部公开作品。" en="Search all public poems by Chinese title or text, in either script." /></p>
+  <noscript><p class="archive-search-help"><Bilingual zh="可按下方年份浏览全部作品；启用 JavaScript 后可搜索诗题与诗句。" en="Browse every poem by year below. Enable JavaScript to search titles and text." /></p></noscript>
+  <div class="archive-discovery__bar">
+    <p class="archive-search-status" role="status" aria-live="polite" aria-atomic="true" data-archive-status><Bilingual zh={`共 ${total} 首作品`} en={`${total} poems`} /></p>
+    {showViewControls && (
+      <div class="archive-view-switch" role="group" aria-label="档案显示方式 / Archive view" data-archive-view-controls hidden>
+        <button type="button" data-archive-view="gallery" aria-pressed="true"><Bilingual zh="年份画廊" en="Year gallery" /></button>
+        <button type="button" data-archive-view="list" aria-pressed="false"><Bilingual zh="作品列表" en="Poem list" /></button>
+      </div>
+    )}
+  </div>
+  <div class="archive-search-feedback" data-archive-feedback hidden>
+    <p data-archive-feedback-message></p>
+    <button class="outline-button" type="button" data-archive-retry hidden><Bilingual zh="重试搜索" en="Try again" /></button>
+    <button class="outline-button" type="button" data-archive-reset><Bilingual zh="返回按年浏览" en="Browse by year" /></button>
+  </div>
+  <section class="archive-search-results" aria-label="搜索结果 / Search results" data-archive-results hidden></section>
+  <div class="archive-search-more" hidden data-archive-more-wrap>
+    <button class="outline-button" type="button" data-archive-more><Bilingual zh="显示更多作品" en="Show more poems" /></button>
+  </div>
+</section>
+
+<script src="../scripts/archive-search.ts"></script>

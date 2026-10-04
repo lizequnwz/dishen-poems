@@ -1,24 +1,31 @@
-import type { AudioAsset, AudioPreference, PlaybackCatalog } from '@/lib/audio-data';
-import {
-  AUDIO_PREFERENCE_STORAGE_KEY,
-  LEGACY_AUDIO_PREFERENCE_STORAGE_KEY,
-  migrateLegacyAudioPreference,
-  normalizeAudioPreference,
-} from '@/lib/audio-preferences';
+import type { AudioAsset, AudioPreference, PlaybackCatalog } from '../lib/audio-data';
+import { AUDIO_PREFERENCE_STORAGE_KEY, normalizeAudioPreference } from '../lib/audio-preferences';
 import {
   AUTO_CROSSFADE_MS,
   MANUAL_CROSSFADE_MS,
   crossfadeGains,
   louderDeck,
   nextPlayableTrackId,
-} from '@/lib/audio-playback';
+} from '../lib/audio-playback';
+
+const EXPANDED_STORAGE_KEY = 'dishen-audio-expanded-v1';
+type PlaybackState = 'idle' | 'loading' | 'playing' | 'paused' | 'background' | 'error';
+const stateLabels: Record<PlaybackState, { zh: string; en: string }> = {
+  idle: { zh: '点按播放', en: 'Press play' },
+  loading: { zh: '加载中 · 可取消', en: 'Loading · cancel available' },
+  playing: { zh: '播放中', en: 'Playing' },
+  paused: { zh: '已暂停', en: 'Paused' },
+  background: { zh: '后台已暂停', en: 'Paused in background' },
+  error: { zh: '无法播放 · 点击重试', en: 'Unavailable · retry' },
+};
+const defaultDetail = {
+  zh: '声景将依次循环；进入后台时自动暂停。',
+  en: 'Soundscapes repeat in order and pause when this page enters the background.',
+};
 
 function readPreference(): AudioPreference {
   try {
-    const current = localStorage.getItem(AUDIO_PREFERENCE_STORAGE_KEY);
-    if (current !== null) return normalizeAudioPreference(JSON.parse(current));
-    const legacy = localStorage.getItem(LEGACY_AUDIO_PREFERENCE_STORAGE_KEY);
-    return migrateLegacyAudioPreference(legacy === null ? null : JSON.parse(legacy));
+    return normalizeAudioPreference(JSON.parse(localStorage.getItem(AUDIO_PREFERENCE_STORAGE_KEY) ?? 'null'));
   } catch {
     return normalizeAudioPreference(null);
   }
@@ -32,7 +39,7 @@ function writePreference(preference: AudioPreference) {
   }
 }
 
-function setupPlayer(player: HTMLElement) {
+export function setupPlayer(player: HTMLElement) {
   if (player.dataset.bound) return;
   player.dataset.bound = 'true';
 
@@ -44,15 +51,27 @@ function setupPlayer(player: HTMLElement) {
   const next = player.querySelector<HTMLButtonElement>('[data-audio-next]')!;
   const mute = player.querySelector<HTMLButtonElement>('[data-audio-mute]')!;
   const volume = player.querySelector<HTMLInputElement>('[data-audio-volume]')!;
+  const volumeLabel = player.querySelector<HTMLOutputElement>('[data-audio-volume-label]')!;
+  const trackSelect = player.querySelector<HTMLSelectElement>('[data-audio-track]')!;
   const trackLabel = player.querySelector<HTMLElement>('[data-audio-track-label]')!;
   const status = player.querySelector<HTMLElement>('[data-audio-status]')!;
+  const detail = player.querySelector<HTMLElement>('[data-audio-detail]')!;
   const playIcon = player.querySelector<HTMLElement>('[data-audio-play-icon]')!;
   const pauseIcon = player.querySelector<HTMLElement>('[data-audio-pause-icon]')!;
+  const expand = player.querySelector<HTMLButtonElement>('[data-audio-expand]');
+  const close = player.querySelector<HTMLButtonElement>('[data-audio-close]');
+  const panel = player.querySelector<HTMLElement>('[data-audio-panel]')!;
+  const preview = player.dataset.preview === 'true';
+  const lifecycle = new AbortController();
 
   let preference = readPreference();
   let activeDeck: 0 | 1 = 0;
   let wantedPlaying = false;
-  let transition: { from: 0 | 1; to: 0 | 1; fromId: string; toId: string; frame: number } | null = null;
+  let playbackState: PlaybackState = 'idle';
+  let playbackDetail = defaultDetail;
+  let transition: { from: 0 | 1; to: 0 | 1; toId: string; frame: number } | null = null;
+  let pendingLoad: { token: number; deck: 0 | 1; id: string } | null = null;
+  let operation = 0;
   let hasUserGesture = false;
   const failedIds = new Set<string>();
 
@@ -61,8 +80,17 @@ function setupPlayer(player: HTMLElement) {
   const english = () => document.documentElement.dataset.language === 'en';
   const assetFor = (id: string | null) => id ? byId.get(id) : undefined;
 
-  function message(zh: string, en: string) {
-    status.textContent = english() ? en : zh;
+  function setExpanded(expanded: boolean, returnFocus = false) {
+    if (preview) return;
+    if (!expanded && returnFocus && panel.contains(document.activeElement)) expand?.focus();
+    panel.hidden = !expanded;
+    expand?.setAttribute('aria-expanded', String(expanded));
+    expand?.setAttribute('aria-label', expanded ? '收起声景设置 / Collapse soundscape settings' : '展开声景设置 / Expand soundscape settings');
+    try {
+      localStorage.setItem(EXPANDED_STORAGE_KEY, JSON.stringify(expanded));
+    } catch {
+      // Disclosure still works when storage is unavailable.
+    }
   }
 
   function setSource(deck: HTMLAudioElement, asset: AudioAsset) {
@@ -80,9 +108,26 @@ function setupPlayer(player: HTMLElement) {
     deck.volume = 0;
   }
 
+  function cancelPendingLoad() {
+    operation += 1;
+    const pending = pendingLoad;
+    pendingLoad = null;
+    if (pending) clearDeck(decks[pending.deck]);
+  }
+
   function cancelTransition() {
     if (transition) cancelAnimationFrame(transition.frame);
     transition = null;
+  }
+
+  function keepLouderDeck() {
+    if (!transition) return;
+    const kept = louderDeck(decks[0].volume, decks[1].volume);
+    const keptId = decks[kept].dataset.assetId;
+    cancelTransition();
+    activeDeck = kept;
+    if (keptId) preference.trackId = keptId;
+    clearDeck(decks[kept === 0 ? 1 : 0]);
   }
 
   function syncVolumes() {
@@ -93,21 +138,43 @@ function setupPlayer(player: HTMLElement) {
   }
 
   function updateUi(persist = true) {
-    const track = assetFor(preference.trackId);
+    const selectedId = pendingLoad?.id ?? preference.trackId;
+    const track = assetFor(selectedId);
     trackLabel.textContent = track ? (english() ? track.displayTitle.en : track.displayTitle.zh) : '';
+    trackLabel.title = trackLabel.textContent;
+    trackSelect.value = selectedId ?? '';
+    for (const option of trackSelect.options) {
+      option.textContent = (english() ? option.dataset.titleEn : option.dataset.titleZh) ?? '';
+    }
+    player.dataset.playbackState = playbackState;
+    const label = playbackState === 'playing' && preference.muted
+      ? { zh: '已静音', en: 'Muted' }
+      : stateLabels[playbackState];
+    status.textContent = english() ? label.en : label.zh;
+    detail.textContent = english() ? playbackDetail.en : playbackDetail.zh;
     toggle.setAttribute('aria-pressed', String(wantedPlaying));
-    toggle.setAttribute('aria-label', wantedPlaying ? '暂停声景 / Pause soundscape' : '播放声景 / Play soundscape');
+    toggle.setAttribute('aria-label', wantedPlaying
+      ? playbackState === 'loading' ? '取消加载声景 / Cancel soundscape loading' : '暂停声景 / Pause soundscape'
+      : playbackState === 'error' ? '重试播放声景 / Retry soundscape playback' : '播放声景 / Play soundscape');
     playIcon.hidden = wantedPlaying;
     pauseIcon.hidden = !wantedPlaying;
     mute.setAttribute('aria-pressed', String(preference.muted));
     mute.setAttribute('aria-label', preference.muted ? '取消声景静音 / Unmute soundscape' : '声景静音 / Mute soundscape');
     volume.value = String(preference.volume);
+    volumeLabel.textContent = `${Math.round(preference.volume * 100)}%`;
+    volume.setAttribute('aria-valuetext', `${Math.round(preference.volume * 100)}%`);
     syncVolumes();
     if (persist) writePreference(preference);
   }
 
+  function setState(state: PlaybackState, explanation = defaultDetail) {
+    playbackState = state;
+    playbackDetail = explanation;
+    updateUi();
+  }
+
   function prefetchNext() {
-    if (!hasUserGesture || transition || !preference.trackId) return;
+    if (!hasUserGesture || !wantedPlaying || transition || pendingLoad || !preference.trackId) return;
     const id = nextPlayableTrackId(catalog.trackIds, preference.trackId, failedIds);
     const asset = assetFor(id);
     if (!asset) return;
@@ -124,9 +191,31 @@ function setupPlayer(player: HTMLElement) {
     clearDeck(decks[from]);
     activeDeck = to;
     preference.trackId = toId;
-    decks[to].volume = preference.volume;
-    updateUi();
+    setState('playing');
     prefetchNext();
+  }
+
+  async function playDeck(index: 0 | 1, asset: AudioAsset) {
+    const deck = decks[index];
+    const token = ++operation;
+    pendingLoad = { token, deck: index, id: asset.id };
+    setState('loading');
+    setSource(deck, asset);
+    deck.preload = 'auto';
+    deck.muted = preference.muted;
+    deck.volume = index === activeDeck ? preference.volume : 0;
+    try {
+      await deck.play();
+      if (token !== operation || !wantedPlaying) return null;
+      pendingLoad = null;
+      return token;
+    } catch {
+      if (token !== operation || !wantedPlaying) return null;
+      pendingLoad = null;
+      clearDeck(deck);
+      await recoverFromFailure(asset.id);
+      return null;
+    }
   }
 
   async function transitionTo(id: string, duration: number) {
@@ -134,33 +223,34 @@ function setupPlayer(player: HTMLElement) {
     if (!asset) return;
     if (!wantedPlaying) {
       preference.trackId = id;
-      updateUi();
+      setState('idle');
       return;
     }
-    if (transition?.toId === id || decks[activeDeck].dataset.assetId === id) return;
+    if (pendingLoad?.id === id || transition?.toId === id) return;
 
-    cancelTransition();
+    cancelPendingLoad();
+    keepLouderDeck();
+    if (decks[activeDeck].paused) {
+      preference.trackId = id;
+      await startSelected();
+      return;
+    }
+    if (decks[activeDeck].dataset.assetId === id) {
+      preference.trackId = id;
+      setState('playing');
+      return;
+    }
     const from = activeDeck;
     const to = (from === 0 ? 1 : 0) as 0 | 1;
     clearDeck(decks[to]);
-    setSource(decks[to], asset);
-    decks[to].muted = preference.muted;
-    decks[to].volume = 0;
-    try {
-      await decks[to].play();
-    } catch {
-      failedIds.add(id);
-      clearDeck(decks[to]);
-      void recoverFromFailure(id);
-      return;
-    }
+    const token = await playDeck(to, asset);
+    if (token === null || token !== operation || !wantedPlaying) return;
 
     preference.trackId = id;
-    updateUi();
-    const fromId = decks[from].dataset.assetId ?? id;
     const startedAt = performance.now();
-    const state = { from, to, fromId, toId: id, frame: 0 };
+    const state = { from, to, toId: id, frame: 0 };
     transition = state;
+    setState('playing');
 
     const animate = (now: number) => {
       if (transition !== state) return;
@@ -175,90 +265,79 @@ function setupPlayer(player: HTMLElement) {
   }
 
   async function startSelected() {
+    cancelPendingLoad();
+    keepLouderDeck();
     const asset = assetFor(preference.trackId);
     if (!asset) {
       stopAllFailed();
       return;
     }
-    const deck = decks[activeDeck];
-    setSource(deck, asset);
-    deck.preload = 'auto';
-    deck.muted = preference.muted;
-    deck.volume = preference.volume;
-    try {
-      await deck.play();
-      wantedPlaying = true;
-      message('正在播放。', 'Playing.');
-      updateUi();
-      prefetchNext();
-    } catch {
-      failedIds.add(asset.id);
-      clearDeck(deck);
-      void recoverFromFailure(asset.id);
-    }
+    wantedPlaying = true;
+    const token = await playDeck(activeDeck, asset);
+    if (token === null || token !== operation || !wantedPlaying) return;
+    setState('playing');
+    prefetchNext();
   }
 
   function stopAllFailed() {
     wantedPlaying = false;
+    cancelPendingLoad();
     cancelTransition();
     decks.forEach(clearDeck);
-    message('六首声景均无法播放，播放器已停止。', 'All six soundscapes failed; playback has stopped.');
-    updateUi(false);
+    setState('error', {
+      zh: '所有声景暂时无法播放。请检查网络，再点击播放重试。',
+      en: 'No soundscape could be played. Check your connection and press play to retry.',
+    });
   }
 
   async function recoverFromFailure(failedId: string) {
+    if (!wantedPlaying) return;
     failedIds.add(failedId);
     const nextId = nextPlayableTrackId(catalog.trackIds, failedId, failedIds);
     if (!nextId) {
       stopAllFailed();
       return;
     }
+    cancelPendingLoad();
+    cancelTransition();
+    decks.forEach(clearDeck);
+    activeDeck = 0;
     preference.trackId = nextId;
-    message('当前声景无法播放，正在尝试下一景。', 'This soundscape failed; trying the next one.');
-    updateUi();
-    if (wantedPlaying || hasUserGesture) {
-      wantedPlaying = false;
-      await startSelected();
-    }
+    await startSelected();
   }
 
   function pausePlayback(reason?: 'background') {
-    if (transition) {
-      const kept = louderDeck(decks[0].volume, decks[1].volume);
-      const keptId = decks[kept].dataset.assetId;
-      cancelTransition();
-      activeDeck = kept;
-      if (keptId) preference.trackId = keptId;
-      clearDeck(decks[kept === 0 ? 1 : 0]);
-    }
+    cancelPendingLoad();
+    keepLouderDeck();
     decks.forEach((deck) => deck.pause());
     wantedPlaying = false;
-    if (reason === 'background') {
-      message('页面进入后台，声景已暂停。', 'Soundscape paused while the page is in the background.');
-    } else {
-      message('已暂停。', 'Paused.');
-    }
-    updateUi();
+    setState(reason === 'background' ? 'background' : 'paused');
   }
 
-  function move(direction: 1 | -1) {
-    const id = nextPlayableTrackId(catalog.trackIds, preference.trackId, failedIds, direction);
-    if (!id) {
-      stopAllFailed();
-      return;
-    }
+  function selectTrack(id: string) {
+    if (!catalog.trackIds.includes(id)) return;
+    failedIds.delete(id);
     if (wantedPlaying) void transitionTo(id, MANUAL_CROSSFADE_MS);
     else {
       preference.trackId = id;
-      message('已选择声景，点击播放开始。', 'Soundscape selected; press play to begin.');
-      updateUi();
+      setState('idle');
     }
+  }
+
+  function move(direction: 1 | -1) {
+    // Explicit interaction makes tracks available for a fresh attempt after a network failure.
+    if (failedIds.size === catalog.trackIds.length) failedIds.clear();
+    const id = nextPlayableTrackId(catalog.trackIds, pendingLoad?.id ?? preference.trackId, failedIds, direction);
+    if (id) selectTrack(id);
   }
 
   toggle.addEventListener('click', () => {
     hasUserGesture = true;
     if (wantedPlaying) pausePlayback();
-    else void startSelected();
+    else {
+      if (playbackState === 'error') failedIds.clear();
+      void startSelected();
+    }
   });
   previous.addEventListener('click', () => {
     hasUserGesture = true;
@@ -268,6 +347,10 @@ function setupPlayer(player: HTMLElement) {
     hasUserGesture = true;
     move(1);
   });
+  trackSelect.addEventListener('change', () => {
+    hasUserGesture = true;
+    selectTrack(trackSelect.value);
+  });
   mute.addEventListener('click', () => {
     preference.muted = !preference.muted;
     updateUi();
@@ -276,37 +359,72 @@ function setupPlayer(player: HTMLElement) {
     preference.volume = Number(volume.value);
     updateUi();
   });
+  expand?.addEventListener('click', () => setExpanded(panel.hidden === true));
+  close?.addEventListener('click', () => setExpanded(false, true));
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || panel.hidden || preview) return;
+    setExpanded(false, true);
+  }, { signal: lifecycle.signal });
+
   decks.forEach((deck, index) => {
     deck.addEventListener('timeupdate', () => {
-      if (!wantedPlaying || transition || index !== activeDeck || !Number.isFinite(deck.duration)) return;
+      if (!wantedPlaying || transition || pendingLoad || index !== activeDeck || !Number.isFinite(deck.duration)) return;
       if (deck.duration - deck.currentTime <= AUTO_CROSSFADE_MS / 1_000) {
         const id = nextPlayableTrackId(catalog.trackIds, preference.trackId, failedIds);
         if (id) void transitionTo(id, AUTO_CROSSFADE_MS);
       }
     });
     deck.addEventListener('ended', () => {
-      if (!wantedPlaying || transition || index !== activeDeck) return;
+      if (!wantedPlaying || transition || pendingLoad || index !== activeDeck) return;
       const id = nextPlayableTrackId(catalog.trackIds, preference.trackId, failedIds);
       if (id) void transitionTo(id, AUTO_CROSSFADE_MS);
     });
     deck.addEventListener('error', () => {
       const id = deck.dataset.assetId;
       if (!id) return;
+      // play() rejects for a loading error; handling it there avoids duplicate recovery.
+      if (pendingLoad?.deck === index) return;
       failedIds.add(id);
-      if (index === activeDeck || transition?.to === index) void recoverFromFailure(id);
+      if (wantedPlaying && (index === activeDeck || transition?.to === index)) void recoverFromFailure(id);
       else clearDeck(deck);
+    });
+    deck.addEventListener('waiting', () => {
+      if (wantedPlaying && !transition && !pendingLoad && index === activeDeck) setState('loading');
+    });
+    deck.addEventListener('playing', () => {
+      if (wantedPlaying && !pendingLoad && index === activeDeck) setState('playing');
     });
   });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && wantedPlaying) pausePlayback('background');
-  });
-  document.addEventListener('dishen:language-change', () => updateUi(false));
+  }, { signal: lifecycle.signal });
+  window.addEventListener('pagehide', () => {
+    if (wantedPlaying) pausePlayback('background');
+  }, { signal: lifecycle.signal });
+  document.addEventListener('dishen:language-change', () => updateUi(false), { signal: lifecycle.signal });
+  document.addEventListener('astro:after-swap', () => {
+    // Normal routes retain this node. Preview routes without site chrome remove
+    // it, so stop its decks and release document listeners before a new player mounts.
+    if (player.isConnected) return;
+    pausePlayback();
+    decks.forEach(clearDeck);
+    lifecycle.abort();
+  }, { signal: lifecycle.signal });
 
   // Only preferences are restored. Both decks remain source-free until a user gesture.
   decks.forEach((deck) => {
     deck.removeAttribute('src');
     deck.preload = 'none';
   });
+  if (!preview) {
+    let expanded = false;
+    try {
+      expanded = JSON.parse(localStorage.getItem(EXPANDED_STORAGE_KEY) ?? 'false') === true;
+    } catch {
+      // A fresh or blocked storage starts with the compact bar.
+    }
+    setExpanded(expanded);
+  }
   updateUi();
 }
 

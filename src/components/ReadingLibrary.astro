@@ -1,0 +1,23 @@
+---
+import Bilingual from './Bilingual.astro';
+import '@/styles/reading-library.css';
+---
+
+<section class="reading-library shell" data-reading-library="home" aria-label="续读与收藏 / Continue reading and saved poems" hidden>
+  <div class="reading-library__intro">
+    <span class="eyebrow"><Bilingual zh="留一页，下次再读" en="A page to return to" /></span>
+    <h2><Bilingual zh="续读与收藏" en="Your reading" /></h2>
+  </div>
+  <div class="reading-library__last" data-last-read-card hidden>
+    <span><Bilingual zh="上次读到" en="Last opened" /></span>
+    <a data-last-read-link>
+      <strong data-last-read-title></strong>
+      <time data-last-read-date></time>
+    </a>
+  </div>
+  <a class="outline-button" href="/saved/" data-saved-link>
+    <Bilingual zh="我的收藏" en="Saved poems" /><span data-saved-count></span>
+  </a>
+</section>
+
+<script src="../scripts/reading-library.ts"></script>
